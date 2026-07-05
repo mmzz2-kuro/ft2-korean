@@ -54,14 +54,6 @@ def pbm_to_png(in_path, out_path):
     image.save(out_path)
 
 
-def has_dark_on_both_sides(values, width, height, x, y, threshold, radius=4):
-    left = any(values[y * width + xx] < threshold for xx in range(max(0, x - radius), x))
-    right = any(values[y * width + xx] < threshold for xx in range(x + 1, min(width, x + radius + 1)))
-    up = any(values[yy * width + x] < threshold for yy in range(max(0, y - radius), y))
-    down = any(values[yy * width + x] < threshold for yy in range(y + 1, min(height, y + radius + 1)))
-    return (left and right) or (up and down)
-
-
 def png_to_pbm(in_path, out_path, threshold, png_mode):
     image = Image.open(in_path).convert("L")
     width, height = image.size
@@ -70,11 +62,7 @@ def png_to_pbm(in_path, out_path, threshold, png_mode):
         pixels = [1 if value < threshold else 0 for value in values]
     elif png_mode == "white-on-dark":
         bright = 255 - threshold
-        pixels = [
-            0 if values[y * width + x] > bright and has_dark_on_both_sides(values, width, height, x, y, threshold) else 1
-            for y in range(height)
-            for x in range(width)
-        ]
+        pixels = [0 if value > bright else 1 for value in values]
     elif png_mode == "dark-region":
         pixels = [1 if value < threshold else 0 for value in values]
     else:

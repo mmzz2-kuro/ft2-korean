@@ -18,18 +18,23 @@ const exe = fs.readFileSync(exePath);
 const candidatesJson = JSON.parse(fs.readFileSync(candidatesPath, 'utf8'));
 const loadAddr = exe.readUInt32LE(0x18);
 
-const fs2SectorTableOff = 0x5c768;
 const groupPointerTableAddr = 0x80169db0;
+
+// Group base sectors live in a runtime-built table at 0x801D0B90, outside the
+// static EXE image (see docs/projects/SLPS-01903/dialogue-route.md). These
+// values were read directly from PS1 RAM dumps (ram-dump/*.bin) and verified
+// identical across every dump captured so far, so they are treated as fixed.
+const GROUP_BASE_SECTORS = [
+  30830, 35726, 42898, 47108, 51114, 56222, 59672, 62624,
+  66214, 69504, 73180, 76776, 80436, 83408, 84966, 91324,
+];
 
 function fileOffOfRam(addr) {
   return addr - loadAddr + 0x800;
 }
 
-function fs2Sector(index) {
-  return exe.readUInt16LE(fs2SectorTableOff + index * 2);
-}
-
 function groupInfo(group) {
+  if (group >= GROUP_BASE_SECTORS.length) return null;
   const pointerTableOff = fileOffOfRam(groupPointerTableAddr);
   const tableAddr = exe.readUInt32LE(pointerTableOff + group * 4);
   const nextTableAddr = exe.readUInt32LE(pointerTableOff + (group + 1) * 4);
@@ -38,7 +43,7 @@ function groupInfo(group) {
   return {
     tableOff: fileOffOfRam(tableAddr),
     count: Math.floor((nextTableAddr - tableAddr) / 2),
-    baseSector: fs2Sector(4451 + group * 2),
+    baseSector: GROUP_BASE_SECTORS[group],
   };
 }
 

@@ -12,7 +12,8 @@ param(
   [ValidateRange(0, 255)][int]$Threshold = 64,
   [ValidateRange(0, 3)][int]$Bold = 0,
   [ValidateSet("Single", "AntiAlias")][string]$Mode = "AntiAlias",
-  [switch]$TrimToOrigin
+  [switch]$TrimToOrigin,
+  [ValidateRange(1, 8)][int]$Supersample = 4
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -23,7 +24,15 @@ if ($outDir) {
   New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 }
 
-$bitmap = New-Object System.Drawing.Bitmap $Width, $Height, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+# The final mask is 1 bit per pixel, but naively point-sampling an
+# antialiased render at native resolution before thresholding produces
+# jagged, uneven-width strokes (worst on dense glyphs like Hangul). Instead,
+# render at Supersample-times the target resolution and box-filter (average)
+# each output pixel's block down before thresholding.
+$superWidth = $Width * $Supersample
+$superHeight = $Height * $Supersample
+
+$bitmap = New-Object System.Drawing.Bitmap $superWidth, $superHeight, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
 $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 $fontCollection = New-Object System.Drawing.Text.PrivateFontCollection
 
@@ -38,30 +47,53 @@ try {
 
   $fontCollection.AddFontFile($resolvedFont.Path)
   $fontFamily = $fontCollection.Families[0]
-  $font = New-Object System.Drawing.Font $fontFamily, $FontSize, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
+  $superFontSize = $FontSize * $Supersample
+  $font = New-Object System.Drawing.Font $fontFamily, $superFontSize, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
   $brush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
   if ($LineHeight -le 0) {
     $LineHeight = [Math]::Ceiling($FontSize * 1.2)
   }
+  $superLineHeight = $LineHeight * $Supersample
+  $superX = $X * $Supersample
+  $superY = $Y * $Supersample
 
   try {
     $textLines = ($Text -replace "\\n", "`n") -split "`n"
     for ($lineIndex = 0; $lineIndex -lt $textLines.Length; $lineIndex++) {
-      $lineY = $Y + ($lineIndex * $LineHeight)
-      $graphics.DrawString($textLines[$lineIndex], $font, $brush, ([single]$X), ([single]$lineY))
+      $lineY = $superY + ($lineIndex * $superLineHeight)
+      $graphics.DrawString($textLines[$lineIndex], $font, $brush, ([single]$superX), ([single]$lineY))
     }
   } finally {
     $brush.Dispose()
     $font.Dispose()
   }
 
+  # Bulk-read pixel bytes via LockBits instead of GetPixel: GetPixel is a
+  # per-call marshaling round trip, far too slow once the canvas is
+  # supersampled (e.g. 512x512 becomes 2048x2048 = ~4M samples).
+  $lockRect = New-Object System.Drawing.Rectangle 0, 0, $superWidth, $superHeight
+  $bmpData = $bitmap.LockBits($lockRect, [System.Drawing.Imaging.ImageLockMode]::ReadOnly, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+  $stride = $bmpData.Stride
+  $bytes = New-Object byte[] ($stride * $superHeight)
+  [System.Runtime.InteropServices.Marshal]::Copy($bmpData.Scan0, $bytes, 0, $bytes.Length)
+  $bitmap.UnlockBits($bmpData)
+
   $minX = $Width
   $minY = $Height
   $maxX = -1
   if ($TrimToOrigin) {
     for ($py = 0; $py -lt $Height; $py++) {
+      $baseY = $py * $Supersample
       for ($px = 0; $px -lt $Width; $px++) {
-        if ($bitmap.GetPixel($px, $py).R -gt 0) {
+        $baseX = $px * $Supersample
+        $covered = $false
+        for ($sy = 0; $sy -lt $Supersample -and -not $covered; $sy++) {
+          $rowOffset = ($baseY + $sy) * $stride
+          for ($sx = 0; $sx -lt $Supersample; $sx++) {
+            if ($bytes[$rowOffset + ($baseX + $sx) * 4 + 2] -gt 0) { $covered = $true; break }
+          }
+        }
+        if ($covered) {
           if ($px -lt $minX) { $minX = $px }
           if ($py -lt $minY) { $minY = $py }
           if ($px -gt $maxX) { $maxX = $px }
@@ -74,32 +106,56 @@ try {
     $minY = 0
   }
 
-  function Get-SampleValue {
+  # Box-filter each output pixel down from its Supersample x Supersample
+  # block of the antialiased render. This is what actually removes the
+  # jaggedness that point-sampling produced; Bold below is a separate,
+  # deliberate stroke-thickening pass applied after downsampling.
+  $sampleCount = $Supersample * $Supersample
+  $coverage = New-Object 'int[,]' $Width, $Height
+  for ($py = 0; $py -lt $Height; $py++) {
+    $sourceY = ($py + $minY - $Pad) * $Supersample
+    for ($px = 0; $px -lt $Width; $px++) {
+      $sourceX = ($px + $minX - $Pad) * $Supersample
+      $sum = 0
+      for ($sy = 0; $sy -lt $Supersample; $sy++) {
+        $sy2 = $sourceY + $sy
+        if ($sy2 -lt 0 -or $sy2 -ge $superHeight) { continue }
+        $rowOffset = $sy2 * $stride
+        for ($sx = 0; $sx -lt $Supersample; $sx++) {
+          $sx2 = $sourceX + $sx
+          if ($sx2 -lt 0 -or $sx2 -ge $superWidth) { continue }
+          $sum += $bytes[$rowOffset + $sx2 * 4 + 2]
+        }
+      }
+      $coverage[$px, $py] = [int]([Math]::Floor($sum / $sampleCount))
+    }
+  }
+
+  function Get-CoverageMax {
     param(
-      [System.Drawing.Bitmap]$Image,
-      [int]$SampleX,
-      [int]$SampleY,
+      [int[,]]$Coverage,
+      [int]$Cx,
+      [int]$Cy,
       [int]$Radius,
-      [int]$ImageWidth,
-      [int]$ImageHeight
+      [int]$CovWidth,
+      [int]$CovHeight
     )
 
     if ($Radius -le 0) {
-      if ($SampleX -ge 0 -and $SampleY -ge 0 -and $SampleX -lt $ImageWidth -and $SampleY -lt $ImageHeight) {
-        return $Image.GetPixel($SampleX, $SampleY).R
+      if ($Cx -ge 0 -and $Cy -ge 0 -and $Cx -lt $CovWidth -and $Cy -lt $CovHeight) {
+        return $Coverage[$Cx, $Cy]
       }
       return 0
     }
 
     $maxValue = 0
     for ($dy = -$Radius; $dy -le $Radius; $dy++) {
-      $sy = $SampleY + $dy
-      if ($sy -lt 0 -or $sy -ge $ImageHeight) { continue }
+      $yy = $Cy + $dy
+      if ($yy -lt 0 -or $yy -ge $CovHeight) { continue }
       for ($dx = -$Radius; $dx -le $Radius; $dx++) {
-        $sx = $SampleX + $dx
-        if ($sx -lt 0 -or $sx -ge $ImageWidth) { continue }
-        $sample = $Image.GetPixel($sx, $sy).R
-        if ($sample -gt $maxValue) { $maxValue = $sample }
+        $xx = $Cx + $dx
+        if ($xx -lt 0 -or $xx -ge $CovWidth) { continue }
+        if ($Coverage[$xx, $yy] -gt $maxValue) { $maxValue = $Coverage[$xx, $yy] }
       }
     }
     return $maxValue
@@ -113,9 +169,7 @@ try {
   for ($py = 0; $py -lt $Height; $py++) {
     $row = New-Object string[] $Width
     for ($px = 0; $px -lt $Width; $px++) {
-      $sourceX = $px + $minX - $Pad
-      $sourceY = $py + $minY - $Pad
-      $value = Get-SampleValue $bitmap $sourceX $sourceY $Bold $Width $Height
+      $value = Get-CoverageMax $coverage $px $py $Bold $Width $Height
       $row[$px] = if ($value -ge $Threshold) { "1" } else { "0" }
     }
     $lines.Add(($row -join " "))

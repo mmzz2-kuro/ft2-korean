@@ -5,7 +5,7 @@ const path = require('path');
 
 function usage() {
   console.error(
-    'usage: node scripts/dialogue-candidate-scan.js <FS2_FILE.DAT> <SLPS_019.03> <out.json> [--script-ids 309-326] [--include 1001,3002] [--opcode 0x41]'
+    'usage: node scripts/dialogue-candidate-scan.js <FS2_FILE.DAT> <SLPS_019.03> <out.json> [--script-ids 309-326] [--include 1001,3002,9001-9117] [--opcode 0x41]'
   );
   process.exit(1);
 }
@@ -29,11 +29,19 @@ for (let i = 0; i < argv.length; i++) {
     scriptStart = a;
     scriptEnd = b;
   } else if (arg === '--include') {
-    includeIds = (argv[++i] || '')
-      .split(',')
-      .filter(Boolean)
-      .map((value) => Number.parseInt(value, 0));
-    if (includeIds.some((value) => !Number.isFinite(value))) usage();
+    const parts = (argv[++i] || '').split(',').filter(Boolean);
+    includeIds = [];
+    for (const part of parts) {
+      if (part.includes('-')) {
+        const [a, b] = part.split('-').map((value) => Number.parseInt(value, 10));
+        if (!Number.isFinite(a) || !Number.isFinite(b) || b < a) usage();
+        for (let id = a; id <= b; id++) includeIds.push(id);
+      } else {
+        const value = Number.parseInt(part, 0);
+        if (!Number.isFinite(value)) usage();
+        includeIds.push(value);
+      }
+    }
   } else if (arg === '--opcode') {
     targetOpcode = Number.parseInt(argv[++i] || '', 0);
     if (!Number.isFinite(targetOpcode)) usage();
@@ -53,6 +61,15 @@ const readerJal = 0x0c05f0d9; // jal 0x8017c364
 const checkedReaderJal = 0x0c05f0e4; // jal 0x8017c390
 const groupPointerTableAddr = 0x80169db0;
 
+// Group base sectors live in a runtime-built table at 0x801D0B90, outside the
+// static EXE image (see docs/projects/SLPS-01903/dialogue-route.md). These
+// values were read directly from PS1 RAM dumps (ram-dump/*.bin) and verified
+// identical across every dump captured so far, so they are treated as fixed.
+const GROUP_BASE_SECTORS = [
+  30830, 35726, 42898, 47108, 51114, 56222, 59672, 62624,
+  66214, 69504, 73180, 76776, 80436, 83408, 84966, 91324,
+];
+
 function fileOffOfRam(addr) {
   return addr - loadAddr + 0x800;
 }
@@ -66,6 +83,7 @@ function resourceBytes(id) {
 }
 
 function groupInfo(group) {
+  if (group >= GROUP_BASE_SECTORS.length) return null;
   const pointerTableOff = fileOffOfRam(groupPointerTableAddr);
   const tableAddr = exe.readUInt32LE(pointerTableOff + group * 4);
   const nextTableAddr = exe.readUInt32LE(pointerTableOff + (group + 1) * 4);
@@ -74,7 +92,7 @@ function groupInfo(group) {
   return {
     tableOff: fileOffOfRam(tableAddr),
     count: Math.floor((nextTableAddr - tableAddr) / 2),
-    baseSector: fs2Sector(4451 + group * 2),
+    baseSector: GROUP_BASE_SECTORS[group],
   };
 }
 
