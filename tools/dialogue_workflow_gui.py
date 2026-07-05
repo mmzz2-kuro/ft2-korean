@@ -12,7 +12,7 @@ from tkinter import filedialog, messagebox, ttk
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SETTINGS_PATH = ROOT / "tmp/SLPS-01903/dialogue-workflow/dialogue-gui-settings.json"
+SETTINGS_PATH = ROOT / "trDatas/dialogue-workflow/dialogue-gui-settings.json"
 
 
 def rel(path):
@@ -80,10 +80,10 @@ class DialogueWorkflowGui(tk.Tk):
         self.vars = {
             "dat": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/FS2_FILE.DAT")),
             "exe": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/SLPS_019.03")),
-            "font": tk.StringVar(value=str(ROOT / "font/korean-central.ttf")),
+            "font": tk.StringVar(value=str(ROOT / "font/gulim.ttc")),
             "source_bin": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/bincue/Farland Saga - Toki no Michishirube.bin")),
-            "candidates": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/dialogue-workflow/dialogue-candidates.json")),
-            "translation": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/dialogue-workflow/dialogue-translation.tsv")),
+            "candidates": tk.StringVar(value=str(ROOT / "trDatas/dialogue-workflow/dialogue-candidates.json")),
+            "translation": tk.StringVar(value=str(ROOT / "trDatas/dialogue-workflow/dialogue-translation.tsv")),
             "mask_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/dialogue-workflow/masks")),
             "out_dat": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/dialogue-workflow/patched-FS2_FILE.DAT")),
             "out_bin": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/dialogue-workflow/patched-farland-saga.bin")),
@@ -162,6 +162,7 @@ class DialogueWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="2. Export TSV/Masks", command=self.export_translation_table).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Load TSV", command=self.load_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Save TSV", command=self.save_tsv).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Change TSV Path...", command=self.change_tsv_path).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check Filled", command=lambda: self.set_checked_bulk("filled")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check All", command=lambda: self.set_checked_bulk("all")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Uncheck All", command=lambda: self.set_checked_bulk("none")).pack(side="left", padx=(0, 6))
@@ -493,6 +494,28 @@ class DialogueWorkflowGui(tk.Tk):
             self._run_command("Apply translation TSV", cmd)
 
         self._run_after_dat_ready(run_apply)
+
+    def change_tsv_path(self):
+        current = self.vars["translation"].get()
+        initial_dir = str(Path(current).parent) if current else str(ROOT)
+        initial_file = Path(current).name if current else "dialogue-translation.tsv"
+        chosen = filedialog.asksaveasfilename(
+            initialdir=initial_dir,
+            initialfile=initial_file,
+            defaultextension=".tsv",
+            filetypes=[("TSV files", "*.tsv"), ("All files", "*.*")],
+        )
+        if not chosen:
+            return
+        self.vars["translation"].set(chosen)
+        self._save_settings()
+        self._append_log(f"translation TSV path set to: {rel(chosen)}\n")
+        if Path(chosen).exists():
+            self.load_tsv()
+        else:
+            self.rows = []
+            self.tsv_headers = []
+            self._refresh_tree()
 
     def load_tsv(self):
         path = Path(self.vars["translation"].get())
