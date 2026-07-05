@@ -666,9 +666,9 @@ enabled	message_id	source	refs	mask_pgm	source_note	ko_text	font_size	line_heigh
 0	3177	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-3177.pgm		으, 으으윽!?	12	15	2	2	32	96	0
 0	3178	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-3178.pgm		너는 이방이 아니야!!!	12	15	2	2	32	96	0
 0	3179	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-3179.pgm		나... 이제부터 \n어떻게 되는 거지?	12	15	2	2	32	96	0
-1	4001	script-scan+manual	313:20:0xb05	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4001.pgm		아, 저...	12	15	2	2	32	96	0
-1	4002	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4002.pgm		우후후후후후후	12	15	2	2	32	96	0
-1	4003	script-scan+manual	313:5:0x600	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4003.pgm		(으음... 불끈! 뿔끈!)	12	15	2	2	32	96	0
+0	4001	script-scan+manual	313:20:0xb05	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4001.pgm		아, 저...	12	15	2	2	32	96	0
+0	4002	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4002.pgm		우후후후후후후	12	15	2	2	32	96	0
+0	4003	script-scan+manual	313:5:0x600	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4003.pgm		(으음... 불끈! 뿔끈!)	12	15	2	2	32	96	0
 0	4004	script-scan+manual	313:6:0x644	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4004.pgm			12	15	2	2	32	96	0
 0	4005	script-scan+manual	313:13:0x786	F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4005.pgm			12	15	2	2	32	96	0
 0	4006	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4006.pgm			12	15	2	2	32	96	0

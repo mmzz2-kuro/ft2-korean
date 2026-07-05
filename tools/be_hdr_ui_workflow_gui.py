@@ -125,6 +125,8 @@ class BeHdrUiWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Check Filled", command=lambda: self.set_checked("filled")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check All", command=lambda: self.set_checked("all")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Uncheck All", command=lambda: self.set_checked("none")).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Check Selected", command=lambda: self.set_checked_selected(True)).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Uncheck Selected", command=lambda: self.set_checked_selected(False)).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Apply Bulk Options", command=self.apply_bulk_options).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="2. Apply to BIN", command=self.apply_tsv).pack(side="left", padx=(0, 6))
 
@@ -157,7 +159,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
             "heal_indexes",
             "heal_radius",
         )
-        self.tree = ttk.Treeview(left, columns=cols, show="headings", selectmode="browse")
+        self.tree = ttk.Treeview(left, columns=cols, show="headings", selectmode="extended")
         for col in cols:
             self.tree.heading(col, text=col)
             self.tree.column(col, width=76 if col != "ko_text" else 240, anchor="w")
@@ -421,6 +423,31 @@ class BeHdrUiWorkflowGui(tk.Tk):
             elif mode == "filled":
                 row["enabled"] = "1" if row.get("ko_text", "").strip() else ""
         self.refresh_tree()
+
+    def set_checked_selected(self, checked):
+        selection = self.tree.selection()
+        if not selection:
+            self._append_log("[warn] no rows selected\n")
+            return
+
+        if self.selected_index is not None:
+            self.update_row()
+
+        indices = sorted(int(iid) for iid in selection)
+        value = "1" if checked else ""
+        changed = 0
+        for idx in indices:
+            row = self.rows[idx]
+            if row.get("enabled", "") != value:
+                changed += 1
+            row["enabled"] = value
+
+        self.refresh_tree()
+        restore = [str(idx) for idx in indices if idx < len(self.rows)]
+        if restore:
+            self.tree.selection_set(restore)
+        label = "checked" if checked else "unchecked"
+        self._append_log(f"{label} {changed} selected rows\n")
 
     def apply_bulk_options(self):
         for row in self.rows:
