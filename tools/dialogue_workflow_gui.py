@@ -413,11 +413,11 @@ class DialogueWorkflowGui(tk.Tk):
 
     def scan_candidates(self):
         def run_scan():
-            #includeValue = ''
-            #for i in range(0, 2000):
-            #    if includeValue != '':
-            #        includeValue += ','
-            #    includeValue += str(6001+i)
+            # includeValue = ''
+            # for i in range(0, 3000):
+            #     if includeValue != '':
+            #         includeValue += ','
+            #     includeValue += str(9001+i)
 				
             cmd = [
                 "node",
@@ -429,7 +429,7 @@ class DialogueWorkflowGui(tk.Tk):
                 self.vars["script_ids"].get(),
                 "--include",
                 self.vars["include"].get(),
-                #includeValue,
+                # includeValue,
                 "--opcode",
                 self.vars["opcode"].get(),
             ]
