@@ -6,6 +6,10 @@ const path = require("path");
 function usage() {
   console.error(`usage:
   export: node scripts/be-hdr-ui-tile-tool.js export <FS2_FILE.DAT> <SLPS_019.03> <outDir> <id...> [--invert]
+  dump-raw: node scripts/be-hdr-ui-tile-tool.js dump-raw <FS2_FILE.DAT> <SLPS_019.03> <outDir> <id...>
+            writes a P2 (ASCII grayscale) PGM with the raw 8bpp palette index per
+            pixel (0-255), for debugging exact index values instead of the
+            binary isSourceInk view that "export" produces
   patch:  node scripts/be-hdr-ui-tile-tool.js patch <FS2_FILE.DAT> <SLPS_019.03> <outDat> <id> <mask.pbm> [--invert] [--ink-index N] [--bg-index N] [--erase-pbm mask.pbm]
 
 options:
@@ -14,6 +18,25 @@ options:
   --pre-heal-regions R           semicolon-separated x,y,w,h regions to heal before tile packing
   --pre-heal-indexes N[,N...]    palette indexes used as the background fill source for pre-heal
   --pre-heal-radius N            horizontal search radius for pre-heal, default 32
+  --pre-heal-from-indexes N[,N...]  only heal pixels currently at these indexes (default: any
+                                 pixel not already a target index), e.g. limit to the erase fill
+                                 color so unrelated background/decoration pixels in the same
+                                 region are left untouched
+  --pre-heal-regions-2 R         second independent pre-heal pass: regions (runs after the first pass)
+  --pre-heal-indexes-2 N[,N...]  second independent pre-heal pass: background fill source indexes
+  --pre-heal-radius-2 N          second independent pre-heal pass: search radius, default 32
+  --pre-heal-from-indexes-2 N[,N...]  second pass: only heal pixels currently at these indexes
+                                 (default: any pixel not already a target index), e.g. limit to
+                                 the erase fill color so decorative pixels using other indexes
+                                 in the same region are left untouched
+  --pre-heal-regions-3 R         third independent pre-heal pass: regions (runs after the second pass)
+  --pre-heal-indexes-3 N[,N...]  third independent pre-heal pass: background fill source indexes
+                                 (first value is used directly when radius-3 is 0)
+  --pre-heal-radius-3 N          third independent pre-heal pass: search radius, default 32;
+                                 use 0 to force-fill matched pixels with indexes-3[0] directly
+                                 instead of searching left/right (needed when the region itself
+                                 is the only remaining sample of the correct background on its row)
+  --pre-heal-from-indexes-3 N[,N...]  third pass: only heal pixels currently at these indexes
   --allow-overflow              write a patched file even when final tiles exceed resource capacity`);
   process.exit(1);
 }
@@ -34,6 +57,15 @@ let lossyProtectRegions = [];
 let preHealRegions = [];
 let preHealIndexes = null;
 let preHealRadius = 32;
+let preHealFromIndexes = null;
+let preHealRegions2 = [];
+let preHealIndexes2 = null;
+let preHealRadius2 = 32;
+let preHealFromIndexes2 = null;
+let preHealRegions3 = [];
+let preHealIndexes3 = null;
+let preHealRadius3 = 32;
+let preHealFromIndexes3 = null;
 const positional = [];
 
 for (let i = 0; i < rest.length; i += 1) {
@@ -51,6 +83,15 @@ for (let i = 0; i < rest.length; i += 1) {
   else if (arg === "--pre-heal-regions") preHealRegions = parseRegions(rest[++i] || "");
   else if (arg === "--pre-heal-indexes") preHealIndexes = parseSourceInkIndexes(rest[++i] || "");
   else if (arg === "--pre-heal-radius") preHealRadius = Number.parseInt(rest[++i] || "", 0);
+  else if (arg === "--pre-heal-from-indexes") preHealFromIndexes = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--pre-heal-regions-2") preHealRegions2 = parseRegions(rest[++i] || "");
+  else if (arg === "--pre-heal-indexes-2") preHealIndexes2 = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--pre-heal-radius-2") preHealRadius2 = Number.parseInt(rest[++i] || "", 0);
+  else if (arg === "--pre-heal-from-indexes-2") preHealFromIndexes2 = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--pre-heal-regions-3") preHealRegions3 = parseRegions(rest[++i] || "");
+  else if (arg === "--pre-heal-indexes-3") preHealIndexes3 = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--pre-heal-radius-3") preHealRadius3 = Number.parseInt(rest[++i] || "", 0);
+  else if (arg === "--pre-heal-from-indexes-3") preHealFromIndexes3 = parseSourceInkIndexes(rest[++i] || "");
   else if (arg.startsWith("--")) usage();
   else positional.push(arg);
 }
@@ -331,17 +372,27 @@ function nearestTargetOnRow(pixels, width, x, y, targetIndexes, radius, directio
   return -1;
 }
 
-function preHealIndexedPixels(pixels, width, height, replacementPixels) {
-  if (!preHealRegions.length || !preHealIndexes || !preHealIndexes.length) return 0;
+function preHealIndexedPixels(pixels, width, height, replacementPixels, regions = preHealRegions, indexes = preHealIndexes, radius = preHealRadius, fromIndexes = null) {
+  if (!regions.length || !indexes || !indexes.length) return 0;
   let changed = 0;
-  for (const region of preHealRegions) {
+  for (const region of regions) {
     for (let y = Math.max(0, region.y0); y < Math.min(height, region.y1); y += 1) {
       for (let x = Math.max(0, region.x0); x < Math.min(width, region.x1); x += 1) {
         const pos = y * width + x;
-        if (preHealIndexes.includes(pixels[pos])) continue;
+        if (indexes.includes(pixels[pos])) continue;
+        if (fromIndexes && !fromIndexes.includes(pixels[pos])) continue;
         if (replacementBit(replacementPixels[pos])) continue;
-        const left = nearestTargetOnRow(pixels, width, x, y, preHealIndexes, preHealRadius, -1);
-        const right = nearestTargetOnRow(pixels, width, x, y, preHealIndexes, preHealRadius, 1);
+        if (radius === 0) {
+          // radius=0 means "force fill": the caller already knows these pixels
+          // must become indexes[0] (e.g. restoring a known-background strip),
+          // so skip the left/right search entirely instead of failing when no
+          // sample of the target color remains anywhere on the row.
+          pixels[pos] = indexes[0];
+          changed += 1;
+          continue;
+        }
+        const left = nearestTargetOnRow(pixels, width, x, y, indexes, radius, -1);
+        const right = nearestTargetOnRow(pixels, width, x, y, indexes, radius, 1);
         if (left >= 0 && right >= 0) {
           pixels[pos] = left;
           changed += 1;
@@ -445,6 +496,23 @@ function exportMasks(outDir, ids) {
   fs.writeFileSync(path.join(outDir, "be-hdr-ui-manifest.json"), JSON.stringify(manifest, null, 2));
 }
 
+function dumpRawIndexes(outDir, ids) {
+  fs.mkdirSync(outDir, { recursive: true });
+  for (const id of ids) {
+    const info = decodeHeader(id);
+    const pixels = unpackIndexedResource(info);
+    const outPath = path.join(outDir, `be-hdr-ui-${id}-raw.pgm`);
+    const lines = ["P2", `# raw 8bpp palette indices for resource ${id}`, `${info.width} ${info.height}`, "255"];
+    for (let y = 0; y < info.height; y += 1) {
+      const row = [];
+      for (let x = 0; x < info.width; x += 1) row.push(pixels[y * info.width + x]);
+      lines.push(row.join(" "));
+    }
+    fs.writeFileSync(outPath, `${lines.join("\n")}\n`);
+    console.log(`${id}: wrote raw index dump ${outPath} ${info.width}x${info.height}`);
+  }
+}
+
 function patchMask(outDat, idArg, pbmPath) {
   const id = Number.parseInt(idArg || "", 0);
   if (!Number.isFinite(id) || !pbmPath) usage();
@@ -456,8 +524,39 @@ function patchMask(outDat, idArg, pbmPath) {
     if (isSourceInk(indexedPixels[i]) && (!erasePixels || erasePixels[i])) indexedPixels[i] = bgIndex;
     if (replacementBit(replacementPixels[i])) indexedPixels[i] = inkIndex;
   }
-  const preHealedPixels = preHealIndexedPixels(indexedPixels, info.width, info.height, replacementPixels);
+  const preHealedPixels = preHealIndexedPixels(
+    indexedPixels,
+    info.width,
+    info.height,
+    replacementPixels,
+    preHealRegions,
+    preHealIndexes,
+    preHealRadius,
+    preHealFromIndexes
+  );
   if (preHealedPixels) console.log(`${id}: pre-healed ${preHealedPixels} pixels before tile packing`);
+  const preHealedPixels2 = preHealIndexedPixels(
+    indexedPixels,
+    info.width,
+    info.height,
+    replacementPixels,
+    preHealRegions2,
+    preHealIndexes2,
+    preHealRadius2,
+    preHealFromIndexes2
+  );
+  if (preHealedPixels2) console.log(`${id}: pre-healed (pass 2) ${preHealedPixels2} pixels before tile packing`);
+  const preHealedPixels3 = preHealIndexedPixels(
+    indexedPixels,
+    info.width,
+    info.height,
+    replacementPixels,
+    preHealRegions3,
+    preHealIndexes3,
+    preHealRadius3,
+    preHealFromIndexes3
+  );
+  if (preHealedPixels3) console.log(`${id}: pre-healed (pass 3) ${preHealedPixels3} pixels before tile packing`);
   const patched = Buffer.from(dat);
   const oldMap = readTileMap(info);
   const originalKeys = [];
@@ -580,6 +679,10 @@ if (mode === "export") {
   const ids = positional.map((arg) => Number.parseInt(arg, 0));
   if (ids.length === 0 || ids.some((id) => !Number.isFinite(id))) usage();
   exportMasks(thirdArg, ids);
+} else if (mode === "dump-raw") {
+  const ids = positional.map((arg) => Number.parseInt(arg, 0));
+  if (ids.length === 0 || ids.some((id) => !Number.isFinite(id))) usage();
+  dumpRawIndexes(thirdArg, ids);
 } else if (mode === "patch") {
   patchMask(thirdArg, positional[0], positional[1]);
 } else {

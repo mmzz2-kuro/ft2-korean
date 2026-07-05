@@ -60,6 +60,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $renderScript = Join-Path $scriptDir "render-text-to-1bpp-pbm.ps1"
 $patchScript = Join-Path $scriptDir "be-hdr-ui-tile-tool.js"
 $healScript = Join-Path $scriptDir "heal-behdr-index-holes.js"
+$copyScript = Join-Path $scriptDir "copy-behdr-region-offset.js"
 $restoreInkScript = Join-Path $scriptDir "restore-behdr-replacement-ink.js"
 $injectScript = Join-Path $scriptDir "inject-dat-into-raw-bin.js"
 $extractScript = Join-Path $scriptDir "extract-dat-from-raw-bin.js"
@@ -107,6 +108,17 @@ foreach ($row in $rows) {
   $healRegions = [string]$row.heal_regions
   $healIndexes = [string]$row.heal_indexes
   $healRadius = Get-IntField $row "heal_radius" 32
+  $healFromIndexes = [string]$row.heal_from_indexes
+  $healRegions2 = [string]$row.heal_regions_2
+  $healIndexes2 = [string]$row.heal_indexes_2
+  $healRadius2 = Get-IntField $row "heal_radius_2" 32
+  $healFromIndexes2 = [string]$row.heal_from_indexes_2
+  $healRegions3 = [string]$row.heal_regions_3
+  $healIndexes3 = [string]$row.heal_indexes_3
+  $healRadius3 = Get-IntField $row "heal_radius_3" 32
+  $healFromIndexes3 = [string]$row.heal_from_indexes_3
+  $copyRegions = [string]$row.copy_regions
+  $copyDy = Get-IntField $row "copy_dy" 0
 
   $pbmPath = Join-Path $WorkDir ("be-hdr-ui-{0}-ko.pbm" -f $resourceId)
   $erasePbmPath = ""
@@ -199,6 +211,21 @@ foreach ($row in $rows) {
   if (-not [string]::IsNullOrWhiteSpace($lossyProtectRegions)) { $patchArgs += @("--lossy-protect-regions", $lossyProtectRegions) }
   if (-not [string]::IsNullOrWhiteSpace($healRegions) -and -not [string]::IsNullOrWhiteSpace($healIndexes)) {
     $patchArgs += @("--pre-heal-regions", $healRegions, "--pre-heal-indexes", $healIndexes, "--pre-heal-radius", $healRadius)
+    if (-not [string]::IsNullOrWhiteSpace($healFromIndexes)) {
+      $patchArgs += @("--pre-heal-from-indexes", $healFromIndexes)
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($healRegions2) -and -not [string]::IsNullOrWhiteSpace($healIndexes2)) {
+    $patchArgs += @("--pre-heal-regions-2", $healRegions2, "--pre-heal-indexes-2", $healIndexes2, "--pre-heal-radius-2", $healRadius2)
+    if (-not [string]::IsNullOrWhiteSpace($healFromIndexes2)) {
+      $patchArgs += @("--pre-heal-from-indexes-2", $healFromIndexes2)
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($healRegions3) -and -not [string]::IsNullOrWhiteSpace($healIndexes3)) {
+    $patchArgs += @("--pre-heal-regions-3", $healRegions3, "--pre-heal-indexes-3", $healIndexes3, "--pre-heal-radius-3", $healRadius3)
+    if (-not [string]::IsNullOrWhiteSpace($healFromIndexes3)) {
+      $patchArgs += @("--pre-heal-from-indexes-3", $healFromIndexes3)
+    }
   }
   if ($invert) { $patchArgs += "--invert" }
   & node @patchArgs
@@ -210,6 +237,32 @@ foreach ($row in $rows) {
     }
     & node @healArgs
     if ($LASTEXITCODE -ne 0) { throw "heal failed for resource $resourceId" }
+  }
+  # The broad post-patch heal above reuses pass-1's settings on the packed DAT and
+  # knows nothing about the pass-2/pass-3 corrections applied earlier inside the
+  # tile-tool patch step, so it can silently re-break what those passes fixed
+  # (e.g. re-filling a background gap with gradient). Re-apply pass 2 and pass 3
+  # here, directly on the DAT, so their result is what actually survives.
+  if (-not [string]::IsNullOrWhiteSpace($healRegions2) -and -not [string]::IsNullOrWhiteSpace($healIndexes2)) {
+    $healArgs2 = @($healScript, $nextDat, $ExePath, $nextDat, $resourceId, $healRegions2, "--indexes", $healIndexes2, "--radius", (Get-IntField $row "heal_radius_2" 32))
+    if (-not [string]::IsNullOrWhiteSpace($healFromIndexes2)) { $healArgs2 += @("--from-indexes", $healFromIndexes2) }
+    & node @healArgs2
+    if ($LASTEXITCODE -ne 0) { throw "post-heal pass 2 failed for resource $resourceId" }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($healRegions3) -and -not [string]::IsNullOrWhiteSpace($healIndexes3)) {
+    $healArgs3 = @($healScript, $nextDat, $ExePath, $nextDat, $resourceId, $healRegions3, "--indexes", $healIndexes3, "--radius", $healRadius3)
+    if (-not [string]::IsNullOrWhiteSpace($healFromIndexes3)) { $healArgs3 += @("--from-indexes", $healFromIndexes3) }
+    & node @healArgs3
+    if ($LASTEXITCODE -ne 0) { throw "post-heal pass 3 failed for resource $resourceId" }
+  }
+  # Some decorative frame/border-trim pixels are constant regardless of selection
+  # state but only survive in one of two duplicated rows (e.g. an unselected text
+  # row keeps its trim while the row above it, used for the selection highlight,
+  # had it flattened away by the heal passes). Restore those pixels by copying
+  # from the row where they're known-good instead of trying to re-derive them.
+  if (-not [string]::IsNullOrWhiteSpace($copyRegions) -and $copyDy -ne 0) {
+    & node $copyScript $nextDat $ExePath $nextDat $resourceId $copyRegions "--dy" $copyDy
+    if ($LASTEXITCODE -ne 0) { throw "region copy failed for resource $resourceId" }
   }
   if ($lossyFit -and -not [string]::IsNullOrWhiteSpace($lossyProtectRegions) -and -not [string]::IsNullOrWhiteSpace($pbmPath)) {
     $restoreArgs = @($restoreInkScript, $nextDat, $ExePath, $nextDat, $resourceId, $pbmPath, $lossyProtectRegions, "--ink-index", $inkIndex)

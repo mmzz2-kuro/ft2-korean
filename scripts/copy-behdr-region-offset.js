@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const path = require("path");
 
 function usage() {
   console.error(
-    "usage: node scripts/heal-behdr-index-holes.js <FS2_FILE.DAT> <SLPS_019.03> <outDat> <resourceId> <regions> --indexes N[,N-M] [--radius N] [--keep-pbm mask.pbm] [--keep-value 0|1] [--from-indexes N[,N-M]]"
+    "usage: node scripts/copy-behdr-region-offset.js <FS2_FILE.DAT> <SLPS_019.03> <outDat> <resourceId> <regions> --dy N"
+  );
+  console.error(
+    "  copies pixels from (x, y + dy) to (x, y) within each region, inside the same resource, before repacking tiles"
   );
   process.exit(1);
 }
@@ -12,44 +16,15 @@ function usage() {
 const [datPath, exePath, outDat, idText, regionText, ...args] = process.argv.slice(2);
 if (!datPath || !exePath || !outDat || !idText || !regionText) usage();
 
-let indexText = "";
-let radius = 16;
-let keepPbmPath = "";
-let keepValue = 0;
-let fromIndexText = "";
+let dy = 0;
 for (let i = 0; i < args.length; i += 1) {
-  if (args[i] === "--indexes") indexText = args[++i] || "";
-  else if (args[i] === "--radius") radius = Number.parseInt(args[++i] || "", 0);
-  else if (args[i] === "--keep-pbm") keepPbmPath = args[++i] || "";
-  else if (args[i] === "--keep-value") keepValue = Number.parseInt(args[++i] || "", 0);
-  else if (args[i] === "--from-indexes") fromIndexText = args[++i] || "";
+  if (args[i] === "--dy") dy = Number.parseInt(args[++i] || "", 10);
   else usage();
 }
-if (!indexText || !Number.isFinite(radius) || radius < 0) usage();
-if (![0, 1].includes(keepValue)) usage();
+if (!Number.isFinite(dy) || dy === 0) usage();
 
 const resourceId = Number.parseInt(idText, 0);
 if (!Number.isFinite(resourceId)) usage();
-
-function parseIndexes(text) {
-  const indexes = [];
-  for (const part of String(text || "").split(",")) {
-    const item = part.trim();
-    if (!item) continue;
-    const m = item.match(/^(\d+)-(\d+)$/);
-    if (m) {
-      const a = Number.parseInt(m[1], 10);
-      const b = Number.parseInt(m[2], 10);
-      for (let value = Math.min(a, b); value <= Math.max(a, b); value += 1) indexes.push(value);
-    } else {
-      indexes.push(Number.parseInt(item, 0));
-    }
-  }
-  if (!indexes.length || indexes.some((value) => !Number.isFinite(value) || value < 0 || value > 255)) {
-    throw new Error("--indexes must be a comma-separated list of palette indexes/ranges");
-  }
-  return new Set(indexes);
-}
 
 function parseRegions(text) {
   return String(text || "")
@@ -67,28 +42,6 @@ function parseRegions(text) {
     });
 }
 
-function readPbm(pbmPath, expectedWidth, expectedHeight) {
-  const tokens = fs
-    .readFileSync(pbmPath, "utf8")
-    .split(/\r?\n/)
-    .flatMap((line) => line.replace(/#.*/, "").trim().split(/\s+/).filter(Boolean));
-  if (tokens.shift() !== "P1") throw new Error(`${pbmPath} is not an ASCII PBM (P1) file`);
-  const width = Number.parseInt(tokens.shift() || "", 10);
-  const height = Number.parseInt(tokens.shift() || "", 10);
-  if (width !== expectedWidth || height !== expectedHeight) {
-    throw new Error(`${pbmPath} must be ${expectedWidth}x${expectedHeight}, got ${width}x${height}`);
-  }
-  const pixels = new Uint8Array(width * height);
-  if (tokens.length < pixels.length) throw new Error(`${pbmPath} has too few pixels`);
-  for (let i = 0; i < pixels.length; i += 1) {
-    if (tokens[i] !== "0" && tokens[i] !== "1") throw new Error(`${pbmPath} has invalid PBM value '${tokens[i]}'`);
-    pixels[i] = tokens[i] === "1" ? 1 : 0;
-  }
-  return pixels;
-}
-
-const targetIndexes = parseIndexes(indexText);
-const fromIndexes = fromIndexText ? parseIndexes(fromIndexText) : null;
 const regions = parseRegions(regionText);
 const exe = fs.readFileSync(exePath);
 const dat = fs.readFileSync(datPath);
@@ -154,20 +107,6 @@ function unpackIndexed(info, tileMap) {
   return pixels;
 }
 
-function inTarget(value) {
-  return targetIndexes.has(value);
-}
-
-function nearestTargetOnRow(pixels, width, x, y, direction) {
-  for (let step = 1; step <= radius; step += 1) {
-    const xx = x + direction * step;
-    if (xx < 0 || xx >= width) break;
-    const value = pixels[y * width + xx];
-    if (inTarget(value)) return value;
-  }
-  return -1;
-}
-
 function tileIntersectsRegion(tx, ty, region) {
   const x0 = tx * 8;
   const y0 = ty * 8;
@@ -177,28 +116,16 @@ function tileIntersectsRegion(tx, ty, region) {
 const info = decodeHeader(resourceId);
 const tileMap = readTileMap(info);
 const pixels = unpackIndexed(info, tileMap);
-const keepPixels = keepPbmPath ? readPbm(keepPbmPath, info.width, info.height) : null;
-const healed = new Uint8Array(pixels);
+const copied = new Uint8Array(pixels);
 let changedPixels = 0;
 
 for (const region of regions) {
   for (let y = Math.max(0, region.y0); y < Math.min(info.height, region.y1); y += 1) {
+    const sy = y + dy;
+    if (sy < 0 || sy >= info.height) continue;
     for (let x = Math.max(0, region.x0); x < Math.min(info.width, region.x1); x += 1) {
-      const pos = y * info.width + x;
-      if (inTarget(pixels[pos])) continue;
-      if (keepPixels && keepPixels[pos] === keepValue) continue;
-      if (fromIndexes && !fromIndexes.has(pixels[pos])) continue;
-      if (radius === 0) {
-        healed[pos] = [...targetIndexes][0];
-        changedPixels += 1;
-        continue;
-      }
-      const left = nearestTargetOnRow(pixels, info.width, x, y, -1);
-      const right = nearestTargetOnRow(pixels, info.width, x, y, 1);
-      if (left >= 0 && right >= 0) {
-        healed[pos] = left;
-        changedPixels += 1;
-      }
+      copied[y * info.width + x] = pixels[sy * info.width + x];
+      changedPixels += 1;
     }
   }
 }
@@ -224,15 +151,15 @@ for (const region of regions) {
         for (let px = 0; px < 8; px += 1) {
           const x = tx * 8 + px;
           const y = ty * 8 + py;
-          out[tileOff + py * 8 + px] = healed[y * info.width + x];
+          out[tileOff + py * 8 + px] = copied[y * info.width + x];
         }
       }
     }
   }
 }
 
-fs.mkdirSync(require("path").dirname(outDat), { recursive: true });
+fs.mkdirSync(path.dirname(outDat), { recursive: true });
 fs.writeFileSync(outDat, out);
 console.log(
-  `healed resource ${resourceId}: ${changedPixels} pixels, ${touchedTiles.size} tile patterns, shared cell touches ${sharedTouched} -> ${outDat}`
+  `copied resource ${resourceId}: ${changedPixels} pixels (dy=${dy}), ${touchedTiles.size} tile patterns, shared cell touches ${sharedTouched} -> ${outDat}`
 );
