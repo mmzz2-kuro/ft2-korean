@@ -12,12 +12,12 @@ from tkinter import filedialog, messagebox, ttk
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SETTINGS_PATH = ROOT / "tmp/SLPS-01903/ui-mask-workflow/ui-mask-gui-settings.json"
+SETTINGS_PATH = ROOT / "trDatas/ui-mask-workflow/ui-mask-gui-settings.json"
 
 PRESETS = {
-    "day_1151_1169": {
-        "label": "Day/status 1151-1169 (256x64)",
-        "ids": "1151-1169",
+    "day_1151_1168": {
+        "label": "Day/status 1151-1168 (256x64)",
+        "ids": "1151-1168",
         "bytes_per_row": "32",
         "rows": "64",
         "font_size": "24",
@@ -26,9 +26,9 @@ PRESETS = {
         "threshold": "64",
         "bold": "0",
     },
-    "menu_829_900": {
-        "label": "Menu/help 829-900 (288x64)",
-        "ids": "829-900",
+    "item_830_1008": {
+        "label": "Item 830-1008 (288x64)",
+        "ids": "830-1008",
         "bytes_per_row": "36",
         "rows": "64",
         "font_size": "18",
@@ -37,20 +37,9 @@ PRESETS = {
         "threshold": "64",
         "bold": "0",
     },
-    "menu_1008_1080": {
-        "label": "Menu/help 1008-1080 (288x64)",
-        "ids": "1008-1080",
-        "bytes_per_row": "36",
-        "rows": "64",
-        "font_size": "18",
-        "line_height": "18",
-        "pad": "1",
-        "threshold": "64",
-        "bold": "0",
-    },
-    "item_help_901_1007": {
-        "label": "Item/help 901-1007 (288x64)",
-        "ids": "901-1007",
+    "menu_1009_1080": {
+        "label": "Menu/help 1009-1080 (288x64)",
+        "ids": "1009-1080",
         "bytes_per_row": "36",
         "rows": "64",
         "font_size": "18",
@@ -138,19 +127,19 @@ class UiMaskWorkflowGui(tk.Tk):
         self.vars = {
             "dat": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/FS2_FILE.DAT")),
             "exe": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/SLPS_019.03")),
-            "font": tk.StringVar(value=str(ROOT / "font/korean-central.ttf")),
+            "font": tk.StringVar(value=str(ROOT / "font/gulim.ttc")),
             "source_bin": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/bincue/Farland Saga - Toki no Michishirube.bin")),
-            "translation": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/ui-mask-workflow/ui-mask-translation.tsv")),
+            "translation": tk.StringVar(value=str(ROOT / "trDatas/ui-mask-workflow/ui-mask-translation.tsv")),
             "mask_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/ui-mask-workflow/masks")),
             "out_dat": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/ui-mask-workflow/patched-FS2_FILE.DAT")),
             "out_bin": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/ui-mask-workflow/patched-ui-farland-saga.bin")),
             "work_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/ui-mask-workflow/apply")),
             "fs2_lba": tk.StringVar(value="223"),
             "fs2_sectors": tk.StringVar(value="119472"),
-            "preset": tk.StringVar(value="day_1151_1169"),
-            "ids": tk.StringVar(value=PRESETS["day_1151_1169"]["ids"]),
-            "bytes_per_row": tk.StringVar(value=PRESETS["day_1151_1169"]["bytes_per_row"]),
-            "rows_count": tk.StringVar(value=PRESETS["day_1151_1169"]["rows"]),
+            "preset": tk.StringVar(value="day_1151_1168"),
+            "ids": tk.StringVar(value=PRESETS["day_1151_1168"]["ids"]),
+            "bytes_per_row": tk.StringVar(value=PRESETS["day_1151_1168"]["bytes_per_row"]),
+            "rows_count": tk.StringVar(value=PRESETS["day_1151_1168"]["rows"]),
             "data_offset": tk.StringVar(value="0"),
             "mode": tk.StringVar(value="AntiAlias"),
             "trim": tk.BooleanVar(value=True),
@@ -348,7 +337,7 @@ class UiMaskWorkflowGui(tk.Tk):
         self.threshold_var.set(preset["threshold"])
         self.bold_var.set(preset["bold"])
         base = self.vars["preset"].get()
-        self.vars["translation"].set(str(ROOT / f"tmp/SLPS-01903/ui-mask-workflow/{base}.tsv"))
+        self.vars["translation"].set(str(ROOT / f"trDatas/ui-mask-workflow/{base}.tsv"))
         self.vars["mask_dir"].set(str(ROOT / f"tmp/SLPS-01903/ui-mask-workflow/{base}-masks"))
         self._save_settings()
 
