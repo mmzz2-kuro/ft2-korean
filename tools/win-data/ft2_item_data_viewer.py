@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-ft2-win-data 아이템 추출 결과(item-data-kr.json)를 보고 고치는 뷰어.
-좌측 목록에서 아이템을 고르면 우측 입력 필드에 이름/설명이 뜨고,
-값을 고치고 저장하면 같은 JSON 파일에 그대로 반영된다.
+ft2-win-data 추출 결과(json)를 보고 고치는 뷰어. 두 형식을 자동으로 구분한다.
+
+  - item/magic/race-data-kr.json : [{id, name, comment}, ...] 리스트
+  - EVENT*-dialogue-kr.json      : {source, events:[{label, lines:[{offset,text}], ...}]}
+
+좌측 목록에서 항목을 고르면 우측 입력 필드에 뜨고, 값을 고치고 저장하면
+같은 JSON 파일에 그대로 반영된다(이벤트 대사 형식도 원래 중첩 구조로
+되돌려서 저장한다). 이벤트 형식에서는 "이름"이 대사가 속한 라벨이라
+여러 줄이 같은 값을 공유하므로 읽기 전용으로 표시한다.
 
 실행:
     python tools/ft2_item_data_viewer.py [json_path]
@@ -24,6 +30,38 @@ def strip_trailing_line_whitespace(text):
     return "\n".join(line.rstrip(" \t\r") for line in text.split("\n"))
 
 
+LINE_KEYS = ("lines", "narration")
+
+
+def flatten_event_doc(doc):
+    """{source, events:[{label, lines:[...], narration:[...]}]} -> 평평한 레코드 리스트."""
+    records = []
+    for event_index, event in enumerate(doc.get("events", [])):
+        label = event.get("label", "")
+        for kind in LINE_KEYS:
+            for line_index, line in enumerate(event.get(kind, [])):
+                name = label if kind == "lines" else f"{label} [narration]"
+                records.append(
+                    {
+                        "id": line.get("offset", ""),
+                        "name": name,
+                        "comment": line.get("text", ""),
+                        "_event_index": event_index,
+                        "_kind": kind,
+                        "_line_index": line_index,
+                    }
+                )
+    return records
+
+
+def apply_records_to_event_doc(doc, records):
+    """평평한 레코드의 comment 값을 원래 events 중첩 구조에 다시 써 넣는다."""
+    for rec in records:
+        event = doc["events"][rec["_event_index"]]
+        event[rec["_kind"]][rec["_line_index"]]["text"] = rec.get("comment", "")
+    return doc
+
+
 class ItemDataViewer(tk.Tk):
     def __init__(self, json_path):
         super().__init__()
@@ -35,6 +73,8 @@ class ItemDataViewer(tk.Tk):
         self.records = []
         self.selected_index = None
         self.dirty = False
+        self.doc_format = "flat"  # "flat" | "event"
+        self.raw_doc = None  # event 포맷일 때 저장 시 되돌려 쓸 원본 문서
 
         self._build_ui()
         self.load(self.json_path)
@@ -69,7 +109,7 @@ class ItemDataViewer(tk.Tk):
         self.tree = ttk.Treeview(left, columns=("id", "name"), show="headings", selectmode="browse")
         self.tree.heading("id", text="ID")
         self.tree.heading("name", text="이름")
-        self.tree.column("id", width=50, anchor="e")
+        self.tree.column("id", width=70, anchor="e")
         self.tree.column("name", width=200, anchor="w")
         self.tree.grid(row=0, column=0, sticky="nsew")
         self.tree.bind("<<TreeviewSelect>>", self._on_select)
@@ -89,7 +129,8 @@ class ItemDataViewer(tk.Tk):
 
         ttk.Label(right, text="이름").grid(row=1, column=0, sticky="w", pady=2)
         self.name_var = tk.StringVar()
-        ttk.Entry(right, textvariable=self.name_var).grid(row=1, column=1, sticky="ew", pady=2)
+        self.name_entry = ttk.Entry(right, textvariable=self.name_var)
+        self.name_entry.grid(row=1, column=1, sticky="ew", pady=2)
 
         ttk.Label(right, text="설명").grid(row=2, column=0, sticky="nw", pady=2)
         self.comment_text = tk.Text(right, wrap="word", height=12)
@@ -117,19 +158,31 @@ class ItemDataViewer(tk.Tk):
             messagebox.showerror("Not found", f"파일이 없습니다:\n{path}")
             return
         try:
-            self.records = json.loads(path.read_text(encoding="utf-8"))
+            doc = json.loads(path.read_text(encoding="utf-8"))
         except Exception as exc:
             messagebox.showerror("Load failed", str(exc))
             return
+
+        if isinstance(doc, dict) and "events" in doc:
+            self.doc_format = "event"
+            self.raw_doc = doc
+            self.records = flatten_event_doc(doc)
+        else:
+            self.doc_format = "flat"
+            self.raw_doc = None
+            self.records = doc
+
         for rec in self.records:
             if rec.get("comment"):
                 rec["comment"] = strip_trailing_line_whitespace(rec["comment"])
+
+        self.name_entry.configure(state="readonly" if self.doc_format == "event" else "normal")
         self.json_path = path
         self.path_var.set(str(path))
         self.selected_index = None
         self.dirty = False
         self._refresh_list()
-        self._set_status(f"{len(self.records)}개 항목 로드: {path}")
+        self._set_status(f"{len(self.records)}개 항목 로드 ({self.doc_format}): {path}")
 
     def _refresh_list(self):
         self.tree.delete(*self.tree.get_children())
@@ -164,9 +217,14 @@ class ItemDataViewer(tk.Tk):
     def save(self):
         if self.selected_index is not None:
             self.apply_selected()
-        self.json_path.write_text(
-            json.dumps(self.records, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
+
+        if self.doc_format == "event":
+            doc = apply_records_to_event_doc(self.raw_doc, self.records)
+            self.json_path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
+        else:
+            plain = [{"id": r.get("id", ""), "name": r.get("name", ""), "comment": r.get("comment", "")} for r in self.records]
+            self.json_path.write_text(json.dumps(plain, ensure_ascii=False, indent=2), encoding="utf-8")
+
         self.dirty = False
         self._set_status(f"저장 완료: {self.json_path}")
 

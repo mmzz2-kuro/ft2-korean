@@ -78,11 +78,6 @@ foreach ($row in $rows) {
   $bold = Get-IntField $row "bold" 0
 
   $pbmPath = Join-Path $WorkDir ("ui-mask-{0}-ko.pbm" -f $resourceId)
-  $nextDat = if ($applied -eq 0) {
-    Join-Path $WorkDir ("patched-step-{0}.DAT" -f $resourceId)
-  } else {
-    Join-Path $WorkDir ("patched-step-{0}-{1}.DAT" -f $applied, $resourceId)
-  }
 
   $renderArgs = @(
     "-ExecutionPolicy", "Bypass",
@@ -105,16 +100,14 @@ foreach ($row in $rows) {
   & powershell @renderArgs
   if ($LASTEXITCODE -ne 0) { throw "render failed for resource $resourceId" }
 
-  & node $patchScript patch $currentDat $ExePath $nextDat $resourceId $pbmPath --bytes-per-row $bytesPerRow --rows $rowsCount --data-offset $dataOffset
+  & node $patchScript patch $currentDat $ExePath $OutDat $resourceId $pbmPath --bytes-per-row $bytesPerRow --rows $rowsCount --data-offset $dataOffset
   if ($LASTEXITCODE -ne 0) { throw "patch failed for resource $resourceId" }
-  $currentDat = $nextDat
+  $currentDat = $OutDat
   $applied++
 }
 
 if ($applied -eq 0) {
   Copy-Item -LiteralPath $DatPath -Destination $OutDat -Force
-} else {
-  Copy-Item -LiteralPath $currentDat -Destination $OutDat -Force
 }
 Write-Output "wrote $OutDat ($applied UI mask rows applied)"
 

@@ -94,11 +94,6 @@ foreach ($row in $rows) {
   $bold = Get-RowInt $row "bold" 0
 
   $pgmPath = Join-Path $WorkDir ("message-mask-{0}-ko.pgm" -f $messageId)
-  $nextDat = if ($applied -eq 0) {
-    $OutDat
-  } else {
-    Join-Path $WorkDir ("patched-step-{0}-{1}.DAT" -f $applied, $messageId)
-  }
 
   $renderArgs = @(
     "-ExecutionPolicy", "Bypass",
@@ -125,20 +120,17 @@ foreach ($row in $rows) {
     throw "render failed for message $messageId"
   }
 
-  & node $patchScript patch $currentDat $resolvedExe $nextDat $messageId $pgmPath
+  & node $patchScript patch $currentDat $resolvedExe $OutDat $messageId $pgmPath
   if ($LASTEXITCODE -ne 0) {
     throw "patch failed for message $messageId"
   }
 
-  $currentDat = (Resolve-Path -LiteralPath $nextDat).Path
+  $currentDat = (Resolve-Path -LiteralPath $OutDat).Path
   $applied++
 }
 
 if ($applied -eq 0) {
   Copy-Item -LiteralPath $resolvedDat -Destination $OutDat -Force
-}
-elseif ($currentDat -ne (Resolve-Path -LiteralPath $OutDat).Path) {
-  Copy-Item -LiteralPath $currentDat -Destination $OutDat -Force
 }
 
 Write-Output "applied $applied translated rows -> $OutDat"

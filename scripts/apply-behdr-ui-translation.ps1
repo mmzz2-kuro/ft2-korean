@@ -110,11 +110,7 @@ foreach ($row in $rows) {
 
   $pbmPath = Join-Path $WorkDir ("be-hdr-ui-{0}-ko.pbm" -f $resourceId)
   $erasePbmPath = ""
-  $nextDat = if ($applied -eq 0) {
-    Join-Path $WorkDir ("patched-step-{0}.DAT" -f $resourceId)
-  } else {
-    Join-Path $WorkDir ("patched-step-{0}-{1}.DAT" -f $applied, $resourceId)
-  }
+  $nextDat = $OutDat
 
   if (-not [string]::IsNullOrWhiteSpace($replacementPbm)) {
     $pbmPath = $replacementPbm
@@ -208,38 +204,24 @@ foreach ($row in $rows) {
   & node @patchArgs
   if ($LASTEXITCODE -ne 0) { throw "patch failed for resource $resourceId" }
   if (-not [string]::IsNullOrWhiteSpace($healRegions) -and -not [string]::IsNullOrWhiteSpace($healIndexes)) {
-    $healedDat = if ($applied -eq 0) {
-      Join-Path $WorkDir ("patched-step-{0}-healed.DAT" -f $resourceId)
-    } else {
-      Join-Path $WorkDir ("patched-step-{0}-{1}-healed.DAT" -f $applied, $resourceId)
-    }
-    $healArgs = @($healScript, $nextDat, $ExePath, $healedDat, $resourceId, $healRegions, "--indexes", $healIndexes, "--radius", $healRadius)
+    $healArgs = @($healScript, $nextDat, $ExePath, $nextDat, $resourceId, $healRegions, "--indexes", $healIndexes, "--radius", $healRadius)
     if (-not [string]::IsNullOrWhiteSpace($pbmPath)) {
       $healArgs += @("--keep-pbm", $pbmPath, "--keep-value", 0)
     }
     & node @healArgs
     if ($LASTEXITCODE -ne 0) { throw "heal failed for resource $resourceId" }
-    $nextDat = $healedDat
   }
   if ($lossyFit -and -not [string]::IsNullOrWhiteSpace($lossyProtectRegions) -and -not [string]::IsNullOrWhiteSpace($pbmPath)) {
-    $restoredDat = if ($applied -eq 0) {
-      Join-Path $WorkDir ("patched-step-{0}-restored.DAT" -f $resourceId)
-    } else {
-      Join-Path $WorkDir ("patched-step-{0}-{1}-restored.DAT" -f $applied, $resourceId)
-    }
-    $restoreArgs = @($restoreInkScript, $nextDat, $ExePath, $restoredDat, $resourceId, $pbmPath, $lossyProtectRegions, "--ink-index", $inkIndex)
+    $restoreArgs = @($restoreInkScript, $nextDat, $ExePath, $nextDat, $resourceId, $pbmPath, $lossyProtectRegions, "--ink-index", $inkIndex)
     if ($invert) { $restoreArgs += "--invert" }
     & node @restoreArgs
     if ($LASTEXITCODE -ne 0) { throw "replacement ink restore failed for resource $resourceId" }
-    $nextDat = $restoredDat
   }
   $currentDat = $nextDat
   $applied++
 }
 
 if ($applied -eq 0) {
-  Copy-Item -LiteralPath $currentDat -Destination $OutDat -Force
-} else {
   Copy-Item -LiteralPath $currentDat -Destination $OutDat -Force
 }
 Write-Output "wrote $OutDat ($applied be-hdr UI rows applied)"
