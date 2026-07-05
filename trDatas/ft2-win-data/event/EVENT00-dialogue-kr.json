@@ -1,0 +1,309 @@
+{
+  "source": "EVENT00.dat",
+  "events": [
+    {
+      "label": "begin",
+      "offset": 426,
+      "lines": [
+        {
+          "offset": 655,
+          "text": "아프다...」"
+        },
+        {
+          "offset": 700,
+          "text": "뭐하는거야!!!」"
+        },
+        {
+          "offset": 739,
+          "text": "아... 미안...」"
+        },
+        {
+          "offset": 805,
+          "text": "앗!?」"
+        },
+        {
+          "offset": 825,
+          "text": "이야앗! 치한!!"
+        },
+        {
+          "offset": 850,
+          "text": "변태다!!」"
+        },
+        {
+          "offset": 1026,
+          "text": "갑자기... 이런...」"
+        },
+        {
+          "offset": 1087,
+          "text": "뭐야? 아직 어린애잖아.」"
+        },
+        {
+          "offset": 1122,
+          "text": "내가 너무 심했나?」"
+        },
+        {
+          "offset": 1272,
+          "text": "이 아이가 쓰는 건가...?」"
+        },
+        {
+          "offset": 1412,
+          "text": "죄송해요 마스터. 초면인데, "
+        },
+        {
+          "offset": 1442,
+          "text": "느닷없이 폐를 끼쳐서...」"
+        },
+        {
+          "offset": 1488,
+          "text": "뭐, 귀여운 꼬마숙녀의 "
+        },
+        {
+          "offset": 1513,
+          "text": "부탁이라면 거절할 수 없지.」"
+        },
+        {
+          "offset": 1552,
+          "text": "그럼, 잠깐만 부탁해요.」"
+        },
+        {
+          "offset": 1587,
+          "text": "아! 아! 그런데 이곳에는 무슨 일로?」"
+        },
+        {
+          "offset": 1634,
+          "text": "새로운 일을 찾아서요!」"
+        },
+        {
+          "offset": 1668,
+          "text": "그래? 모험가군.」"
+        },
+        {
+          "offset": 1772,
+          "text": "우선은, 모험가 길드로 가서 등록해야 해.」"
+        },
+        {
+          "offset": 1903,
+          "text": "마을 안을 이동하려면, "
+        },
+        {
+          "offset": 1928,
+          "text": "가고싶은 곳을 클릭하면 돼. "
+        },
+        {
+          "offset": 1958,
+          "text": "클릭할 장소를 모를 경우에는, "
+        },
+        {
+          "offset": 1990,
+          "text": "적당한 장소를 클릭하면 행선지가 표시 되거든」"
+        }
+      ]
+    },
+    {
+      "label": "restart",
+      "offset": 2054,
+      "lines": []
+    },
+    {
+      "label": "town",
+      "offset": 2066,
+      "lines": []
+    },
+    {
+      "label": "day",
+      "offset": 2106,
+      "lines": []
+    },
+    {
+      "label": "night",
+      "offset": 2126,
+      "lines": []
+    },
+    {
+      "label": "dark",
+      "offset": 2146,
+      "lines": []
+    },
+    {
+      "label": "outfield",
+      "offset": 2166,
+      "lines": [
+        {
+          "offset": 2181,
+          "text": "밖으로는 나갈 수 없다.」"
+        }
+      ]
+    },
+    {
+      "label": "inn",
+      "offset": 2217,
+      "lines": [
+        {
+          "offset": 2298,
+          "text": "어이!~ 일은 잘 되고 있어?」"
+        }
+      ]
+    },
+    {
+      "label": "weapon",
+      "offset": 2348,
+      "lines": [
+        {
+          "offset": 2406,
+          "text": "어서 오세요!"
+        },
+        {
+          "offset": 2431,
+          "text": "좋은 무기가 많이 있어요!」"
+        }
+      ]
+    },
+    {
+      "label": "show_weapon",
+      "offset": 2508,
+      "lines": []
+    },
+    {
+      "label": "show_weapon1a",
+      "offset": 2555,
+      "lines": []
+    },
+    {
+      "label": "show_weapon1b",
+      "offset": 2615,
+      "lines": []
+    },
+    {
+      "label": "show_weapon1c",
+      "offset": 2687,
+      "lines": []
+    },
+    {
+      "label": "show_weapon1d",
+      "offset": 2761,
+      "lines": []
+    },
+    {
+      "label": "show_weapon2",
+      "offset": 2847,
+      "lines": []
+    },
+    {
+      "label": "weapon_buy",
+      "offset": 2936,
+      "lines": [
+        {
+          "offset": 2964,
+          "text": "앗!가시려고요?"
+        },
+        {
+          "offset": 2991,
+          "text": "다시 오기를 기다릴께요~」"
+        }
+      ]
+    },
+    {
+      "label": "store",
+      "offset": 3058,
+      "lines": [
+        {
+          "offset": 3116,
+          "text": "어서 오십시오!」"
+        }
+      ]
+    },
+    {
+      "label": "show_item",
+      "offset": 3181,
+      "lines": []
+    },
+    {
+      "label": "show_item2",
+      "offset": 3214,
+      "lines": []
+    },
+    {
+      "label": "store_buy",
+      "offset": 3234,
+      "lines": [
+        {
+          "offset": 3260,
+          "text": "고맙습니다!」"
+        }
+      ]
+    },
+    {
+      "label": "church",
+      "offset": 3322,
+      "lines": [
+        {
+          "offset": 3414,
+          "text": "...아무도 없네.」"
+        },
+        {
+          "offset": 3442,
+          "text": "괜찮아?」"
+        },
+        {
+          "offset": 3462,
+          "text": "괜찮아요?」"
+        }
+      ]
+    },
+    {
+      "label": "gameover",
+      "offset": 3495,
+      "lines": []
+    },
+    {
+      "label": "abnormal",
+      "offset": 3579,
+      "lines": []
+    },
+    {
+      "label": "levelup01",
+      "offset": 3629,
+      "lines": []
+    },
+    {
+      "label": "levelup02",
+      "offset": 3687,
+      "lines": []
+    },
+    {
+      "label": "levelup03",
+      "offset": 3745,
+      "lines": []
+    },
+    {
+      "label": "levelup04",
+      "offset": 3803,
+      "lines": []
+    },
+    {
+      "label": "levelup05",
+      "offset": 3861,
+      "lines": []
+    },
+    {
+      "label": "levelup06",
+      "offset": 3919,
+      "lines": []
+    },
+    {
+      "label": "levelup07",
+      "offset": 3977,
+      "lines": []
+    },
+    {
+      "label": "levelup37",
+      "offset": 4035,
+      "lines": []
+    },
+    {
+      "label": "levelup62",
+      "offset": 4037,
+      "lines": []
+    }
+  ]
+}

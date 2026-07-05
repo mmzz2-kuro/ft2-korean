@@ -43,6 +43,7 @@ SLPS_*
 *.zip
 *.7z
 *.rar
+ps1/
 
 # 빌드 산출물 / 임시
 build/

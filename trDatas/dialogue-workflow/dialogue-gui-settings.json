@@ -1,0 +1,22 @@
+{
+  "vars": {
+    "dat": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga.bin",
+    "exe": "F:\\workspace-server\\create-retro-game-kr-patch-main\\ps1\\SLPS-01903\\SLPS_019.03",
+    "font": "F:/workspace-server/create-retro-game-kr-patch-main/font/gulim.ttc",
+    "source_bin": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga.bin",
+    "candidates": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\dialogue-candidates.json",
+    "translation": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\dialogue-translation.tsv",
+    "mask_dir": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\masks",
+    "out_dat": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\patched-FS2_FILE.DAT",
+    "out_bin": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga.bin",
+    "work_dir": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\apply",
+    "fs2_lba": "223",
+    "fs2_sectors": "119472",
+    "script_ids": "309-326",
+    "include": "9001",
+    "opcode": "0x41",
+    "mode": "Single",
+    "trim": true,
+    "instant_display": false
+  }
+}
