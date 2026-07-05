@@ -220,6 +220,8 @@ class UiMaskWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Check Filled", command=lambda: self.set_checked_bulk("filled")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check All", command=lambda: self.set_checked_bulk("all")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Uncheck All", command=lambda: self.set_checked_bulk("none")).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Check Selected", command=lambda: self.set_checked_selected(True)).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Uncheck Selected", command=lambda: self.set_checked_selected(False)).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="2. Apply to BIN", command=self.apply_translation).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Open Mask", command=self.open_selected_mask).pack(side="left", padx=(0, 6))
 
@@ -242,7 +244,7 @@ class UiMaskWorkflowGui(tk.Tk):
             "bold",
             "width",
         )
-        self.tree = ttk.Treeview(left, columns=columns, show="headings", selectmode="browse")
+        self.tree = ttk.Treeview(left, columns=columns, show="headings", selectmode="extended")
         for col in columns:
             self.tree.heading(col, text=col)
             width = 82
@@ -659,6 +661,31 @@ class UiMaskWorkflowGui(tk.Tk):
         if self.selected_index is not None and self.selected_index < len(self.rows):
             self.tree.selection_set(str(self.selected_index))
         self._append_log(f"updated check state for {changed} rows\n")
+
+    def set_checked_selected(self, checked):
+        selection = self.tree.selection()
+        if not selection:
+            self._append_log("[warn] no rows selected\n")
+            return
+
+        if self.selected_index is not None:
+            self.update_selected_row(silent=True)
+
+        indices = sorted(int(iid) for iid in selection)
+        value = "1" if checked else "0"
+        changed = 0
+        for idx in indices:
+            row = self.rows[idx]
+            if row.get("enabled", "1") != value:
+                changed += 1
+            row["enabled"] = value
+
+        self._refresh_tree()
+        restore = [str(idx) for idx in indices if idx < len(self.rows)]
+        if restore:
+            self.tree.selection_set(restore)
+        label = "checked" if checked else "unchecked"
+        self._append_log(f"{label} {changed} selected rows\n")
 
     def _on_select_row(self, _event=None):
         selection = self.tree.selection()
