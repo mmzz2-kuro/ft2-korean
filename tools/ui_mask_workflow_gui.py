@@ -48,9 +48,9 @@ PRESETS = {
         "threshold": "64",
         "bold": "0",
     },
-    "unit_help_1081_1148": {
-        "label": "Unit/help 1081-1148 (288x64)",
-        "ids": "1081-1148",
+    "unit_help_1081_1147": {
+        "label": "Unit/help 1081-1147 (288x64)",
+        "ids": "1081-1147",
         "bytes_per_row": "36",
         "rows": "64",
         "font_size": "18",
@@ -357,7 +357,7 @@ class UiMaskWorkflowGui(tk.Tk):
                 self.vars[key].set(str(value))
         preset_aliases = {
             "system_ui_901_1007": "item_help_901_1007",
-            "system_ui_1081_1148": "unit_help_1081_1148",
+            "system_ui_1081_1147": "unit_help_1081_1147",
         }
         current_preset = self.vars["preset"].get()
         if current_preset in preset_aliases:
