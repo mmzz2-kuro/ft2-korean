@@ -13,7 +13,8 @@ def usage():
         "  python scripts/convert-pbm-image.py pbm-to-png <in.pbm> <out.png>\n"
         "  python scripts/convert-pbm-image.py png-to-pbm <in.png> <out.pbm> [threshold] [black-on-white|white-on-dark|dark-region]\n"
         "  python scripts/convert-pbm-image.py clip-pbm <in.pbm> <out.pbm> <x,y,w,h[;x,y,w,h...]> [fill]\n"
-        "  python scripts/convert-pbm-image.py diff-regions <source.png> <replacement.png> [threshold] [tile]",
+        "  python scripts/convert-pbm-image.py diff-regions <source.png> <replacement.png> [threshold] [tile]\n"
+        "  python scripts/convert-pbm-image.py draw-regions <in.png> <out.png> <x,y,w,h[;x,y,w,h...]>",
         file=sys.stderr,
     )
     raise SystemExit(2)
@@ -101,6 +102,28 @@ def clip_pbm(in_path, out_path, region_text, fill=0):
     write_pbm(out_path, width, height, clipped)
 
 
+def draw_regions(in_path, out_path, region_text, color=(255, 0, 255)):
+    image = Image.open(in_path).convert("RGB")
+    regions = parse_regions(region_text)
+    pixels = image.load()
+    width, height = image.size
+    for x0, y0, x1, y1 in regions:
+        x1 = min(x1, width)
+        y1 = min(y1, height)
+        for x in range(max(0, x0), x1):
+            if 0 <= y0 < height:
+                pixels[x, y0] = color
+            if 0 <= y1 - 1 < height:
+                pixels[x, y1 - 1] = color
+        for y in range(max(0, y0), y1):
+            if 0 <= x0 < width:
+                pixels[x0, y] = color
+            if 0 <= x1 - 1 < width:
+                pixels[x1 - 1, y] = color
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    image.save(out_path)
+
+
 def diff_regions(source_path, replacement_path, threshold=16, tile=8):
     source = Image.open(source_path).convert("L")
     replacement = Image.open(replacement_path).convert("L")
@@ -180,6 +203,10 @@ def main(argv):
         tile = int(argv[5]) if len(argv) > 5 else 8
         print(diff_regions(in_path, out_path, threshold, tile))
         return
+    elif mode == "draw-regions":
+        if len(argv) < 5:
+            usage()
+        draw_regions(in_path, out_path, argv[4])
     else:
         usage()
     print(f"wrote {out_path}")

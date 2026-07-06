@@ -129,6 +129,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Uncheck Selected", command=lambda: self.set_checked_selected(False)).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Apply Bulk Options", command=self.apply_bulk_options).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="2. Apply to BIN", command=self.apply_tsv).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="2. Apply to BIN (Direct)", command=self.apply_tsv_direct).pack(side="left", padx=(0, 6))
 
         main = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
         main.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
@@ -309,7 +310,32 @@ class BeHdrUiWorkflowGui(tk.Tk):
             ]
             if self.vars["invert"].get():
                 cmd.append("--invert")
-            self.run_command("Export be-hdr UI TSV/PBM", cmd, self.load_tsv)
+
+            def run_dump_raw():
+                ids = [part.strip() for part in self.vars["ids"].get().split(",") if part.strip()]
+                dump_cmd = [
+                    "node",
+                    str(ROOT / "scripts/be-hdr-ui-tile-tool.js"),
+                    "dump-raw",
+                    self._effective_dat_path(),
+                    self.vars["exe"].get(),
+                    self.vars["mask_dir"].get(),
+                    *ids,
+                ]
+
+                def run_colorize_batch():
+                    colorize_cmd = [
+                        "python",
+                        str(ROOT / "scripts/colorize-behdr-pgm.py"),
+                        "batch",
+                        self.vars["mask_dir"].get(),
+                        self.vars["ids"].get(),
+                    ]
+                    self.run_command("Colorize editable_png as raw-index images", colorize_cmd, self.load_tsv)
+
+                self.run_command("Dump raw palette indices for editable_png", dump_cmd, run_colorize_batch)
+
+            self.run_command("Export be-hdr UI TSV/PBM", cmd, run_dump_raw)
 
         self._run_after_dat_ready(run_export)
 
@@ -353,6 +379,99 @@ class BeHdrUiWorkflowGui(tk.Tk):
             if self.vars["trim"].get():
                 cmd.append("-TrimToOrigin")
             self.run_command("Apply be-hdr UI translation", cmd)
+
+        self._run_after_dat_ready(run_apply)
+
+    def apply_tsv_direct(self):
+        self.save_tsv()
+        rows_to_process = [row for row in self.rows if row.get("enabled") == "1"]
+        if not rows_to_process:
+            self._append_log("[warn] no enabled rows to apply\n")
+            return
+
+        def run_apply():
+            out_dat_field = self.vars["out_dat"].get()
+            out_is_bin = Path(out_dat_field).suffix.lower() == ".bin"
+            work_dir = ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/direct-apply"
+            work_dir.mkdir(parents=True, exist_ok=True)
+            state = {"current_dat": self._effective_dat_path(), "index": 0}
+
+            def process_next():
+                if state["index"] >= len(rows_to_process):
+                    finalize()
+                    return
+                row = rows_to_process[state["index"]]
+                state["index"] += 1
+                resource_id = row.get("resource_id", "").strip()
+                replacement_png = row.get("replacement_png", "").strip()
+                if not resource_id:
+                    process_next()
+                    return
+                if not replacement_png or not Path(replacement_png).exists():
+                    self._append_log(f"[skip] resource {resource_id}: replacement_png missing or not found ({replacement_png})\n")
+                    process_next()
+                    return
+                raw_pgm = Path(self.vars["mask_dir"].get()) / f"be-hdr-ui-{resource_id}-raw.pgm"
+                if not raw_pgm.exists():
+                    self._append_log(f"[skip] resource {resource_id}: no reference raw pgm at {rel(raw_pgm)} -- run Export TSV/PBM first\n")
+                    process_next()
+                    return
+
+                decoded_pgm = work_dir / f"{resource_id}-decoded.pgm"
+                decode_cmd = [
+                    "python",
+                    str(ROOT / "scripts/decode-behdr-edited-image.py"),
+                    str(raw_pgm),
+                    replacement_png,
+                    str(decoded_pgm),
+                    "--outline-index",
+                    "1",
+                    "--fill-index",
+                    "2",
+                ]
+
+                def run_pack(resource_id=resource_id, decoded_pgm=decoded_pgm, step=state["index"]):
+                    next_dat = work_dir / f"working-{step}.DAT"
+                    pack_cmd = [
+                        "node",
+                        str(ROOT / "scripts/be-hdr-ui-tile-tool.js"),
+                        "pack-raw",
+                        state["current_dat"],
+                        self.vars["exe"].get(),
+                        str(next_dat),
+                        resource_id,
+                        str(decoded_pgm),
+                        "--lossy-fit",
+                    ]
+
+                    def after_pack():
+                        state["current_dat"] = str(next_dat)
+                        process_next()
+
+                    self.run_command(f"Pack resource {resource_id} (direct)", pack_cmd, after_pack)
+
+                self.run_command(f"Decode replacement_png for resource {resource_id}", decode_cmd, run_pack)
+
+            def finalize():
+                Path(out_dat_field).parent.mkdir(parents=True, exist_ok=True)
+                if out_is_bin:
+                    inject_cmd = [
+                        "node",
+                        str(ROOT / "scripts/inject-dat-into-raw-bin.js"),
+                        self._effective_source_bin_path(),
+                        state["current_dat"],
+                        out_dat_field,
+                        "--lba",
+                        self.vars["fs2_lba"].get(),
+                    ]
+                    self.run_command("Inject accumulated DAT into BIN", inject_cmd)
+                else:
+                    import shutil
+
+                    shutil.copyfile(state["current_dat"], out_dat_field)
+                    self._append_log(f"[info] wrote {rel(out_dat_field)}\n")
+
+            process_next()
 
         self._run_after_dat_ready(run_apply)
 

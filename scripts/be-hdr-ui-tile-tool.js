@@ -11,6 +11,12 @@ function usage() {
             pixel (0-255), for debugging exact index values instead of the
             binary isSourceInk view that "export" produces
   patch:  node scripts/be-hdr-ui-tile-tool.js patch <FS2_FILE.DAT> <SLPS_019.03> <outDat> <id> <mask.pbm> [--invert] [--ink-index N] [--bg-index N] [--erase-pbm mask.pbm]
+  pack-raw: node scripts/be-hdr-ui-tile-tool.js pack-raw <FS2_FILE.DAT> <SLPS_019.03> <outDat> <id> <raw.pgm>
+            takes a FULLY RESOLVED P2 PGM of raw 8bpp palette indices (same format as
+            dump-raw/--debug-dump-dir output) and packs it straight into tiles --
+            no erase, ink-draw, or heal passes at all. Use this when you've hand-edited
+            a debug-dump PGM/PNG (e.g. via scripts/decode-behdr-edited-image.py) and want
+            it applied exactly as-is.
 
 options:
   --source-ink-indexes N[,N...]  source 8bpp palette index mask for export; ranges like 224-232 are allowed
@@ -37,6 +43,15 @@ options:
                                  instead of searching left/right (needed when the region itself
                                  is the only remaining sample of the correct background on its row)
   --pre-heal-from-indexes-3 N[,N...]  third pass: only heal pixels currently at these indexes
+  --reference-dat PATH          an unpatched FS2_FILE.DAT/BIN to heal stray pixels from directly:
+                                 wherever this file has a --reference-family value at a pixel but the
+                                 current (post-erase/pre-heal) data does not, copy the reference's exact
+                                 value in. Runs before tile packing, so no tile-sharing risk.
+  --reference-family N[,N...]   palette index family that --reference-dat is trusted for (e.g. a
+                                 resource's animated glow-gradient range)
+  --debug-dump-dir DIR          write a numbered P2 PGM (raw 8bpp index) snapshot after every internal
+                                 patch stage (unpack, erase, ink-draw, each pre-heal pass, reference-heal,
+                                 pre-pack) for step-by-step inspection
   --allow-overflow              write a patched file even when final tiles exceed resource capacity`);
   process.exit(1);
 }
@@ -66,6 +81,9 @@ let preHealRegions3 = [];
 let preHealIndexes3 = null;
 let preHealRadius3 = 32;
 let preHealFromIndexes3 = null;
+let referenceDatPath = "";
+let referenceFamily = null;
+let debugDumpDir = "";
 const positional = [];
 
 for (let i = 0; i < rest.length; i += 1) {
@@ -92,6 +110,9 @@ for (let i = 0; i < rest.length; i += 1) {
   else if (arg === "--pre-heal-indexes-3") preHealIndexes3 = parseSourceInkIndexes(rest[++i] || "");
   else if (arg === "--pre-heal-radius-3") preHealRadius3 = Number.parseInt(rest[++i] || "", 0);
   else if (arg === "--pre-heal-from-indexes-3") preHealFromIndexes3 = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--reference-dat") referenceDatPath = rest[++i] || "";
+  else if (arg === "--reference-family") referenceFamily = parseSourceInkIndexes(rest[++i] || "");
+  else if (arg === "--debug-dump-dir") debugDumpDir = rest[++i] || "";
   else if (arg.startsWith("--")) usage();
   else positional.push(arg);
 }
@@ -333,6 +354,36 @@ function readPbm(pbmPath, expectedWidth, expectedHeight) {
   return pixels;
 }
 
+function readRawIndexPgm(pgmPath, expectedWidth, expectedHeight) {
+  const text = fs.readFileSync(pgmPath, "utf8");
+  const tokens = text
+    .split(/\r?\n/)
+    .flatMap((line) => line.replace(/#.*/, "").trim().split(/\s+/).filter(Boolean));
+  if (tokens.shift() !== "P2") throw new Error(`${pgmPath} is not an ASCII PGM (P2) file`);
+  const width = Number.parseInt(tokens.shift() || "", 10);
+  const height = Number.parseInt(tokens.shift() || "", 10);
+  tokens.shift(); // maxval
+  if (width !== expectedWidth || height !== expectedHeight) {
+    throw new Error(`${pgmPath} must be ${expectedWidth}x${expectedHeight}, got ${width}x${height}`);
+  }
+  const pixels = new Uint8Array(width * height);
+  if (tokens.length < pixels.length) throw new Error(`${pgmPath} has ${tokens.length} pixels, expected ${pixels.length}`);
+  for (let i = 0; i < pixels.length; i += 1) {
+    const value = Number.parseInt(tokens[i], 10);
+    if (!Number.isFinite(value) || value < 0 || value > 255) throw new Error(`${pgmPath} has invalid pixel value '${tokens[i]}'`);
+    pixels[i] = value;
+  }
+  return pixels;
+}
+
+function patchFromRawPgm(outDat, idArg, pgmPath) {
+  const id = Number.parseInt(idArg || "", 0);
+  if (!Number.isFinite(id) || !pgmPath) usage();
+  const info = decodeHeader(id);
+  const indexedPixels = readRawIndexPgm(pgmPath, info.width, info.height);
+  packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat);
+}
+
 function tileKeyFromPixels(pixels, width, tx, ty) {
   let key = "";
   for (let py = 0; py < 8; py += 1) {
@@ -513,6 +564,20 @@ function dumpRawIndexes(outDir, ids) {
   }
 }
 
+function writeDebugPgm(id, stageName, pixels, width, height) {
+  if (!debugDumpDir) return;
+  fs.mkdirSync(debugDumpDir, { recursive: true });
+  const outPath = path.join(debugDumpDir, `${stageName}-${id}.pgm`);
+  const lines = ["P2", `# ${stageName} for resource ${id}`, `${width} ${height}`, "255"];
+  for (let y = 0; y < height; y += 1) {
+    const row = [];
+    for (let x = 0; x < width; x += 1) row.push(pixels[y * width + x]);
+    lines.push(row.join(" "));
+  }
+  fs.writeFileSync(outPath, `${lines.join("\n")}\n`);
+  console.log(`${id}: wrote debug dump ${outPath}`);
+}
+
 function patchMask(outDat, idArg, pbmPath) {
   const id = Number.parseInt(idArg || "", 0);
   if (!Number.isFinite(id) || !pbmPath) usage();
@@ -520,10 +585,15 @@ function patchMask(outDat, idArg, pbmPath) {
   const replacementPixels = readPbm(pbmPath, info.width, info.height);
   const erasePixels = erasePbmPath ? readPbm(erasePbmPath, info.width, info.height) : null;
   const indexedPixels = unpackIndexedResource(info);
+  writeDebugPgm(id, "04-1-after-unpack", indexedPixels, info.width, info.height);
   for (let i = 0; i < indexedPixels.length; i += 1) {
     if (isSourceInk(indexedPixels[i]) && (!erasePixels || erasePixels[i])) indexedPixels[i] = bgIndex;
+  }
+  writeDebugPgm(id, "04-2-after-erase", indexedPixels, info.width, info.height);
+  for (let i = 0; i < indexedPixels.length; i += 1) {
     if (replacementBit(replacementPixels[i])) indexedPixels[i] = inkIndex;
   }
+  writeDebugPgm(id, "04-3-after-ink-draw", indexedPixels, info.width, info.height);
   const preHealedPixels = preHealIndexedPixels(
     indexedPixels,
     info.width,
@@ -535,6 +605,7 @@ function patchMask(outDat, idArg, pbmPath) {
     preHealFromIndexes
   );
   if (preHealedPixels) console.log(`${id}: pre-healed ${preHealedPixels} pixels before tile packing`);
+  writeDebugPgm(id, "04-4-after-pass1", indexedPixels, info.width, info.height);
   const preHealedPixels2 = preHealIndexedPixels(
     indexedPixels,
     info.width,
@@ -546,6 +617,7 @@ function patchMask(outDat, idArg, pbmPath) {
     preHealFromIndexes2
   );
   if (preHealedPixels2) console.log(`${id}: pre-healed (pass 2) ${preHealedPixels2} pixels before tile packing`);
+  writeDebugPgm(id, "04-5-after-pass2", indexedPixels, info.width, info.height);
   const preHealedPixels3 = preHealIndexedPixels(
     indexedPixels,
     info.width,
@@ -557,6 +629,41 @@ function patchMask(outDat, idArg, pbmPath) {
     preHealFromIndexes3
   );
   if (preHealedPixels3) console.log(`${id}: pre-healed (pass 3) ${preHealedPixels3} pixels before tile packing`);
+  writeDebugPgm(id, "04-6-after-pass3", indexedPixels, info.width, info.height);
+  if (referenceDatPath && referenceFamily) {
+    const refDat = readDatPayload(referenceDatPath);
+    const refTileMap = readTileMap(info, refDat);
+    const refPixels = new Uint8Array(info.width * info.height);
+    for (let ty = 0; ty < info.heightTiles; ty += 1) {
+      for (let tx = 0; tx < info.widthTiles; tx += 1) {
+        const tileIndex = refTileMap[ty * info.widthTiles + tx] >> 1;
+        for (let py = 0; py < 8; py += 1) {
+          for (let px = 0; px < 8; px += 1) {
+            let value = 0;
+            if (tileIndex >= 0 && tileIndex < info.tileCount) {
+              value = tilePixel8bpp(refDat, info.byteStart + info.tileDataOffset + tileIndex * 64, px, py);
+            }
+            refPixels[(ty * 8 + py) * info.width + (tx * 8 + px)] = value;
+          }
+        }
+      }
+    }
+    let referenceHealed = 0;
+    for (let i = 0; i < indexedPixels.length; i += 1) {
+      if (!referenceFamily.includes(refPixels[i])) continue;
+      if (referenceFamily.includes(indexedPixels[i])) continue;
+      if (indexedPixels[i] === inkIndex || isSourceInk(indexedPixels[i])) continue;
+      if (replacementBit(replacementPixels[i])) continue;
+      indexedPixels[i] = refPixels[i];
+      referenceHealed += 1;
+    }
+    if (referenceHealed) console.log(`${id}: reference-healed ${referenceHealed} pixels before tile packing`);
+  }
+  writeDebugPgm(id, "04-7-after-reference-heal", indexedPixels, info.width, info.height);
+  packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat);
+}
+
+function packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat) {
   const patched = Buffer.from(dat);
   const oldMap = readTileMap(info);
   const originalKeys = [];
@@ -685,6 +792,8 @@ if (mode === "export") {
   dumpRawIndexes(thirdArg, ids);
 } else if (mode === "patch") {
   patchMask(thirdArg, positional[0], positional[1]);
+} else if (mode === "pack-raw") {
+  patchFromRawPgm(thirdArg, positional[0], positional[1]);
 } else {
   usage();
 }

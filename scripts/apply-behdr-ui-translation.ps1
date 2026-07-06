@@ -119,6 +119,11 @@ foreach ($row in $rows) {
   $healFromIndexes3 = [string]$row.heal_from_indexes_3
   $copyRegions = [string]$row.copy_regions
   $copyDy = Get-IntField $row "copy_dy" 0
+  $copyRegions2 = [string]$row.copy_regions_2
+  $copyDy2 = Get-IntField $row "copy_dy_2" 0
+  $copyRegions3 = [string]$row.copy_regions_3
+  $copyDy3 = Get-IntField $row "copy_dy_3" 0
+  $referenceFamily = [string]$row.reference_family
 
   $pbmPath = Join-Path $WorkDir ("be-hdr-ui-{0}-ko.pbm" -f $resourceId)
   $erasePbmPath = ""
@@ -227,6 +232,9 @@ foreach ($row in $rows) {
       $patchArgs += @("--pre-heal-from-indexes-3", $healFromIndexes3)
     }
   }
+  if (-not [string]::IsNullOrWhiteSpace($referenceFamily)) {
+    $patchArgs += @("--reference-dat", $DatPath, "--reference-family", $referenceFamily)
+  }
   if ($invert) { $patchArgs += "--invert" }
   & node @patchArgs
   if ($LASTEXITCODE -ne 0) { throw "patch failed for resource $resourceId" }
@@ -263,6 +271,14 @@ foreach ($row in $rows) {
   if (-not [string]::IsNullOrWhiteSpace($copyRegions) -and $copyDy -ne 0) {
     & node $copyScript $nextDat $ExePath $nextDat $resourceId $copyRegions "--dy" $copyDy
     if ($LASTEXITCODE -ne 0) { throw "region copy failed for resource $resourceId" }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($copyRegions2) -and $copyDy2 -ne 0) {
+    & node $copyScript $nextDat $ExePath $nextDat $resourceId $copyRegions2 "--dy" $copyDy2
+    if ($LASTEXITCODE -ne 0) { throw "region copy pass 2 failed for resource $resourceId" }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($copyRegions3) -and $copyDy3 -ne 0) {
+    & node $copyScript $nextDat $ExePath $nextDat $resourceId $copyRegions3 "--dy" $copyDy3
+    if ($LASTEXITCODE -ne 0) { throw "region copy pass 3 failed for resource $resourceId" }
   }
   if ($lossyFit -and -not [string]::IsNullOrWhiteSpace($lossyProtectRegions) -and -not [string]::IsNullOrWhiteSpace($pbmPath)) {
     $restoreArgs = @($restoreInkScript, $nextDat, $ExePath, $nextDat, $resourceId, $pbmPath, $lossyProtectRegions, "--ink-index", $inkIndex)
