@@ -157,28 +157,18 @@ class BeHdrUiWorkflowGui(tk.Tk):
         cols = (
             "enabled",
             "resource_id",
-            "ko_text",
             "replacement_png",
-            "erase_pbm",
-            "replacement_mode",
-            "patch_regions",
             "width",
             "height",
-            "font_size",
-            "invert",
-            "source_ink_indexes",
-            "ink_index",
-            "bg_index",
-            "lossy_fit",
-            "lossy_protect_regions",
-            "heal_regions",
-            "heal_indexes",
-            "heal_radius",
         )
         self.tree = ttk.Treeview(left, columns=cols, show="headings", selectmode="extended")
+        small_cols = {"enabled", "resource_id", "width", "height"}
         for col in cols:
             self.tree.heading(col, text=col)
-            self.tree.column(col, width=76 if col != "ko_text" else 240, anchor="w")
+            if col in small_cols:
+                self.tree.column(col, width=50, minwidth=40, anchor="w", stretch=False)
+            else:
+                self.tree.column(col, width=500, minwidth=150, anchor="w", stretch=True)
         self.tree.grid(row=0, column=0, sticky="nsew")
         ttk.Scrollbar(left, orient="vertical", command=self.tree.yview).grid(row=0, column=1, sticky="ns")
         self.tree.configure(yscrollcommand=lambda *args: None)
