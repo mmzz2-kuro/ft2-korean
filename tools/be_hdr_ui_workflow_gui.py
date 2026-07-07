@@ -29,12 +29,27 @@ def escape_tsv(value):
     return (value or "").replace("\\", "\\\\").replace("\t", "\\t").replace("\r", "").replace("\n", "\\n")
 
 
+def expand_ids(text):
+    ids = []
+    for part in (text or "").split(","):
+        trimmed = part.strip()
+        if not trimmed:
+            continue
+        if "-" in trimmed:
+            start_text, end_text = trimmed.split("-", 1)
+            start, end = int(start_text.strip()), int(end_text.strip())
+            ids.extend(range(min(start, end), max(start, end) + 1))
+        else:
+            ids.append(int(trimmed))
+    return sorted(set(ids))
+
+
 class BeHdrUiWorkflowGui(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("SLPS-01903 be-hdr UI Workflow")
         self.geometry("1180x760")
-        self.minsize(980, 620)
+        self.minsize(2000, 1150)
 
         self.rows = []
         self.headers = []
@@ -50,7 +65,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
             "out_dat": tk.StringVar(value=str(ROOT / "output/patched-farland-saga-ui.bin")),
             "out_bin": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/patched-be-hdr-ui.bin")),
             "work_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/apply")),
-            "ids": tk.StringVar(value="827,828,1199,1207,1210,1211,1212,1213"),
+            "ids": tk.StringVar(value="811-828,1189,1191-1200,1203-1213"),
             "fs2_lba": tk.StringVar(value="223"),
             "fs2_sectors": tk.StringVar(value="119472"),
             "font_size": tk.StringVar(value="24"),
@@ -312,7 +327,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
                 cmd.append("--invert")
 
             def run_dump_raw():
-                ids = [part.strip() for part in self.vars["ids"].get().split(",") if part.strip()]
+                ids = [str(id_value) for id_value in expand_ids(self.vars["ids"].get())]
                 dump_cmd = [
                     "node",
                     str(ROOT / "scripts/be-hdr-ui-tile-tool.js"),
@@ -329,7 +344,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
                         str(ROOT / "scripts/colorize-behdr-pgm.py"),
                         "batch",
                         self.vars["mask_dir"].get(),
-                        self.vars["ids"].get(),
+                        ",".join(ids),
                     ]
                     self.run_command("Colorize editable_png as raw-index images", colorize_cmd, self.load_tsv)
 
@@ -390,11 +405,17 @@ class BeHdrUiWorkflowGui(tk.Tk):
             return
 
         def run_apply():
+            import shutil
+
             out_dat_field = self.vars["out_dat"].get()
             out_is_bin = Path(out_dat_field).suffix.lower() == ".bin"
             work_dir = ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/direct-apply"
+            if work_dir.exists():
+                shutil.rmtree(work_dir)
             work_dir.mkdir(parents=True, exist_ok=True)
-            state = {"current_dat": self._effective_dat_path(), "index": 0}
+            working_dat = work_dir / "working.DAT"
+            shutil.copyfile(self._effective_dat_path(), working_dat)
+            state = {"current_dat": str(working_dat), "index": 0}
 
             def process_next():
                 if state["index"] >= len(rows_to_process):
@@ -430,25 +451,20 @@ class BeHdrUiWorkflowGui(tk.Tk):
                     "2",
                 ]
 
-                def run_pack(resource_id=resource_id, decoded_pgm=decoded_pgm, step=state["index"]):
-                    next_dat = work_dir / f"working-{step}.DAT"
+                def run_pack(resource_id=resource_id, decoded_pgm=decoded_pgm):
                     pack_cmd = [
                         "node",
                         str(ROOT / "scripts/be-hdr-ui-tile-tool.js"),
                         "pack-raw",
                         state["current_dat"],
                         self.vars["exe"].get(),
-                        str(next_dat),
+                        state["current_dat"],
                         resource_id,
                         str(decoded_pgm),
                         "--lossy-fit",
                     ]
 
-                    def after_pack():
-                        state["current_dat"] = str(next_dat)
-                        process_next()
-
-                    self.run_command(f"Pack resource {resource_id} (direct)", pack_cmd, after_pack)
+                    self.run_command(f"Pack resource {resource_id} (direct)", pack_cmd, process_next)
 
                 self.run_command(f"Decode replacement_png for resource {resource_id}", decode_cmd, run_pack)
 
@@ -466,8 +482,6 @@ class BeHdrUiWorkflowGui(tk.Tk):
                     ]
                     self.run_command("Inject accumulated DAT into BIN", inject_cmd)
                 else:
-                    import shutil
-
                     shutil.copyfile(state["current_dat"], out_dat_field)
                     self._append_log(f"[info] wrote {rel(out_dat_field)}\n")
 
