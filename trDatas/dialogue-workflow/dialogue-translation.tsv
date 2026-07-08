@@ -1703,34 +1703,34 @@ enabled	message_id	source	refs	mask_pgm	source_note	ko_text	font_size	line_heigh
 0	10124	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-10124.pgm		괜찮을까...?	12	15	2	2	32	96	0
 0	10125	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-10125.pgm		괜찮지않아?	12	15	2	2	32	96	0
 1	11001	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11001.pgm		좋은 아침이다. \n왠지, 몸이 가벼워.	12	15	2	2	32	96	0
-0	11002	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11002.pgm			12	15	2	2	32	96	0
-0	11003	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11003.pgm			12	15	2	2	32	96	0
-0	11004	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11004.pgm			12	15	2	2	32	96	0
-0	11005	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11005.pgm			12	15	2	2	32	96	0
-0	11006	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11006.pgm			12	15	2	2	32	96	0
-0	11007	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11007.pgm			12	15	2	2	32	96	0
-0	11008	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11008.pgm			12	15	2	2	32	96	0
-0	11009	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11009.pgm			12	15	2	2	32	96	0
-0	11010	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11010.pgm			12	15	2	2	32	96	0
-0	11011	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11011.pgm			12	15	2	2	32	96	0
-0	11012	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11012.pgm			12	15	2	2	32	96	0
-0	11013	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11013.pgm			12	15	2	2	32	96	0
-0	11014	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11014.pgm			12	15	2	2	32	96	0
-0	11015	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11015.pgm			12	15	2	2	32	96	0
-0	11016	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11016.pgm			12	15	2	2	32	96	0
-0	11017	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11017.pgm			12	15	2	2	32	96	0
-0	11018	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11018.pgm			12	15	2	2	32	96	0
-0	11019	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11019.pgm			12	15	2	2	32	96	0
-0	11020	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11020.pgm			12	15	2	2	32	96	0
-0	11021	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11021.pgm			12	15	2	2	32	96	0
-0	11022	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11022.pgm			12	15	2	2	32	96	0
-0	11023	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11023.pgm			12	15	2	2	32	96	0
-0	11024	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11024.pgm			12	15	2	2	32	96	0
-0	11025	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11025.pgm			12	15	2	2	32	96	0
-0	11026	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11026.pgm			12	15	2	2	32	96	0
-0	11027	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11027.pgm			12	15	2	2	32	96	0
-0	11028	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11028.pgm			12	15	2	2	32	96	0
-0	11029	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11029.pgm			12	15	2	2	32	96	0
+0	11002	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11002.pgm		어제의 사우나가 효과가 \n있는 것 같아.	12	15	2	2	32	96	0
+0	11003	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11003.pgm		지금, 또 안 갈래요?	12	15	2	2	32	96	0
+0	11004	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11004.pgm		아침 목욕? 좋지요.	12	15	2	2	32	96	0
+0	11005	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11005.pgm		나도 같이 가!	12	15	2	2	32	96	0
+0	11006	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11006.pgm		나는 됐어. 옛날에 질릴 정도로\n많이 했어.\n	12	15	2	2	32	96	0
+0	11007	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11007.pgm		알도 와!	12	15	2	2	32	96	0
+0	11008	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11008.pgm		뭐? 저...\n카린은 어떻게 할건데?	12	15	2	2	32	96	0
+0	11009	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11009.pgm		길드에 들러보고, 일이 있는지\n물어보고 오지 않으면 \n안되니까...\n	12	15	2	2	32	96	0
+0	11010	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11010.pgm		아, 그럼, 나도...	12	15	2	2	32	96	0
+0	11011	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11011.pgm		알은 나와 함께 가자!	12	15	2	2	32	96	0
+0	11012	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11012.pgm		아, 알았어!	12	15	2	2	32	96	0
+0	11013	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11013.pgm		그럼, 나중에 봐.	12	15	2	2	32	96	0
+0	11014	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11014.pgm		안녕-! 어, 저기? \nT.T. 아저씨?	12	15	2	2	32	96	0
+0	11015	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11015.pgm		야, 안녕	12	15	2	2	32	96	0
+0	11016	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11016.pgm		가스톤은 어디 갔어요?	12	15	2	2	32	96	0
+0	11017	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11017.pgm		좀 일이 있어서 나갔어.\n난 그 동안 빈집을 \n지키고 있지.	12	15	2	2	32	96	0
+0	11018	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11018.pgm		응. 그런데, 오늘은 일 \n들어온거 있어요?\n	12	15	2	2	32	96	0
+0	11019	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11019.pgm		아아. 잠깐, 지금 수속을 \n밟고있는 중이니까, 잠시 후에 \n다시 와주겠어?\n\n\n	12	15	2	2	32	96	0
+0	11020	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11020.pgm		귀찮네요..	12	15	2	2	32	96	0
+0	11021	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11021.pgm		일단, 이것도 『역할배정』이 \n정해져야 일을 맡기지.	12	15	2	2	32	96	0
+0	11022	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11022.pgm		그럼, 그럼 잠시 목욕하고 올께요.	12	15	2	2	32	96	0
+0	11023	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11023.pgm		하핫, 일전의 그 사우나?\n천천히 하고와.	12	15	2	2	32	96	0
+0	11024	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11024.pgm		그, 그런데...	12	15	2	2	32	96	0
+0	11025	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11025.pgm		어? 너는 분명히 소피아의...	12	15	2	2	32	96	0
+0	11026	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11026.pgm		...모두, 목욕하러 갔어.\n엄마는 쇼핑하러 갔고...	12	15	2	2	32	96	0
+0	11027	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11027.pgm		그래...	12	15	2	2	32	96	0
+0	11028	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11028.pgm		좋아! 그러면,\n오빠가 함께 놀아줄께!	12	15	2	2	32	96	0
+0	11029	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11029.pgm		정말!? 와-신난다!!	12	15	2	2	32	96	0
 0	11030	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11030.pgm			12	15	2	2	32	96	0
 0	11031	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11031.pgm			12	15	2	2	32	96	0
 0	11032	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-11032.pgm			12	15	2	2	32	96	0
