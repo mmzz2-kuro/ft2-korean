@@ -65,7 +65,7 @@ class BeHdrUiWorkflowGui(tk.Tk):
             "out_dat": tk.StringVar(value=str(ROOT / "output/patched-farland-saga-ui.bin")),
             "out_bin": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/patched-be-hdr-ui.bin")),
             "work_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/be-hdr-ui-workflow/apply")),
-            "ids": tk.StringVar(value="811-828,1170-1185,1189,1191-1200,1203-1213"),
+            "ids": tk.StringVar(value="811-828,1170-1185,1187,1189,1191-1200,1203-1213"),
             "fs2_lba": tk.StringVar(value="223"),
             "fs2_sectors": tk.StringVar(value="119472"),
             "font_size": tk.StringVar(value="24"),
