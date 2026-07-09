@@ -64,6 +64,7 @@ class NameTableWorkflowGui(tk.Tk):
         }
 
         self.edit_vars = {
+            "table": tk.StringVar(),
             "id": tk.StringVar(),
             "jp_text": tk.StringVar(),
             "ko_text": tk.StringVar(),
@@ -123,12 +124,12 @@ class NameTableWorkflowGui(tk.Tk):
         left.columnconfigure(0, weight=1)
         main.add(left, weight=3)
 
-        cols = ("enabled", "id", "jp_text", "ko_text")
+        cols = ("enabled", "table", "id", "jp_text", "ko_text")
         self.tree = ttk.Treeview(left, columns=cols, show="headings", selectmode="browse")
         for col in cols:
             self.tree.heading(col, text=col)
-            if col in ("enabled", "id"):
-                self.tree.column(col, width=50, minwidth=40, anchor="w", stretch=False)
+            if col in ("enabled", "table", "id"):
+                self.tree.column(col, width=55, minwidth=40, anchor="w", stretch=False)
             else:
                 self.tree.column(col, width=200, minwidth=100, anchor="w", stretch=True)
         self.tree.grid(row=0, column=0, sticky="nsew")
@@ -141,6 +142,9 @@ class NameTableWorkflowGui(tk.Tk):
         main.add(right, weight=2)
 
         r = 0
+        ttk.Label(right, text="Table").grid(row=r, column=0, sticky="w", pady=2)
+        ttk.Entry(right, textvariable=self.edit_vars["table"], state="readonly").grid(row=r, column=1, sticky="ew", pady=2)
+        r += 1
         ttk.Label(right, text="ID").grid(row=r, column=0, sticky="w", pady=2)
         ttk.Entry(right, textvariable=self.edit_vars["id"], state="readonly").grid(row=r, column=1, sticky="ew", pady=2)
         r += 1
@@ -298,6 +302,7 @@ class NameTableWorkflowGui(tk.Tk):
             return
         self.selected_index = int(selection[0])
         row = self.rows[self.selected_index]
+        self.edit_vars["table"].set(row.get("table", ""))
         self.edit_vars["id"].set(row.get("id", ""))
         self.edit_vars["jp_text"].set(row.get("jp_text", ""))
         self.edit_vars["ko_text"].set(row.get("ko_text", ""))
@@ -329,10 +334,12 @@ class NameTableWorkflowGui(tk.Tk):
         if not text:
             self._append_log("[warn] ko_text가 비어있습니다\n")
             return
+        table_key = self.edit_vars["table"].get().strip() or "char"
+        cfg = name_table_tool.TABLES[table_key]
         font_size = self.edit_vars["font_size"].get().strip() or self.vars["font_size"].get().strip() or None
         preview_path = Path(self.vars["mask_dir"].get()) / "preview-tmp.png"
         try:
-            name_table_tool.render_name_png(text, self.vars["font"].get(), str(preview_path), font_size)
+            name_table_tool.render_name_png(text, self.vars["font"].get(), str(preview_path), cfg["width"], cfg["height"], font_size)
         except Exception as exc:
             self._append_log(f"[error] preview render failed: {exc}\n")
             return
@@ -345,17 +352,19 @@ class NameTableWorkflowGui(tk.Tk):
         row = self.rows[self.selected_index]
         text = row.get("ko_text", "").strip()
         if text:
+            table_key = row.get("table", "char")
+            cfg = name_table_tool.TABLES[table_key]
             entry_id = int(row["id"])
             replacement_png = row.get("replacement_png", "").strip()
             if not replacement_png:
                 source_png = Path(row.get("source_png", ""))
-                replacement_png = str(source_png.with_name(f"name-{entry_id:02d}-ko.png")) if source_png.name else str(
-                    Path(self.vars["mask_dir"].get()) / f"name-{entry_id:02d}-ko.png"
+                replacement_png = str(source_png.with_name(f"name-{table_key}-{entry_id:02d}-ko.png")) if source_png.name else str(
+                    Path(self.vars["mask_dir"].get()) / f"name-{table_key}-{entry_id:02d}-ko.png"
                 )
                 row["replacement_png"] = replacement_png
             font_size = row.get("font_size", "").strip() or self.vars["font_size"].get().strip() or None
             try:
-                name_table_tool.render_name_png(text, self.vars["font"].get(), replacement_png, font_size)
+                name_table_tool.render_name_png(text, self.vars["font"].get(), replacement_png, cfg["width"], cfg["height"], font_size)
             except Exception as exc:
                 self._append_log(f"[error] render failed for id {entry_id}: {exc}\n")
         self.refresh_tree()
@@ -376,9 +385,10 @@ class NameTableWorkflowGui(tk.Tk):
                 replacement_png = row.get("replacement_png", "").strip()
                 if not text or not replacement_png:
                     continue
+                cfg = name_table_tool.TABLES[row.get("table", "char")]
                 font_size = row.get("font_size", "").strip() or self.vars["font_size"].get().strip() or None
                 try:
-                    name_table_tool.render_name_png(text, self.vars["font"].get(), replacement_png, font_size)
+                    name_table_tool.render_name_png(text, self.vars["font"].get(), replacement_png, cfg["width"], cfg["height"], font_size)
                 except Exception as exc:
                     self._append_log(f"[error] render failed for id {row.get('id')}: {exc}\n")
 

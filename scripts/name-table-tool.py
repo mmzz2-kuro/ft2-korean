@@ -1,17 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-SLPS-01903 리소스 829 고유명사(캐릭터/몬스터/NPC 이름) 테이블 export/patch 도구.
+SLPS-01903 리소스 829 고유명사(캐릭터/몬스터/직업/NPC/상태이상/아이템 이름) 테이블 export/patch 도구.
 
-포맷 (라이브 디버깅으로 확인됨):
-  리소스 829 payload 오프셋 0x55D0부터, ID 1..30까지 각 160바이트.
-  각 160바이트 = 80x16 픽셀 1bpp 비트맵 (가로 10바이트 x 세로 16행).
-  바이트의 MSB부터 순서대로 1픽셀씩: bit=0 -> 잉크(글자), bit=1 -> 배경.
-  ID -> 화면 표시 주소는 런타임에 (basePointer + (ID-1)*160 + 21968)로 계산되며,
-  21968(0x55D0)이 바로 이 표의 리소스 829 안 오프셋과 정확히 일치한다.
+포맷 (라이브 디버깅으로 확인됨), 리소스 829 payload 안에 서로 다른 네 개의
+1bpp 이름 비트맵 테이블이 있다:
 
-  ID 31 이후는 렌더링 시 노이즈만 나와 이름 테이블이 아닌 다른 데이터(리소스 829
-  안의 다른 비트맵 섹션)로 확인되었다. 즉 유효한 이름 슬롯은 1..30 뿐이다.
+  table "char" (캐릭터/NPC 개인 이름):
+    오프셋 0x55D0(21968)부터, ID 1..30, 항목당 160바이트 = 80x16 픽셀.
+    주소 공식: basePointer + (ID-1)*160 + 21968
+
+  table "mon" (몬스터/직업/기타 종족명):
+    오프셋 26960(0x6950)부터, ID 0..75, 항목당 224바이트 = 112x16 픽셀.
+    주소 공식: basePointer + ID*224 + 26960
+
+  table "status" (상태이상 이름, 정상/기절/독 등):
+    오프셋 0xAAF0(43760)부터, ID 0..11, 항목당 64바이트 = 32x16 픽셀.
+    주소 공식: basePointer + ID*64 + 43760
+
+  table "item" (아이템/무기/방어구 이름):
+    오프셋 0xADF0(44528, status 테이블 바로 뒤)부터, ID 0..168, 항목당
+    240바이트 = 120x16 픽셀. ID 139..153은 미사용 "予備"(예비) 슬롯.
+    주소 공식: basePointer + ID*240 + 44528
+
+  네 테이블 모두: 바이트 MSB부터 순서대로 1픽셀씩, bit=0 -> 잉크(글자),
+  bit=1 -> 배경. 각 테이블 범위를 벗어나면 렌더링 시 노이즈만 나와 리소스
+  829 안의 다른(이름이 아닌) 데이터로 확인되었다.
 
 usage:
   export FS2_FILE.DAT SLPS_019.03 out.tsv maskDir
@@ -27,12 +41,6 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 RESOURCE_ID = 829
-TABLE_OFFSET = 0x55D0
-ENTRY_SIZE = 160
-ENTRY_COUNT = 30
-WIDTH = 80
-HEIGHT = 16
-WIDTH_BYTES = WIDTH // 8
 EXPORT_SCALE = 6
 
 FS2_LBA = 223
@@ -40,6 +48,128 @@ FS2_SECTORS = 119472
 SECTOR_SIZE = 2352
 USER_OFFSET = 24
 USER_SIZE = 2048
+
+# 라이브 디버깅 + 시각 확인으로 얻은 원문(참고용, TSV에 기본값으로 채워짐).
+KNOWN_JP_TEXT_CHAR = {
+    1: "カリン", 2: "アル", 3: "アリス", 4: "サーラ", 5: "ラディッシュ",
+    6: "ソフィア", 7: "ルル", 9: "???", 10: "T.T.", 11: "ソーン",
+    12: "マクドガル", 13: "ガストン", 15: "マスター", 16: "まっする親父",
+    17: "ショップ姉ちゃん", 18: "怒りのカリン", 19: "困ったアリス",
+    20: "カトリーヌ", 21: "ベヒモス", 22: "デュマ", 23: "ジャン",
+    24: "ドッペルゲンガー", 25: "アルヴィース", 26: "ソーン・ヴァイス",
+    27: "ヒーちゃん", 28: "コカちゃん", 29: "ギルドマスター",
+}
+
+KNOWN_JP_TEXT_MON = {
+    0: "魔法使い", 1: "剣士", 2: "ヒーラー", 3: "シャーマン", 4: "セイレーン",
+    5: "盗賊", 6: "精霊使い", 7: "NPC", 8: "宝箱", 9: "金",
+    10: "ブルースライム", 11: "グリーンスライム", 12: "アシッドスライム", 13: "グレイウーズ",
+    14: "マッドジェリー", 15: "白猫", 16: "黒猫", 17: "三毛猫", 18: "コソドロ",
+    19: "ゴロツキ", 20: "虎猫", 21: "ヒドラ", 22: "ハーピー", 23: "ベヒモス",
+    24: "アーマゴーレム", 25: "ロックゴーレム", 26: "ストーンゴーレム", 27: "ゴースト",
+    28: "スペクター", 29: "フェアリー", 30: "ピクシー", 31: "ネクロマンサー",
+    32: "デスウォリアー", 33: "グール", 36: "迷子の子供", 37: "かじ屋見習い",
+    38: "囚人", 43: "インプ", 44: "グレムリン", 45: "囚人", 46: "デーモン",
+    47: "ハーピー", 48: "レッドクラブ", 49: "ギルドマスター", 50: "コカトリス",
+    51: "ソーサラー", 52: "アルケミスト", 53: "スプライト", 55: "チンピラ",
+    56: "ウィザード", 57: "ペイルクラブ", 58: "ウォーロック", 60: "デブ猫",
+    61: "サッキュバス", 62: "ストレンジャー", 64: "ドッペルゲンガー", 65: "アークデーモン",
+    66: "エンジェル", 67: "アークエンジェル", 68: "堕天使", 69: "デモンロード",
+    70: "パイレーツ", 71: "バイキング", 72: "セラフ", 73: "セラフ",
+}
+
+KNOWN_JP_TEXT_STATUS = {
+    0: "正常", 1: "気絶", 2: "毒化", 3: "眠り", 4: "石化",
+    5: "凍結", 6: "沈黙", 7: "魅了", 8: "マヒ", 9: "透明",
+    10: "俊敏", 11: "浮遊",
+}
+
+KNOWN_JP_TEXT_ITEM = {
+    0: "薬草", 1: "毒消し", 2: "妖精の涙", 3: "カボチャの種", 4: "回復薬",
+    5: "癒しの花", 6: "気付け薬", 7: "ウオッカ", 8: "ブランデー",
+    9: "ロングソード", 10: "ブロードソード", 11: "バスタードソード", 12: "クレイモアー",
+    13: "フランベルジュ", 14: "グレートソード", 15: "アイスブレード", 16: "フレイムソード",
+    17: "サンダーブレード", 18: "ゴッドスレイヤー", 19: "パワーリスト", 20: "ブラスナックル",
+    21: "バグナグ", 22: "アイアンフィスト", 23: "シルバーファング", 24: "ドラゴンクロー",
+    25: "明鏡止水の拳", 26: "アースバインダー", 27: "スタングラブ", 28: "魔人の手袋",
+    29: "魔法使いの杖", 30: "魔術師の杖", 31: "炎術士の杖", 32: "アルケミストの杖",
+    33: "縛炎の杖", 34: "賢者の杖", 35: "深紅の杖", 36: "エルシェーラの杖",
+    37: "チェーンウィップ", 38: "金槌", 39: "バイク", 40: "ジャベリン",
+    41: "トライデント", 42: "バトルフォーク", 43: "ヴージ", 44: "バトルランス",
+    45: "ハルバード", 46: "トリトーン", 47: "ヴァルキリア", 48: "グングニル",
+    49: "手袋", 50: "ミトン", 51: "手首丈グラブ", 52: "イブニンググラブ",
+    53: "ゴーントレット", 54: "ロイヤルグラブ", 55: "ミスリルショーティ", 56: "フェザーコート",
+    57: "堕天使の指輪", 58: "ブロンズメイル", 59: "おもちゃの杖", 60: "ステッキ",
+    61: "夢見る杖", 62: "妖精さんの杖", 63: "無口な杖", 64: "真っ黒な杖",
+    65: "変な色の杖", 66: "お友達の杖", 67: "鳥になる杖", 68: "すごい杖",
+    69: "ダガー", 70: "シルバーダガー", 71: "グラディウス", 72: "ポイズンダガー",
+    73: "ドリームナイフ", 74: "フライングダガー", 75: "ツインダガー", 76: "小鉄",
+    77: "ソウルバスター", 78: "予備", 79: "クロスアーマー", 80: "ソフトレザー",
+    81: "ハードレザー", 82: "リングメイル", 83: "スケールアーマー", 84: "ブレストアーマー",
+    85: "スプリントメイル", 86: "チェインメイル", 87: "バンデッドメイル", 88: "プレートメイル",
+    89: "コールドチェイン", 90: "ミスリルチェイン", 91: "ドラゴンスケール", 92: "ホーリープレート",
+    93: "ゴッズメイル", 94: "レオタード", 95: "ハントジャケット", 96: "シェイド",
+    97: "シルクローブ", 98: "ファインローブ", 99: "アーミングコート", 100: "武道着",
+    101: "龍の道着", 102: "ジンの衣", 103: "バトルスーツ", 104: "ワンピース",
+    105: "ドレス", 106: "パーティドレス", 107: "チャイナドレス", 108: "天使の羽衣",
+    109: "子供服", 110: "チョッキ", 111: "魔法使いの服", 112: "魔術師の服",
+    113: "達人の服", 114: "炎のローブ", 115: "大魔導師の服", 116: "賢者のローブ",
+    117: "レジストリング", 118: "プロテクトリング", 119: "灼熱の指輪", 120: "氷雪の指輪",
+    121: "疾風の指輪", 122: "大地の指輪", 123: "降魔の指輪", 124: "慈愛の指輪",
+    125: "ジンの腕輪", 126: "破魔の腕輪", 127: "煉獄の腕輪", 128: "時空の腕輪",
+    129: "敵剣A", 130: "敵剣B", 131: "敵剣C", 132: "敵剣D", 133: "敵剣E",
+    134: "敵槍A", 135: "敵槍B", 136: "敵槍C", 137: "敵槍D", 138: "敵槍E",
+    139: "予備", 140: "予備", 141: "予備", 142: "予備", 143: "予備",
+    144: "予備", 145: "予備", 146: "予備", 147: "予備", 148: "予備",
+    149: "予備", 150: "予備", 151: "予備", 152: "予備", 153: "予備",
+    154: "マッシュルーム", 155: "魔導書", 156: "力の実", 157: "守護石",
+    158: "百科事典", 159: "タリスマン", 160: "魔力回復剤", 161: "ソーマの花",
+    162: "エリクサー", 163: "何か(体験版用)", 164: "焦熱の首飾り", 165: "水晶の首飾り",
+    166: "稲妻の首飾り", 167: "地脈の首飾り", 168: "祝福の首飾り",
+}
+
+TABLES = {
+    "char": {
+        "offset": 0x55D0,
+        "entry_size": 160,
+        "start_id": 1,
+        "count": 30,
+        "width": 80,
+        "height": 16,
+        "id_delta": -1,
+        "jp_text": KNOWN_JP_TEXT_CHAR,
+    },
+    "mon": {
+        "offset": 26960,
+        "entry_size": 224,
+        "start_id": 0,
+        "count": 76,
+        "width": 112,
+        "height": 16,
+        "id_delta": 0,
+        "jp_text": KNOWN_JP_TEXT_MON,
+    },
+    "status": {
+        "offset": 0xAAF0,
+        "entry_size": 64,
+        "start_id": 0,
+        "count": 12,
+        "width": 32,
+        "height": 16,
+        "id_delta": 0,
+        "jp_text": KNOWN_JP_TEXT_STATUS,
+    },
+    "item": {
+        "offset": 0xADF0,
+        "entry_size": 240,
+        "start_id": 0,
+        "count": 169,
+        "width": 120,
+        "height": 16,
+        "id_delta": 0,
+        "jp_text": KNOWN_JP_TEXT_ITEM,
+    },
+}
 
 
 def unescape_tsv(value):
@@ -70,17 +200,6 @@ def write_tsv_rows(tsv_path, headers, rows):
         for row in rows:
             writer.writerow([escape_tsv(row.get(h, "")) for h in headers])
 
-# 라이브 디버깅 + 시각 확인으로 얻은 원문(참고용, TSV에 기본값으로 채워짐).
-KNOWN_JP_TEXT = {
-    1: "カリン", 2: "アル", 3: "アリス", 4: "サーラ", 5: "ラディッシュ",
-    6: "ソフィア", 7: "ルル", 9: "???", 10: "T.T.", 11: "ソーン",
-    12: "マクドガル", 13: "ガストン", 15: "マスター", 16: "まっする親父",
-    17: "ショップ姉ちゃん", 18: "怒りのカリン", 19: "困ったアリス",
-    20: "カトリーヌ", 21: "ベヒモス", 22: "デュマ", 23: "ジャン",
-    24: "ドッペルゲンガー", 25: "アルヴィース", 26: "ソーン・ヴァイス",
-    27: "ヒーちゃん", 28: "コカちゃん", 29: "ギルドマスター",
-}
-
 
 def read_dat_payload(path):
     data = Path(path).read_bytes()
@@ -107,47 +226,50 @@ def resource_byte_start(exe_bytes, resource_id):
     return start_sector * 0x800
 
 
-def entry_offset(exe_bytes, entry_id):
+def entry_offset(exe_bytes, table_key, entry_id):
+    cfg = TABLES[table_key]
     base = resource_byte_start(exe_bytes, RESOURCE_ID)
-    return base + TABLE_OFFSET + (entry_id - 1) * ENTRY_SIZE
+    return base + cfg["offset"] + (entry_id + cfg["id_delta"]) * cfg["entry_size"]
 
 
-def unpack_bits(chunk):
+def unpack_bits(chunk, width, height):
+    width_bytes = width // 8
     pixels = []
-    for row in range(HEIGHT):
-        for colbyte in range(WIDTH_BYTES):
-            b = chunk[row * WIDTH_BYTES + colbyte]
+    for row in range(height):
+        for colbyte in range(width_bytes):
+            b = chunk[row * width_bytes + colbyte]
             for bit in range(8):
                 pixels.append((b >> (7 - bit)) & 1)
     return pixels
 
 
-def pack_bits(pixels):
-    out = bytearray(ENTRY_SIZE)
-    for row in range(HEIGHT):
-        for colbyte in range(WIDTH_BYTES):
+def pack_bits(pixels, width, height):
+    width_bytes = width // 8
+    out = bytearray(width_bytes * height)
+    for row in range(height):
+        for colbyte in range(width_bytes):
             byte_val = 0
             for bit in range(8):
-                idx = row * WIDTH + colbyte * 8 + bit
+                idx = row * width + colbyte * 8 + bit
                 byte_val |= (pixels[idx] & 1) << (7 - bit)
-            out[row * WIDTH_BYTES + colbyte] = byte_val
+            out[row * width_bytes + colbyte] = byte_val
     return bytes(out)
 
 
-def chunk_to_image(chunk):
-    pixels = unpack_bits(chunk)
-    img = Image.new("L", (WIDTH, HEIGHT))
+def chunk_to_image(chunk, width, height):
+    pixels = unpack_bits(chunk, width, height)
+    img = Image.new("L", (width, height))
     img.putdata([0 if v == 0 else 255 for v in pixels])
     return img
 
 
-def image_to_chunk(img):
-    if img.size != (WIDTH, HEIGHT):
-        img = img.convert("L").resize((WIDTH, HEIGHT), Image.NEAREST)
+def image_to_chunk(img, width, height):
+    if img.size != (width, height):
+        img = img.convert("L").resize((width, height), Image.NEAREST)
     else:
         img = img.convert("L")
     pixels = [0 if p < 128 else 1 for p in img.getdata()]
-    return pack_bits(pixels)
+    return pack_bits(pixels, width, height)
 
 
 def export_tsv(dat_path, exe_path, out_tsv, mask_dir):
@@ -156,34 +278,38 @@ def export_tsv(dat_path, exe_path, out_tsv, mask_dir):
     mask_dir = Path(mask_dir)
     mask_dir.mkdir(parents=True, exist_ok=True)
 
-    headers = ["enabled", "id", "jp_text", "source_png", "replacement_png", "ko_text", "font_size"]
+    headers = ["enabled", "table", "id", "jp_text", "source_png", "replacement_png", "ko_text", "font_size"]
 
     existing = {}
     if Path(out_tsv).exists():
         _, existing_rows = read_tsv_rows(out_tsv)
         for row in existing_rows:
-            existing[row.get("id", "")] = row
+            existing[(row.get("table", ""), row.get("id", ""))] = row
 
     rows = []
-    for entry_id in range(1, ENTRY_COUNT + 1):
-        off = entry_offset(exe, entry_id)
-        chunk = dat[off:off + ENTRY_SIZE]
-        img = chunk_to_image(chunk)
-        source_png = mask_dir / f"name-{entry_id:02d}.png"
-        img.resize((WIDTH * EXPORT_SCALE, HEIGHT * EXPORT_SCALE), Image.NEAREST).save(source_png)
-        old = existing.get(str(entry_id), {})
-        rows.append({
-            "enabled": old.get("enabled", "0"),
-            "id": str(entry_id),
-            "jp_text": KNOWN_JP_TEXT.get(entry_id, ""),
-            "source_png": str(source_png),
-            "replacement_png": old.get("replacement_png", ""),
-            "ko_text": old.get("ko_text", ""),
-            "font_size": old.get("font_size", ""),
-        })
+    total = 0
+    for table_key, cfg in TABLES.items():
+        for entry_id in range(cfg["start_id"], cfg["start_id"] + cfg["count"]):
+            off = entry_offset(exe, table_key, entry_id)
+            chunk = dat[off:off + cfg["entry_size"]]
+            img = chunk_to_image(chunk, cfg["width"], cfg["height"])
+            source_png = mask_dir / f"name-{table_key}-{entry_id:02d}.png"
+            img.resize((cfg["width"] * EXPORT_SCALE, cfg["height"] * EXPORT_SCALE), Image.NEAREST).save(source_png)
+            old = existing.get((table_key, str(entry_id)), {})
+            rows.append({
+                "enabled": old.get("enabled", "0"),
+                "table": table_key,
+                "id": str(entry_id),
+                "jp_text": cfg["jp_text"].get(entry_id, ""),
+                "source_png": str(source_png),
+                "replacement_png": old.get("replacement_png", ""),
+                "ko_text": old.get("ko_text", ""),
+                "font_size": old.get("font_size", ""),
+            })
+            total += 1
 
     write_tsv_rows(out_tsv, headers, rows)
-    print(f"wrote {out_tsv} ({ENTRY_COUNT} rows) and source PNGs to {mask_dir}")
+    print(f"wrote {out_tsv} ({total} rows across {len(TABLES)} tables) and source PNGs to {mask_dir}")
 
 
 def fit_font(draw, text, font_path, max_width, max_height):
@@ -196,26 +322,26 @@ def fit_font(draw, text, font_path, max_width, max_height):
     return font, draw.textbbox((0, 0), text, font=font)
 
 
-def render_name_image(text, font_path, font_size=None):
+def render_name_image(text, font_path, width, height, font_size=None):
     """Render text into an unscaled WIDTHxHEIGHT 'L' image (0=ink, 255=background)."""
-    img = Image.new("L", (WIDTH, HEIGHT), color=255)
+    img = Image.new("L", (width, height), color=255)
     draw = ImageDraw.Draw(img)
     if font_size:
         font = ImageFont.truetype(font_path, int(font_size), index=0)
         bbox = draw.textbbox((0, 0), text, font=font)
     else:
-        font, bbox = fit_font(draw, text, font_path, WIDTH, HEIGHT)
+        font, bbox = fit_font(draw, text, font_path, width, height)
     th = bbox[3] - bbox[1]
     x = -bbox[0]
-    y = max(0, (HEIGHT - th) // 2 - bbox[1])
+    y = max(0, (height - th) // 2 - bbox[1])
     draw.text((x, y), text, font=font, fill=0)
     return img
 
 
-def render_name_png(text, font_path, out_path, font_size=None, scale=EXPORT_SCALE):
-    img = render_name_image(text, font_path, font_size)
+def render_name_png(text, font_path, out_path, width, height, font_size=None, scale=EXPORT_SCALE):
+    img = render_name_image(text, font_path, width, height, font_size)
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
-    img.resize((WIDTH * scale, HEIGHT * scale), Image.NEAREST).save(out_path)
+    img.resize((width * scale, height * scale), Image.NEAREST).save(out_path)
     return out_path
 
 
@@ -227,17 +353,19 @@ def render_replacement_pngs(font_path, tsv_path, font_size=None):
         text = row.get("ko_text", "").strip()
         if not text:
             continue
+        table_key = row.get("table", "char")
+        cfg = TABLES[table_key]
         entry_id = int(row["id"])
         out_path = row.get("replacement_png", "").strip()
         if not out_path:
             source_png = Path(row["source_png"])
-            out_path = str(source_png.with_name(f"name-{entry_id:02d}-ko.png"))
+            out_path = str(source_png.with_name(f"name-{table_key}-{entry_id:02d}-ko.png"))
             row["replacement_png"] = out_path
 
         row_font_size = row.get("font_size", "").strip() or font_size
-        render_name_png(text, font_path, out_path, row_font_size)
+        render_name_png(text, font_path, out_path, cfg["width"], cfg["height"], row_font_size)
         rendered += 1
-        print(f"id {entry_id}: rendered '{text}' -> {out_path}")
+        print(f"{table_key} id {entry_id}: rendered '{text}' -> {out_path}")
 
     write_tsv_rows(tsv_path, headers, rows)
     print(f"rendered {rendered} replacement PNGs, updated {tsv_path}")
@@ -251,17 +379,19 @@ def patch(dat_path, exe_path, tsv_path, out_dat):
     for row in rows:
         if row.get("enabled", "0").strip() != "1":
             continue
+        table_key = row.get("table", "char")
+        cfg = TABLES[table_key]
         entry_id = int(row["id"])
         replacement_png = row.get("replacement_png", "").strip()
         if not replacement_png or not Path(replacement_png).exists():
-            print(f"[skip] id {entry_id}: replacement_png missing or not found ({replacement_png})")
+            print(f"[skip] {table_key} id {entry_id}: replacement_png missing or not found ({replacement_png})")
             continue
-        off = entry_offset(exe, entry_id)
+        off = entry_offset(exe, table_key, entry_id)
         img = Image.open(replacement_png)
-        chunk = image_to_chunk(img)
-        dat[off:off + ENTRY_SIZE] = chunk
+        chunk = image_to_chunk(img, cfg["width"], cfg["height"])
+        dat[off:off + cfg["entry_size"]] = chunk
         applied += 1
-        print(f"patched id {entry_id}: {replacement_png}")
+        print(f"patched {table_key} id {entry_id}: {replacement_png}")
 
     Path(out_dat).parent.mkdir(parents=True, exist_ok=True)
     Path(out_dat).write_bytes(dat)
