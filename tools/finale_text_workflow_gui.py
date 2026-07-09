@@ -209,8 +209,9 @@ class FinaleTextWorkflowGui(tk.Tk):
             else:
                 self.tree.column(col, width=260, minwidth=120, anchor="w", stretch=True)
         self.tree.grid(row=0, column=0, sticky="nsew")
-        ttk.Scrollbar(left, orient="vertical", command=self.tree.yview).grid(row=0, column=1, sticky="ns")
-        self.tree.configure(yscrollcommand=lambda *args: None)
+        tree_scrollbar = ttk.Scrollbar(left, orient="vertical", command=self.tree.yview)
+        tree_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.tree.configure(yscrollcommand=tree_scrollbar.set)
         self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
         right = ttk.Frame(main, padding=(8, 0, 0, 0))

@@ -41,7 +41,7 @@ class NameTableWorkflowGui(tk.Tk):
         super().__init__()
         self.title("SLPS-01903 Name Table Workflow")
         self.geometry("1180x720")
-        self.minsize(980, 600)
+        self.minsize(2000, 1200)
 
         self.rows = []
         self.headers = []
@@ -53,9 +53,9 @@ class NameTableWorkflowGui(tk.Tk):
         self.vars = {
             "dat": tk.StringVar(value=str(ROOT / "output/patched-farland-saga.bin")),
             "exe": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/SLPS_019.03")),
-            "source_bin": tk.StringVar(value=str(ROOT / "ps1/SLPS-01903/bincue/Farland Saga - Toki no Michishirube.bin")),
-            "translation": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/name-table-workflow/name-table.tsv")),
-            "mask_dir": tk.StringVar(value=str(ROOT / "tmp/SLPS-01903/name-table-workflow/masks")),
+            "source_bin": tk.StringVar(value=str(ROOT / "output/patched-farland-saga.bin")),
+            "translation": tk.StringVar(value=str(ROOT / "trDatas/name-table-workflow/name-table.tsv")),
+            "mask_dir": tk.StringVar(value=str(ROOT / "trDatas/name-table-workflow/masks")),
             "font": tk.StringVar(value=str(ROOT / "font/gulim.ttc")),
             "font_size": tk.StringVar(value=""),
             "out_dat": tk.StringVar(value=str(ROOT / "output/patched-farland-saga-names.bin")),
@@ -133,8 +133,9 @@ class NameTableWorkflowGui(tk.Tk):
             else:
                 self.tree.column(col, width=200, minwidth=100, anchor="w", stretch=True)
         self.tree.grid(row=0, column=0, sticky="nsew")
-        ttk.Scrollbar(left, orient="vertical", command=self.tree.yview).grid(row=0, column=1, sticky="ns")
-        self.tree.configure(yscrollcommand=lambda *args: None)
+        tree_scrollbar = ttk.Scrollbar(left, orient="vertical", command=self.tree.yview)
+        tree_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.tree.configure(yscrollcommand=tree_scrollbar.set)
         self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
         right = ttk.Frame(main, padding=(8, 0, 0, 0))

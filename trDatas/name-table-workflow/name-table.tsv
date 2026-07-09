@@ -1,288 +1,288 @@
 enabled	table	id	jp_text	source_png	replacement_png	ko_text	font_size
-0	char	1	カリン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-01.png			
-0	char	2	アル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-02.png			
-0	char	3	アリス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-03.png			
-0	char	4	サーラ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-04.png			
-0	char	5	ラディッシュ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-05.png			
-0	char	6	ソフィア	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-06.png			
-0	char	7	ルル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-07.png			
-0	char	8		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-08.png			
-0	char	9	???	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-09.png			
-0	char	10	T.T.	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-10.png			
-0	char	11	ソーン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-11.png			
-0	char	12	マクドガル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-12.png			
-0	char	13	ガストン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-13.png			
-0	char	14		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-14.png			
-0	char	15	マスター	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-15.png			
-0	char	16	まっする親父	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-16.png			
-0	char	17	ショップ姉ちゃん	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-17.png			
-0	char	18	怒りのカリン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-18.png			
-0	char	19	困ったアリス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-19.png			
-0	char	20	カトリーヌ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-20.png			
-0	char	21	ベヒモス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-21.png			
-0	char	22	デュマ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-22.png			
-0	char	23	ジャン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-23.png			
-0	char	24	ドッペルゲンガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-24.png			
-0	char	25	アルヴィース	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-25.png			
-0	char	26	ソーン・ヴァイス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-26.png			
-0	char	27	ヒーちゃん	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-27.png			
-0	char	28	コカちゃん	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-28.png			
-0	char	29	ギルドマスター	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-29.png			
-0	char	30		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-30.png			
-0	mon	0	魔法使い	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-00.png			
-0	mon	1	剣士	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-01.png			
-0	mon	2	ヒーラー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-02.png			
-0	mon	3	シャーマン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-03.png			
-0	mon	4	セイレーン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-04.png			
-0	mon	5	盗賊	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-05.png			
-0	mon	6	精霊使い	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-06.png			
-0	mon	7	NPC	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-07.png			
-0	mon	8	宝箱	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-08.png			
-0	mon	9	金	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-09.png			
-0	mon	10	ブルースライム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-10.png			
-0	mon	11	グリーンスライム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-11.png			
-0	mon	12	アシッドスライム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-12.png			
-0	mon	13	グレイウーズ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-13.png			
-0	mon	14	マッドジェリー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-14.png			
-0	mon	15	白猫	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-15.png			
-0	mon	16	黒猫	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-16.png			
-0	mon	17	三毛猫	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-17.png			
-0	mon	18	コソドロ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-18.png			
-0	mon	19	ゴロツキ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-19.png			
-0	mon	20	虎猫	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-20.png			
-0	mon	21	ヒドラ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-21.png			
-0	mon	22	ハーピー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-22.png			
-0	mon	23	ベヒモス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-23.png			
-0	mon	24	アーマゴーレム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-24.png			
-0	mon	25	ロックゴーレム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-25.png			
-0	mon	26	ストーンゴーレム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-26.png			
-0	mon	27	ゴースト	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-27.png			
-0	mon	28	スペクター	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-28.png			
-0	mon	29	フェアリー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-29.png			
-0	mon	30	ピクシー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-30.png			
-0	mon	31	ネクロマンサー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-31.png			
-0	mon	32	デスウォリアー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-32.png			
-0	mon	33	グール	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-33.png			
-0	mon	34		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-34.png			
-0	mon	35		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-35.png			
-0	mon	36	迷子の子供	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-36.png			
-0	mon	37	かじ屋見習い	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-37.png			
-0	mon	38	囚人	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-38.png			
-0	mon	39		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-39.png			
-0	mon	40		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-40.png			
-0	mon	41		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-41.png			
-0	mon	42		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-42.png			
-0	mon	43	インプ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-43.png			
-0	mon	44	グレムリン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-44.png			
-0	mon	45	囚人	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-45.png			
-0	mon	46	デーモン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-46.png			
-0	mon	47	ハーピー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-47.png			
-0	mon	48	レッドクラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-48.png			
-0	mon	49	ギルドマスター	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-49.png			
-0	mon	50	コカトリス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-50.png			
-0	mon	51	ソーサラー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-51.png			
-0	mon	52	アルケミスト	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-52.png			
-0	mon	53	スプライト	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-53.png			
-0	mon	54		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-54.png			
-0	mon	55	チンピラ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-55.png			
-0	mon	56	ウィザード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-56.png			
-0	mon	57	ペイルクラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-57.png			
-0	mon	58	ウォーロック	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-58.png			
-0	mon	59		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-59.png			
-0	mon	60	デブ猫	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-60.png			
-0	mon	61	サッキュバス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-61.png			
-0	mon	62	ストレンジャー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-62.png			
-0	mon	63		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-63.png			
-0	mon	64	ドッペルゲンガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-64.png			
-0	mon	65	アークデーモン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-65.png			
-0	mon	66	エンジェル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-66.png			
-0	mon	67	アークエンジェル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-67.png			
-0	mon	68	堕天使	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-68.png			
-0	mon	69	デモンロード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-69.png			
-0	mon	70	パイレーツ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-70.png			
-0	mon	71	バイキング	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-71.png			
-0	mon	72	セラフ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-72.png			
-0	mon	73	セラフ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-73.png			
-0	mon	74		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-74.png			
-0	mon	75		tmp\\SLPS-01903\\name-table-workflow\\masks\\name-mon-75.png			
-0	status	0	正常	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-00.png			
-0	status	1	気絶	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-01.png			
-0	status	2	毒化	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-02.png			
-0	status	3	眠り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-03.png			
-0	status	4	石化	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-04.png			
-0	status	5	凍結	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-05.png			
-0	status	6	沈黙	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-06.png			
-0	status	7	魅了	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-07.png			
-0	status	8	マヒ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-08.png			
-0	status	9	透明	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-09.png			
-0	status	10	俊敏	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-10.png			
-0	status	11	浮遊	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-status-11.png			
-0	item	0	薬草	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-00.png			
-0	item	1	毒消し	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-01.png			
-0	item	2	妖精の涙	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-02.png			
-0	item	3	カボチャの種	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-03.png			
-0	item	4	回復薬	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-04.png			
-0	item	5	癒しの花	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-05.png			
-0	item	6	気付け薬	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-06.png			
-0	item	7	ウオッカ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-07.png			
-0	item	8	ブランデー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-08.png			
-0	item	9	ロングソード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-09.png			
-0	item	10	ブロードソード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-10.png			
-0	item	11	バスタードソード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-11.png			
-0	item	12	クレイモアー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-12.png			
-0	item	13	フランベルジュ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-13.png			
-0	item	14	グレートソード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-14.png			
-0	item	15	アイスブレード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-15.png			
-0	item	16	フレイムソード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-16.png			
-0	item	17	サンダーブレード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-17.png			
-0	item	18	ゴッドスレイヤー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-18.png			
-0	item	19	パワーリスト	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-19.png			
-0	item	20	ブラスナックル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-20.png			
-0	item	21	バグナグ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-21.png			
-0	item	22	アイアンフィスト	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-22.png			
-0	item	23	シルバーファング	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-23.png			
-0	item	24	ドラゴンクロー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-24.png			
-0	item	25	明鏡止水の拳	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-25.png			
-0	item	26	アースバインダー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-26.png			
-0	item	27	スタングラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-27.png			
-0	item	28	魔人の手袋	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-28.png			
-0	item	29	魔法使いの杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-29.png			
-0	item	30	魔術師の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-30.png			
-0	item	31	炎術士の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-31.png			
-0	item	32	アルケミストの杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-32.png			
-0	item	33	縛炎の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-33.png			
-0	item	34	賢者の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-34.png			
-0	item	35	深紅の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-35.png			
-0	item	36	エルシェーラの杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-36.png			
-0	item	37	チェーンウィップ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-37.png			
-0	item	38	金槌	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-38.png			
-0	item	39	バイク	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-39.png			
-0	item	40	ジャベリン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-40.png			
-0	item	41	トライデント	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-41.png			
-0	item	42	バトルフォーク	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-42.png			
-0	item	43	ヴージ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-43.png			
-0	item	44	バトルランス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-44.png			
-0	item	45	ハルバード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-45.png			
-0	item	46	トリトーン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-46.png			
-0	item	47	ヴァルキリア	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-47.png			
-0	item	48	グングニル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-48.png			
-0	item	49	手袋	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-49.png			
-0	item	50	ミトン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-50.png			
-0	item	51	手首丈グラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-51.png			
-0	item	52	イブニンググラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-52.png			
-0	item	53	ゴーントレット	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-53.png			
-0	item	54	ロイヤルグラブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-54.png			
-0	item	55	ミスリルショーティ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-55.png			
-0	item	56	フェザーコート	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-56.png			
-0	item	57	堕天使の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-57.png			
-0	item	58	ブロンズメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-58.png			
-0	item	59	おもちゃの杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-59.png			
-0	item	60	ステッキ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-60.png			
-0	item	61	夢見る杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-61.png			
-0	item	62	妖精さんの杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-62.png			
-0	item	63	無口な杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-63.png			
-0	item	64	真っ黒な杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-64.png			
-0	item	65	変な色の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-65.png			
-0	item	66	お友達の杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-66.png			
-0	item	67	鳥になる杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-67.png			
-0	item	68	すごい杖	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-68.png			
-0	item	69	ダガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-69.png			
-0	item	70	シルバーダガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-70.png			
-0	item	71	グラディウス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-71.png			
-0	item	72	ポイズンダガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-72.png			
-0	item	73	ドリームナイフ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-73.png			
-0	item	74	フライングダガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-74.png			
-0	item	75	ツインダガー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-75.png			
-0	item	76	小鉄	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-76.png			
-0	item	77	ソウルバスター	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-77.png			
-0	item	78	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-78.png			
-0	item	79	クロスアーマー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-79.png			
-0	item	80	ソフトレザー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-80.png			
-0	item	81	ハードレザー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-81.png			
-0	item	82	リングメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-82.png			
-0	item	83	スケールアーマー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-83.png			
-0	item	84	ブレストアーマー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-84.png			
-0	item	85	スプリントメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-85.png			
-0	item	86	チェインメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-86.png			
-0	item	87	バンデッドメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-87.png			
-0	item	88	プレートメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-88.png			
-0	item	89	コールドチェイン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-89.png			
-0	item	90	ミスリルチェイン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-90.png			
-0	item	91	ドラゴンスケール	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-91.png			
-0	item	92	ホーリープレート	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-92.png			
-0	item	93	ゴッズメイル	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-93.png			
-0	item	94	レオタード	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-94.png			
-0	item	95	ハントジャケット	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-95.png			
-0	item	96	シェイド	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-96.png			
-0	item	97	シルクローブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-97.png			
-0	item	98	ファインローブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-98.png			
-0	item	99	アーミングコート	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-99.png			
-0	item	100	武道着	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-100.png			
-0	item	101	龍の道着	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-101.png			
-0	item	102	ジンの衣	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-102.png			
-0	item	103	バトルスーツ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-103.png			
-0	item	104	ワンピース	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-104.png			
-0	item	105	ドレス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-105.png			
-0	item	106	パーティドレス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-106.png			
-0	item	107	チャイナドレス	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-107.png			
-0	item	108	天使の羽衣	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-108.png			
-0	item	109	子供服	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-109.png			
-0	item	110	チョッキ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-110.png			
-0	item	111	魔法使いの服	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-111.png			
-0	item	112	魔術師の服	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-112.png			
-0	item	113	達人の服	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-113.png			
-0	item	114	炎のローブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-114.png			
-0	item	115	大魔導師の服	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-115.png			
-0	item	116	賢者のローブ	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-116.png			
-0	item	117	レジストリング	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-117.png			
-0	item	118	プロテクトリング	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-118.png			
-0	item	119	灼熱の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-119.png			
-0	item	120	氷雪の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-120.png			
-0	item	121	疾風の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-121.png			
-0	item	122	大地の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-122.png			
-0	item	123	降魔の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-123.png			
-0	item	124	慈愛の指輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-124.png			
-0	item	125	ジンの腕輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-125.png			
-0	item	126	破魔の腕輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-126.png			
-0	item	127	煉獄の腕輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-127.png			
-0	item	128	時空の腕輪	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-128.png			
-0	item	129	敵剣A	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-129.png			
-0	item	130	敵剣B	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-130.png			
-0	item	131	敵剣C	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-131.png			
-0	item	132	敵剣D	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-132.png			
-0	item	133	敵剣E	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-133.png			
-0	item	134	敵槍A	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-134.png			
-0	item	135	敵槍B	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-135.png			
-0	item	136	敵槍C	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-136.png			
-0	item	137	敵槍D	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-137.png			
-0	item	138	敵槍E	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-138.png			
-0	item	139	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-139.png			
-0	item	140	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-140.png			
-0	item	141	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-141.png			
-0	item	142	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-142.png			
-0	item	143	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-143.png			
-0	item	144	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-144.png			
-0	item	145	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-145.png			
-0	item	146	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-146.png			
-0	item	147	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-147.png			
-0	item	148	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-148.png			
-0	item	149	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-149.png			
-0	item	150	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-150.png			
-0	item	151	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-151.png			
-0	item	152	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-152.png			
-0	item	153	予備	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-153.png			
-0	item	154	マッシュルーム	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-154.png			
-0	item	155	魔導書	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-155.png			
-0	item	156	力の実	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-156.png			
-0	item	157	守護石	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-157.png			
-0	item	158	百科事典	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-158.png			
-0	item	159	タリスマン	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-159.png			
-0	item	160	魔力回復剤	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-160.png			
-0	item	161	ソーマの花	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-161.png			
-0	item	162	エリクサー	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-162.png			
-0	item	163	何か(体験版用)	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-163.png			
-0	item	164	焦熱の首飾り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-164.png			
-0	item	165	水晶の首飾り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-165.png			
-0	item	166	稲妻の首飾り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-166.png			
-0	item	167	地脈の首飾り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-167.png			
-0	item	168	祝福の首飾り	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-item-168.png			
+1	char	1	カリン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-01.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-01-ko.png	카린	12
+1	char	2	アル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-02.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-02-ko.png	알	12
+1	char	3	アリス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-03.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-03-ko.png	아리스	12
+1	char	4	サーラ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-04.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-04-ko.png	사라	12
+1	char	5	ラディッシュ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-05.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-05-ko.png	라딧슈	12
+1	char	6	ソフィア	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-06.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-06-ko.png	소피아	12
+1	char	7	ルル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-07.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-07-ko.png	루루	12
+0	char	8		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-08.png			
+1	char	9	???	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-09.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-09-ko.png	? ? ?	12
+1	char	10	T.T.	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-10.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-10-ko.png	T. T.	12
+1	char	11	ソーン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-11.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-11-ko.png	손	12
+1	char	12	マクドガル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-12.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-12-ko.png	마크도갈	12
+1	char	13	ガストン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-13.png	tmp\\SLPS-01903\\name-table-workflow\\masks\\name-char-13-ko.png	가스톤	12
+0	char	14		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-14.png			
+1	char	15	マスター	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-15.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-15-ko.png	마스터	12
+1	char	16	まっする親父	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-16.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-16-ko.png	근육아저씨	12
+1	char	17	ショップ姉ちゃん	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-17.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-17-ko.png	숍언니	12
+1	char	18	怒りのカリン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-18.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-18-ko.png	분노의카린	12
+1	char	19	困ったアリス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-19.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-19-ko.png	곤란한아리스	12
+1	char	20	カトリーヌ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-20.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-20-ko.png	카트린느	12
+1	char	21	ベヒモス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-21.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-21-ko.png	베히모스	12
+1	char	22	デュマ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-22.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-22-ko.png	듀마	12
+1	char	23	ジャン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-23.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-23-ko.png	존	12
+1	char	24	ドッペルゲンガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-24.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-24-ko.png	도플갱어	12
+1	char	25	アルヴィース	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-25.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-25-ko.png	앨비스	12
+1	char	26	ソーン・ヴァイス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-26.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-26-ko.png	손·바이스	12
+1	char	27	ヒーちゃん	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-27.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-27-ko.png	삐야기	12
+1	char	28	コカちゃん	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-28.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-28-ko.png	코카찡	12
+1	char	29	ギルドマスター	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-29.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-29-ko.png	길드마스터	12
+0	char	30		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-char-30.png			
+1	mon	0	魔法使い	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-00.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-00-ko.png	마법사	12
+1	mon	1	剣士	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-01.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-01-ko.png	검사	12
+1	mon	2	ヒーラー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-02.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-02-ko.png	힐러	12
+1	mon	3	シャーマン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-03.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-03-ko.png	주술사	12
+1	mon	4	セイレーン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-04.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-04-ko.png	세이렌	12
+1	mon	5	盗賊	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-05.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-05-ko.png	도적	12
+1	mon	6	精霊使い	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-06.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-06-ko.png	정령술사	12
+1	mon	7	NPC	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-07.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-07-ko.png	NPC	12
+1	mon	8	宝箱	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-08.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-08-ko.png	보물상자	12
+1	mon	9	金	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-09.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-09-ko.png	골드	12
+1	mon	10	ブルースライム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-10.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-10-ko.png	블루슬라임	12
+1	mon	11	グリーンスライム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-11.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-11-ko.png	그린슬라임	12
+1	mon	12	アシッドスライム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-12.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-12-ko.png	애시드슬라임	12
+1	mon	13	グレイウーズ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-13.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-13-ko.png	그레이우즈	12
+1	mon	14	マッドジェリー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-14.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-14-ko.png	머드젤리	12
+1	mon	15	白猫	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-15.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-15-ko.png	하얀고양이	12
+1	mon	16	黒猫	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-16.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-16-ko.png	검은고양이	12
+1	mon	17	三毛猫	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-17.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-17-ko.png	삼색고양이	12
+1	mon	18	コソドロ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-18.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-18-ko.png	콘도르	12
+1	mon	19	ゴロツキ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-19.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-19-ko.png	건달	12
+1	mon	20	虎猫	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-20.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-20-ko.png	얼룩고양이	12
+1	mon	21	ヒドラ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-21.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-21-ko.png	히드라	12
+1	mon	22	ハーピー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-22.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-22-ko.png	하피	12
+1	mon	23	ベヒモス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-23.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-23-ko.png	베히모스	12
+1	mon	24	アーマゴーレム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-24.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-24-ko.png	아머골렘	12
+1	mon	25	ロックゴーレム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-25.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-25-ko.png	록골렘	12
+1	mon	26	ストーンゴーレム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-26.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-26-ko.png	스톤골렘	12
+1	mon	27	ゴースト	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-27.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-27-ko.png	고스트	12
+1	mon	28	スペクター	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-28.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-28-ko.png	스펙터	12
+1	mon	29	フェアリー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-29.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-29-ko.png	페어리	12
+1	mon	30	ピクシー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-30.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-30-ko.png	픽시	12
+1	mon	31	ネクロマンサー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-31.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-31-ko.png	네크로맨서	12
+1	mon	32	デスウォリアー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-32.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-32-ko.png	데스워리어	12
+1	mon	33	グール	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-33.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-33-ko.png	구울	12
+0	mon	34		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-34.png			
+0	mon	35		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-35.png			
+1	mon	36	迷子の子供	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-36.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-36-ko.png	길 잃은 아이	12
+1	mon	37	かじ屋見習い	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-37.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-37-ko.png	견습 대장장이	12
+1	mon	38	囚人	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-38.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-38-ko.png	죄수	12
+0	mon	39		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-39.png			
+0	mon	40		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-40.png			
+0	mon	41		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-41.png			
+0	mon	42		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-42.png			
+1	mon	43	インプ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-43.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-43-ko.png	임프	12
+1	mon	44	グレムリン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-44.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-44-ko.png	그렘린	12
+1	mon	45	囚人	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-45.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-45-ko.png	죄수	12
+1	mon	46	デーモン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-46.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-46-ko.png	데몬	12
+1	mon	47	ハーピー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-47.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-47-ko.png	하피	12
+1	mon	48	レッドクラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-48.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-48-ko.png	레드크랩	12
+1	mon	49	ギルドマスター	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-49.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-49-ko.png	길드마스터	12
+1	mon	50	コカトリス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-50.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-50-ko.png	코카트리스	12
+1	mon	51	ソーサラー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-51.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-51-ko.png	소서러	12
+1	mon	52	アルケミスト	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-52.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-52-ko.png	알케미스트	12
+1	mon	53	スプライト	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-53.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-53-ko.png	스프라이트	12
+0	mon	54		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-54.png			
+1	mon	55	チンピラ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-55.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-55-ko.png	양아치	12
+1	mon	56	ウィザード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-56.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-56-ko.png	위자드	12
+1	mon	57	ペイルクラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-57.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-57-ko.png	페일크랩	12
+1	mon	58	ウォーロック	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-58.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-58-ko.png	워록	12
+0	mon	59		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-59.png			
+1	mon	60	デブ猫	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-60.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-60-ko.png	뚱보고양이	12
+1	mon	61	サッキュバス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-61.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-61-ko.png	서큐버스	12
+1	mon	62	ストレンジャー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-62.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-62-ko.png	이방인	12
+0	mon	63		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-63.png			
+1	mon	64	ドッペルゲンガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-64.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-64-ko.png	도플갱어	12
+1	mon	65	アークデーモン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-65.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-65-ko.png	아크데몬	12
+1	mon	66	エンジェル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-66.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-66-ko.png	엔젤	12
+1	mon	67	アークエンジェル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-67.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-67-ko.png	아크엔젤	12
+1	mon	68	堕天使	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-68.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-68-ko.png	타락천사	12
+1	mon	69	デモンロード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-69.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-69-ko.png	데몬로드	12
+1	mon	70	パイレーツ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-70.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-70-ko.png	해적	12
+1	mon	71	バイキング	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-71.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-71-ko.png	바이킹	12
+1	mon	72	セラフ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-72.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-72-ko.png	세라프	12
+1	mon	73	セラフ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-73.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-73-ko.png	세라프	12
+0	mon	74		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-74.png			
+0	mon	75		F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-mon-75.png			
+1	status	0	正常	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-00.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-00-ko.png	정상	12
+1	status	1	気絶	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-01.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-01-ko.png	기절	12
+1	status	2	毒化	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-02.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-02-ko.png	중독	12
+1	status	3	眠り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-03.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-03-ko.png	수면	12
+1	status	4	石化	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-04.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-04-ko.png	석화	12
+1	status	5	凍結	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-05.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-05-ko.png	동결	12
+1	status	6	沈黙	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-06.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-06-ko.png	침묵	12
+1	status	7	魅了	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-07.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-07-ko.png	매료	12
+1	status	8	マヒ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-08.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-08-ko.png	마비	12
+1	status	9	透明	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-09.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-09-ko.png	투명	12
+1	status	10	俊敏	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-10.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-10-ko.png	피로	12
+1	status	11	浮遊	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-11.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-status-11-ko.png	부유	12
+1	item	0	薬草	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-00.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-00-ko.png	약초	12
+1	item	1	毒消し	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-01.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-01-ko.png	해독초	12
+1	item	2	妖精の涙	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-02.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-02-ko.png	요정의눈물	12
+1	item	3	カボチャの種	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-03.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-03-ko.png	호박씨	12
+1	item	4	回復薬	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-04.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-04-ko.png	회복약	12
+1	item	5	癒しの花	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-05.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-05-ko.png	치유의꽃	12
+1	item	6	気付け薬	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-06.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-06-ko.png	각성제	12
+1	item	7	ウオッカ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-07.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-07-ko.png	보드카	12
+1	item	8	ブランデー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-08.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-08-ko.png	브랜디	12
+1	item	9	ロングソード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-09.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-09-ko.png	롱소드	12
+1	item	10	ブロードソード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-10.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-10-ko.png	브로드소드	12
+1	item	11	バスタードソード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-11.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-11-ko.png	바스타드소드	12
+1	item	12	クレイモアー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-12.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-12-ko.png	크레이모어	12
+1	item	13	フランベルジュ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-13.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-13-ko.png	플람베르크	12
+1	item	14	グレートソード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-14.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-14-ko.png	그레이트소드	12
+1	item	15	アイスブレード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-15.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-15-ko.png	아이스블레이드	12
+1	item	16	フレイムソード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-16.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-16-ko.png	플레임소드	12
+1	item	17	サンダーブレード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-17.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-17-ko.png	썬더블레이드	12
+1	item	18	ゴッドスレイヤー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-18.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-18-ko.png	갓슬레이어	12
+1	item	19	パワーリスト	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-19.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-19-ko.png	파워리스트	12
+1	item	20	ブラスナックル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-20.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-20-ko.png	황동너클	12
+1	item	21	バグナグ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-21.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-21-ko.png	바그낙	12
+1	item	22	アイアンフィスト	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-22.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-22-ko.png	아이언피스트	12
+1	item	23	シルバーファング	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-23.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-23-ko.png	실버팽	12
+1	item	24	ドラゴンクロー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-24.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-24-ko.png	드래곤클로	12
+1	item	25	明鏡止水の拳	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-25.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-25-ko.png	명경지수의 주먹	12
+1	item	26	アースバインダー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-26.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-26-ko.png	어스바인더	12
+1	item	27	スタングラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-27.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-27-ko.png	스턴글러브	12
+1	item	28	魔人の手袋	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-28.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-28-ko.png	마인장갑	12
+1	item	29	魔法使いの杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-29.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-29-ko.png	마법사의 지팡이	12
+1	item	30	魔術師の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-30.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-30-ko.png	마술사의 지팡이	12
+1	item	31	炎術士の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-31.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-31-ko.png	화염술사의 지팡이	12
+1	item	32	アルケミストの杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-32.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-32-ko.png	연금술사의 지팡이	12
+1	item	33	縛炎の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-33.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-33-ko.png	불꽃 지팡이	12
+1	item	34	賢者の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-34.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-34-ko.png	현자의 지팡이	12
+1	item	35	深紅の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-35.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-35-ko.png	진홍 지팡이	12
+1	item	36	エルシェーラの杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-36.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-36-ko.png	엘세라 지팡이	12
+1	item	37	チェーンウィップ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-37.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-37-ko.png	사슬채찍	12
+1	item	38	金槌	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-38.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-38-ko.png	쇠망치	12
+1	item	39	バイク	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-39.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-39-ko.png	파이크	12
+1	item	40	ジャベリン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-40.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-40-ko.png	재블린	12
+1	item	41	トライデント	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-41.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-41-ko.png	삼지창	12
+1	item	42	バトルフォーク	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-42.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-42-ko.png	배틀포크	12
+1	item	43	ヴージ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-43.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-43-ko.png	부쥬	12
+1	item	44	バトルランス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-44.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-44-ko.png	기병창	12
+1	item	45	ハルバード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-45.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-45-ko.png	핼버드	12
+1	item	46	トリトーン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-46.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-46-ko.png	트리톤	12
+1	item	47	ヴァルキリア	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-47.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-47-ko.png	발키리	12
+1	item	48	グングニル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-48.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-48-ko.png	궁니르	12
+1	item	49	手袋	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-49.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-49-ko.png	장갑	12
+1	item	50	ミトン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-50.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-50-ko.png	벙어리 장갑	12
+1	item	51	手首丈グラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-51.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-51-ko.png	손목길이 글러브	12
+1	item	52	イブニンググラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-52.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-52-ko.png	이브닝 글러브	12
+1	item	53	ゴーントレット	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-53.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-53-ko.png	건틀릿	12
+1	item	54	ロイヤルグラブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-54.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-54-ko.png	로얄글러브	12
+1	item	55	ミスリルショーティ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-55.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-55-ko.png	미스릴 쇼티	12
+1	item	56	フェザーコート	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-56.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-56-ko.png	깃털코트	12
+1	item	57	堕天使の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-57.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-57-ko.png	타락천사의 반지	12
+1	item	58	ブロンズメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-58.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-58-ko.png	청동갑옷	12
+1	item	59	おもちゃの杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-59.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-59-ko.png	장난감 지팡이	12
+1	item	60	ステッキ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-60.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-60-ko.png	막대기	12
+1	item	61	夢見る杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-61.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-61-ko.png	꿈꾸는 지팡이	12
+1	item	62	妖精さんの杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-62.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-62-ko.png	요정 지팡이	12
+1	item	63	無口な杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-63.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-63-ko.png	침묵의 지팡이	12
+1	item	64	真っ黒な杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-64.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-64-ko.png	검은색 지팡이	12
+1	item	65	変な色の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-65.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-65-ko.png	이상한 색 지팡이	12
+1	item	66	お友達の杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-66.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-66-ko.png	친구 지팡이	12
+1	item	67	鳥になる杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-67.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-67-ko.png	새가되는 지팡이	12
+1	item	68	すごい杖	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-68.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-68-ko.png	굉장한 지팡이	12
+1	item	69	ダガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-69.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-69-ko.png	단검	12
+1	item	70	シルバーダガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-70.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-70-ko.png	은단검	12
+1	item	71	グラディウス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-71.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-71-ko.png	글라디우스	12
+1	item	72	ポイズンダガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-72.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-72-ko.png	독단검	12
+1	item	73	ドリームナイフ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-73.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-73-ko.png	드림나이프	12
+1	item	74	フライングダガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-74.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-74-ko.png	플라잉 단검	12
+1	item	75	ツインダガー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-75.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-75-ko.png	트윈 단검	12
+1	item	76	小鉄	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-76.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-76-ko.png	쇼텔	12
+1	item	77	ソウルバスター	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-77.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-77-ko.png	소울버스터	12
+1	item	78	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-78.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-78-ko.png	예비	12
+1	item	79	クロスアーマー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-79.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-79-ko.png	천갑옷	12
+1	item	80	ソフトレザー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-80.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-80-ko.png	소프트레더	12
+1	item	81	ハードレザー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-81.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-81-ko.png	하드레더	12
+1	item	82	リングメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-82.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-82-ko.png	링메일	12
+1	item	83	スケールアーマー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-83.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-83-ko.png	비늘갑옷	12
+1	item	84	ブレストアーマー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-84.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-84-ko.png	흉갑	12
+1	item	85	スプリントメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-85.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-85-ko.png	미늘갑옷	12
+1	item	86	チェインメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-86.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-86-ko.png	사슬갑옷	12
+1	item	87	バンデッドメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-87.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-87-ko.png	띠갑옷	12
+1	item	88	プレートメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-88.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-88-ko.png	판금갑옷	12
+1	item	89	コールドチェイン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-89.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-89-ko.png	콜드체인	12
+1	item	90	ミスリルチェイン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-90.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-90-ko.png	미스릴체인	12
+1	item	91	ドラゴンスケール	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-91.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-91-ko.png	용비늘 갑옷	12
+1	item	92	ホーリープレート	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-92.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-92-ko.png	성스러운 판금갑옷	12
+1	item	93	ゴッズメイル	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-93.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-93-ko.png	갓메일	12
+1	item	94	レオタード	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-94.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-94-ko.png	레오타드	12
+1	item	95	ハントジャケット	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-95.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-95-ko.png	헌팅재킷	12
+1	item	96	シェイド	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-96.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-96-ko.png	그림자 옷	12
+1	item	97	シルクローブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-97.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-97-ko.png	실크로브	12
+1	item	98	ファインローブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-98.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-98-ko.png	파인로브	12
+1	item	99	アーミングコート	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-99.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-99-ko.png	아밍코트	12
+1	item	100	武道着	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-100.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-100-ko.png	무도복	12
+1	item	101	龍の道着	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-101.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-101-ko.png	용의 도복	12
+1	item	102	ジンの衣	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-102.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-102-ko.png	지니의 옷	12
+1	item	103	バトルスーツ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-103.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-103-ko.png	전투복	12
+1	item	104	ワンピース	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-104.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-104-ko.png	원피스	12
+1	item	105	ドレス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-105.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-105-ko.png	드레스	12
+1	item	106	パーティドレス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-106.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-106-ko.png	파티드레스	12
+1	item	107	チャイナドレス	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-107.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-107-ko.png	치파오	12
+1	item	108	天使の羽衣	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-108.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-108-ko.png	천사의 날개옷	12
+1	item	109	子供服	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-109.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-109-ko.png	아동복	12
+1	item	110	チョッキ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-110.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-110-ko.png	조끼	12
+1	item	111	魔法使いの服	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-111.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-111-ko.png	마법사의 옷	12
+1	item	112	魔術師の服	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-112.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-112-ko.png	마술사의 옷	12
+1	item	113	達人の服	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-113.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-113-ko.png	달인의 옷	12
+1	item	114	炎のローブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-114.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-114-ko.png	화염 로브	12
+1	item	115	大魔導師の服	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-115.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-115-ko.png	대마도사의 옷	12
+1	item	116	賢者のローブ	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-116.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-116-ko.png	현자의 로브	12
+1	item	117	レジストリング	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-117.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-117-ko.png	레지스트링	12
+1	item	118	プロテクトリング	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-118.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-118-ko.png	프로텍트링	12
+1	item	119	灼熱の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-119.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-119-ko.png	작열의 반지	12
+1	item	120	氷雪の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-120.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-120-ko.png	빙설의 반지	12
+1	item	121	疾風の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-121.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-121-ko.png	질풍의 반지	12
+1	item	122	大地の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-122.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-122-ko.png	대지의 반지	12
+1	item	123	降魔の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-123.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-123-ko.png	항마의 반지	12
+1	item	124	慈愛の指輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-124.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-124-ko.png	사랑의 반지	12
+1	item	125	ジンの腕輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-125.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-125-ko.png	지니의 팔찌	12
+1	item	126	破魔の腕輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-126.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-126-ko.png	파마의 팔찌	12
+1	item	127	煉獄の腕輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-127.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-127-ko.png	연옥의 팔찌	12
+1	item	128	時空の腕輪	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-128.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-128-ko.png	시공의 팔찌	12
+1	item	129	敵剣A	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-129.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-129-ko.png	적검A	12
+1	item	130	敵剣B	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-130.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-130-ko.png	적검B	12
+1	item	131	敵剣C	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-131.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-131-ko.png	적검C	12
+1	item	132	敵剣D	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-132.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-132-ko.png	적검D	12
+1	item	133	敵剣E	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-133.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-133-ko.png	적검E	12
+1	item	134	敵槍A	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-134.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-134-ko.png	적창A	12
+1	item	135	敵槍B	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-135.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-135-ko.png	적창B	12
+1	item	136	敵槍C	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-136.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-136-ko.png	적창C	12
+1	item	137	敵槍D	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-137.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-137-ko.png	적창D	12
+1	item	138	敵槍E	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-138.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-138-ko.png	적창E	12
+1	item	139	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-139.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-139-ko.png	예비	12
+1	item	140	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-140.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-140-ko.png	예비	12
+1	item	141	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-141.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-141-ko.png	예비	12
+1	item	142	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-142.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-142-ko.png	예비	12
+1	item	143	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-143.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-143-ko.png	예비	12
+1	item	144	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-144.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-144-ko.png	예비	12
+1	item	145	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-145.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-145-ko.png	예비	12
+1	item	146	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-146.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-146-ko.png	예비	12
+1	item	147	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-147.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-147-ko.png	예비	12
+1	item	148	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-148.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-148-ko.png	예비	12
+1	item	149	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-149.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-149-ko.png	예비	12
+1	item	150	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-150.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-150-ko.png	예비	12
+1	item	151	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-151.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-151-ko.png	예비	12
+1	item	152	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-152.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-152-ko.png	예비	12
+1	item	153	予備	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-153.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-153-ko.png	예비	12
+1	item	154	マッシュルーム	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-154.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-154-ko.png	버섯	12
+1	item	155	魔導書	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-155.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-155-ko.png	마도서	12
+1	item	156	力の実	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-156.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-156-ko.png	힘의 열매	12
+1	item	157	守護石	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-157.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-157-ko.png	수호석	12
+1	item	158	百科事典	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-158.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-158-ko.png	백과사전	12
+1	item	159	タリスマン	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-159.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-159-ko.png	탈리스만	12
+1	item	160	魔力回復剤	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-160.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-160-ko.png	마력회복제	12
+1	item	161	ソーマの花	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-161.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-161-ko.png	소마꽃	12
+1	item	162	エリクサー	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-162.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-162-ko.png	엘릭서	12
+1	item	163	何か(体験版用)	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-163.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-163-ko.png	뭔가	12
+1	item	164	焦熱の首飾り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-164.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-164-ko.png	뜨거운 목걸이	12
+1	item	165	水晶の首飾り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-165.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-165-ko.png	수정 목걸이	12
+1	item	166	稲妻の首飾り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-166.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-166-ko.png	번개 목걸이	12
+1	item	167	地脈の首飾り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-167.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-167-ko.png	지맥 목걸이	12
+1	item	168	祝福の首飾り	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-168.png	F:\\workspace-server\\create-retro-game-kr-patch-main\\trDatas\\name-table-workflow\\masks\\name-item-168-ko.png	축복 목걸이	12
