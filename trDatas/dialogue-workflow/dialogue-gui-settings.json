@@ -17,6 +17,10 @@
     "opcode": "0x41",
     "mode": "Single",
     "trim": true,
-    "instant_display": false
+    "instant_display": false,
+    "finale_scan_start": "0xb8c9000",
+    "finale_scan_end": "0xC5ec000",
+    "finale_ink_min": "20",
+    "finale_ink_max": "1500"
   }
 }

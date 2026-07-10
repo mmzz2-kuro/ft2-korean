@@ -188,6 +188,7 @@ class DialogueWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Load TSV", command=self.load_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Save TSV", command=self.save_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Change TSV Path...", command=self.change_tsv_path).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Import Finale TSV", command=self.import_finale_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check Filled", command=lambda: self.set_checked_bulk("filled")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check All", command=lambda: self.set_checked_bulk("all")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Uncheck All", command=lambda: self.set_checked_bulk("none")).pack(side="left", padx=(0, 6))
@@ -849,6 +850,107 @@ class DialogueWorkflowGui(tk.Tk):
             self.tsv_headers = []
             self._refresh_tree()
 
+    def import_finale_tsv(self):
+        current = ROOT / "tmp/SLPS-01903/finale-text-workflow/finale-text.tsv"
+        chosen = filedialog.askopenfilename(
+            initialdir=str(current.parent if current.exists() else ROOT),
+            initialfile=current.name,
+            filetypes=[("TSV files", "*.tsv"), ("All files", "*.*")],
+        )
+        if not chosen:
+            return
+        if self.selected_index is not None:
+            self.update_selected_row(silent=True)
+
+        path = Path(chosen)
+        lines = path.read_text(encoding="utf-8").splitlines()
+        if not lines:
+            self._append_log(f"[warn] empty finale TSV: {rel(path)}\n")
+            return
+
+        source_headers = lines[0].split("\t")
+        imported_rows = []
+        for line in lines[1:]:
+            if not line.strip():
+                continue
+            values = line.split("\t")
+            src = {
+                header: unescape_tsv(values[idx] if idx < len(values) else "")
+                for idx, header in enumerate(source_headers)
+            }
+            address = src.get("address", "").strip()
+            if not address:
+                continue
+            try:
+                address = self._normalize_finale_addr(address)
+            except ValueError:
+                continue
+            imported_rows.append(self._dialogue_row_from_finale_row(src, address))
+
+        if not imported_rows:
+            self._append_log(f"[warn] no finale rows imported from: {rel(path)}\n")
+            return
+
+        for header in self.required_tsv_headers:
+            if header not in self.tsv_headers:
+                self.tsv_headers.append(header)
+
+        by_addr = {}
+        for idx, row in enumerate(self.rows):
+            if not self._is_finale_row(row):
+                continue
+            try:
+                by_addr[self._normalize_finale_addr(row.get("address", ""))] = idx
+            except ValueError:
+                pass
+
+        added = 0
+        updated = 0
+        for row in imported_rows:
+            idx = by_addr.get(row["address"])
+            if idx is None:
+                self.rows.append(row)
+                by_addr[row["address"]] = len(self.rows) - 1
+                added += 1
+            else:
+                self.rows[idx].update(row)
+                updated += 1
+
+        self._refresh_tree()
+        self.save_tsv(silent=True)
+        self._append_log(f"imported finale TSV: {added} added, {updated} updated from {rel(path)}\n")
+
+    def _dialogue_row_from_finale_row(self, src, address):
+        mask_pgm = src.get("mask_pgm", "")
+        source_png = src.get("source_png", "")
+        if not mask_pgm and source_png:
+            mask_pgm = str(Path(source_png).with_suffix(".pgm"))
+        if not mask_pgm:
+            mask_pgm = str(Path(self.vars["mask_dir"].get()) / f"finale-text-{address}.pgm")
+        note = src.get("note", "") or src.get("source_note", "")
+        return {
+            "enabled": src.get("enabled", "0") or "0",
+            "kind": "finale",
+            "message_id": f"finale:{address}",
+            "address": address,
+            "ink": src.get("ink", ""),
+            "source": "finale",
+            "refs": src.get("refs", ""),
+            "mask_pgm": mask_pgm,
+            "source_png": source_png,
+            "replacement_png": src.get("replacement_png", ""),
+            "source_note": note or f"finale/extra dialogue at DAT {address}",
+            "ko_text": src.get("ko_text", ""),
+            "font_size": src.get("font_size", "12") or "12",
+            "line_height": src.get("line_height", "15") or "15",
+            "pad": src.get("pad", "2") or "2",
+            "ink_max": src.get("ink_max", "2") or "2",
+            "threshold": src.get("threshold", "32") or "32",
+            "bright_threshold": src.get("bright_threshold", "96") or "96",
+            "bold": src.get("bold", "0") or "0",
+            "note": note,
+        }
+
     def load_tsv(self):
         path = Path(self.vars["translation"].get())
         if not path.exists():
@@ -922,7 +1024,7 @@ class DialogueWorkflowGui(tk.Tk):
                 "end",
                 iid=str(idx),
                 values=(
-                    "☑" if row.get("enabled", "1") not in ("0", "false", "False", "") else "☐",
+                    "[x]" if self._is_enabled(row) else "[ ]",
                     row.get("message_id", ""),
                     row.get("source", ""),
                     row.get("refs", ""),
