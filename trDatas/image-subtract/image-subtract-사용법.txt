@@ -1,0 +1,1 @@
+python scripts/mask-subtract-image.py <a.png> <b.png> <out.png> [--white-threshold N]
