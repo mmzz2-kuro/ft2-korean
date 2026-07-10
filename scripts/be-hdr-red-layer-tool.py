@@ -7,7 +7,22 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 
-RED_COLORS = {
+INDEX_COLORS = {
+    1: (255, 96, 180),
+    2: (255, 255, 255),
+    3: (90, 170, 255),
+    4: (30, 70, 255),
+    5: (120, 90, 24),
+    6: (165, 115, 28),
+    7: (210, 145, 36),
+    8: (255, 190, 64),
+    9: (255, 220, 96),
+    10: (255, 245, 150),
+    14: (255, 130, 32),
+    18: (200, 170, 95),
+    24: (170, 120, 45),
+    29: (120, 85, 35),
+    68: (80, 120, 180),
     224: (120, 0, 24),
     225: (150, 0, 32),
     226: (180, 20, 42),
@@ -52,7 +67,7 @@ def read_pgm(path):
 
 
 def write_pgm(path, width, height, pixels):
-    lines = ["P2", "# be-hdr red-layer patched raw palette indices", f"{width} {height}", "255"]
+    lines = ["P2", "# be-hdr palette-layer patched raw palette indices", f"{width} {height}", "255"]
     for y in range(height):
         row = pixels[y * width : (y + 1) * width]
         lines.append(" ".join(str(v) for v in row))
@@ -62,13 +77,13 @@ def write_pgm(path, width, height, pixels):
 
 
 def color_for_index(index):
-    if index in RED_COLORS:
-        return RED_COLORS[index]
+    if index in INDEX_COLORS:
+        return INDEX_COLORS[index]
     return ((index * 47) % 256, (index * 91) % 256, (index * 139) % 256)
 
 
-def context_color(index, red_indexes):
-    if index in red_indexes:
+def context_color(index, target_indexes):
+    if index in target_indexes:
         return color_for_index(index)
     if index == 0:
         return (0, 0, 0)
@@ -81,7 +96,7 @@ def context_color(index, red_indexes):
     return (34, 34, 34)
 
 
-def nearest_red_index(rgb, indexes):
+def nearest_target_index(rgb, indexes):
     best_index, best_dist = None, None
     for index in indexes:
         color = color_for_index(index)
@@ -97,6 +112,7 @@ def export_layers(args):
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     prefix = args.prefix or Path(args.raw_pgm).stem.replace("-raw", "")
+    label = args.label or "red"
 
     edit = Image.new("RGB", (width, height), (0, 0, 0))
     context = Image.new("RGB", (width, height), (24, 24, 24))
@@ -114,8 +130,8 @@ def export_layers(args):
     edit.putdata(edit_data)
     context.putdata(context_data)
 
-    edit_path = out_dir / f"{prefix}-red-edit.png"
-    context_path = out_dir / f"{prefix}-red-context.png"
+    edit_path = out_dir / f"{prefix}-{label}-edit.png"
+    context_path = out_dir / f"{prefix}-{label}-context.png"
     edit.save(edit_path)
     context.save(context_path)
 
@@ -128,10 +144,10 @@ def export_layers(args):
         color = color_for_index(index)
         draw.rectangle((x + 8, y + 8, x + 48, y + 40), fill=color)
         draw.text((x + 58, y + 12), f"{index}  count {counts[index]}", fill=(240, 240, 240))
-    legend_path = out_dir / f"{prefix}-red-legend.png"
+    legend_path = out_dir / f"{prefix}-{label}-legend.png"
     legend.save(legend_path)
 
-    tsv_path = out_dir / f"{prefix}-red-legend.tsv"
+    tsv_path = out_dir / f"{prefix}-{label}-legend.tsv"
     with tsv_path.open("w", encoding="utf-8", newline="") as f:
         f.write("index\tcount\trgb\n")
         for index in indexes:
@@ -159,7 +175,7 @@ def apply_layer(args):
     for i in range(width * height):
         base = i * 3
         rgb = (raw_rgb[base], raw_rgb[base + 1], raw_rgb[base + 2])
-        index, dist = nearest_red_index(rgb, indexes)
+        index, dist = nearest_target_index(rgb, indexes)
         if dist <= threshold_sq:
             if result[i] != index:
                 result[i] = index
@@ -168,11 +184,11 @@ def apply_layer(args):
             ignored += 1
 
     write_pgm(args.out_pgm, width, height, result)
-    print(f"wrote {args.out_pgm}: {changed} red-family pixels changed, {ignored} pixels left unchanged")
+    print(f"wrote {args.out_pgm}: {changed} palette-layer pixels changed, {ignored} pixels left unchanged")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export/apply be-hdr 224-231 red-gradient layer images.")
+    parser = argparse.ArgumentParser(description="Export/apply selected be-hdr palette-index layer images.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_export = sub.add_parser("export")
@@ -180,6 +196,7 @@ def main():
     p_export.add_argument("out_dir")
     p_export.add_argument("--prefix", default="")
     p_export.add_argument("--indexes", default="224-231")
+    p_export.add_argument("--label", default="red")
     p_export.set_defaults(func=export_layers)
 
     p_apply = sub.add_parser("apply")
