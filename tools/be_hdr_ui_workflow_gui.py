@@ -428,6 +428,15 @@ class BeHdrUiWorkflowGui(tk.Tk):
                     process_next()
                     return
 
+                # Most resources' real in-game ink lives at a row-specific index
+                # (almost always 232, matching what apply-behdr-ui-translation.ps1
+                # passes to "patch" as --ink-index) rather than the raw dump's
+                # editing-convention indices 1/2. pack-raw writes the decoded PGM's
+                # indices verbatim with no remapping, so decode must already target
+                # the resource's real ink index -- hardcoding 1/2 here wrote the
+                # wrong index for every resource whose ink_index isn't 1, which is
+                # what corrupted 1204 (ink_index 232) on Direct Apply.
+                ink_index = row.get("ink_index", "").strip() or "1"
                 decoded_pgm = work_dir / f"{resource_id}-decoded.pgm"
                 decode_cmd = [
                     "python",
@@ -436,9 +445,9 @@ class BeHdrUiWorkflowGui(tk.Tk):
                     replacement_png,
                     str(decoded_pgm),
                     "--outline-index",
-                    "1",
+                    ink_index,
                     "--fill-index",
-                    "2",
+                    ink_index,
                 ]
 
                 def run_pack(resource_id=resource_id, decoded_pgm=decoded_pgm):

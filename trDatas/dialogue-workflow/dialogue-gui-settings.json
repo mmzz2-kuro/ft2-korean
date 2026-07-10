@@ -18,8 +18,8 @@
     "mode": "Single",
     "trim": true,
     "instant_display": false,
-    "finale_scan_start": "0xC5ec000",
-    "finale_scan_end": "0xC9ec000",
+    "finale_scan_start": "0x49B0000",
+    "finale_scan_end": "0x49B2000",
     "finale_ink_min": "20",
     "finale_ink_max": "1500"
   }

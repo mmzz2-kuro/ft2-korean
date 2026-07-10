@@ -504,8 +504,13 @@ function lossyFitTileKeys(cellFinalKeys, protectedKeys, capacity) {
     let bestScore = Number.POSITIVE_INFINITY;
     let bestDistance = Number.POSITIVE_INFINITY;
 
+    // Targets must also be non-protected: protected keys already point at an
+    // existing, untouched tile slot, so merging a new/changed pattern onto one
+    // just re-links that cell back to the OLD tile data with no bytes written --
+    // silently discarding the edit while still reporting the fit as "successful".
     for (const [targetKey, targetCount] of counts.entries()) {
       if (targetKey === sourceKey) continue;
+      if (protectedKeys.has(targetKey)) continue;
       const distance = tileDistance(sourceKey, targetKey);
       const score = distance * Math.max(1, sourceCount) - Math.min(targetCount, 32) * 0.01;
       if (score < bestScore) {
@@ -714,6 +719,46 @@ function packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat) {
       `${id}: lossy fit merged ${fit.merged} tile patterns, total distance ${fit.totalDistance}, final unique tiles ${finalUniqueKeyCount}`
     );
   }
+  if (finalUniqueKeyCount > info.tileCapacity) {
+    const claimedKeys = new Set(unchangedKeyCandidates.keys());
+    const excessKeys = [...new Set(cellFinalKeys)].filter((k) => !claimedKeys.has(k));
+    const freeSlotCount = info.tileCapacity - protectedIndexes.size;
+    const pixelOf = (cell) => `(${(cell % info.widthTiles) * 8},${Math.floor(cell / info.widthTiles) * 8})`;
+    console.log(`${id}: ${excessKeys.length} new tile pattern(s) need a slot, only ${freeSlotCount} free (unprotected) slot(s) available`);
+    for (const key of excessKeys) {
+      const cells = [];
+      for (let i = 0; i < cellFinalKeys.length; i += 1) {
+        if (cellFinalKeys[i] === key) cells.push(i);
+      }
+      console.log(`  new pattern needed at pixel ${cells.map(pixelOf).join(", ")}`);
+      let nearestProtectedKey = "";
+      let nearestProtectedDistance = Number.POSITIVE_INFINITY;
+      for (const protectedKey of claimedKeys) {
+        const distance = tileDistance(key, protectedKey);
+        if (distance < nearestProtectedDistance) {
+          nearestProtectedDistance = distance;
+          nearestProtectedKey = protectedKey;
+        }
+      }
+      const nearestProtectedIndex = keyToIndex.get(nearestProtectedKey);
+      console.log(
+        `    nearest EXISTING (protected) tile is #${nearestProtectedIndex}, ${nearestProtectedDistance}/64 bytes different -- snapping onto it instead of overflowing would look like that tile, not the new one`
+      );
+      for (const sacrificeCell of cells) {
+        const sacrificeIndex = cellOldIndexes[sacrificeCell];
+        const sharedWith = cellOldIndexes.reduce((acc, oldIdx, i) => {
+          if (i !== sacrificeCell && oldIdx === sacrificeIndex) acc.push(i);
+          return acc;
+        }, []);
+        console.log(
+          `    donating pixel ${pixelOf(sacrificeCell)}'s old tile #${sacrificeIndex}` +
+            (sharedWith.length
+              ? ` -- ALSO still referenced at pixel ${sharedWith.map(pixelOf).join(", ")}, overwriting would corrupt those spots`
+              : " -- no other cell references it, overwriting looks SAFE")
+        );
+      }
+    }
+  }
   if (finalUniqueKeyCount > info.tileCapacity && !allowOverflow) {
     throw new Error(
       `resource ${id} needs ${finalUniqueKeyCount} unique tiles but capacity is ${info.tileCapacity} ` +
@@ -782,6 +827,36 @@ function packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat) {
   console.log(`${id}: patched ${overwrittenIndexes.size} tile slots, capacity ${info.tileCapacity}, at DAT ${hex(info.byteStart)} -> ${outDat}`);
 }
 
+function findNearDuplicateTiles(id, maxDistance) {
+  const info = decodeHeader(id);
+  const map = readTileMap(info);
+  const usage = new Map();
+  for (let cell = 0; cell < map.length; cell += 1) {
+    const idx = map[cell] >> 1;
+    if (!usage.has(idx)) usage.set(idx, []);
+    usage.get(idx).push(cell);
+  }
+  const pixelOf = (cell) => `(${(cell % info.widthTiles) * 8},${Math.floor(cell / info.widthTiles) * 8})`;
+  const usedIndexes = [...usage.keys()].sort((a, b) => a - b);
+  const keys = new Map(usedIndexes.map((idx) => [idx, originalTileKey(info, idx)]));
+  const pairs = [];
+  for (let i = 0; i < usedIndexes.length; i += 1) {
+    for (let j = i + 1; j < usedIndexes.length; j += 1) {
+      const a = usedIndexes[i];
+      const b = usedIndexes[j];
+      const distance = tileDistance(keys.get(a), keys.get(b));
+      if (distance <= maxDistance) pairs.push({ a, b, distance });
+    }
+  }
+  pairs.sort((x, y) => x.distance - y.distance);
+  console.log(`${id}: ${usedIndexes.length} tile indexes in use, capacity ${info.tileCapacity}, ${pairs.length} pair(s) within ${maxDistance}/64 bytes`);
+  for (const { a, b, distance } of pairs) {
+    console.log(
+      `  #${a} (used at ${usage.get(a).map(pixelOf).join(", ")}) <-> #${b} (used at ${usage.get(b).map(pixelOf).join(", ")}) -- distance ${distance}`
+    );
+  }
+}
+
 if (mode === "export") {
   const ids = positional.map((arg) => Number.parseInt(arg, 0));
   if (ids.length === 0 || ids.some((id) => !Number.isFinite(id))) usage();
@@ -794,6 +869,8 @@ if (mode === "export") {
   patchMask(thirdArg, positional[0], positional[1]);
 } else if (mode === "pack-raw") {
   patchFromRawPgm(thirdArg, positional[0], positional[1]);
+} else if (mode === "tile-dupes") {
+  findNearDuplicateTiles(Number.parseInt(thirdArg, 0), Number.parseInt(positional[0] || "4", 10));
 } else {
   usage();
 }

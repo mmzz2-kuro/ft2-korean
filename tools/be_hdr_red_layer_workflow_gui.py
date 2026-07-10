@@ -63,7 +63,9 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
             "fs2_lba": tk.StringVar(value="223"),
             "fs2_sectors": tk.StringVar(value="119472"),
             "threshold": tk.StringVar(value="38"),
+            "split_indexes": tk.BooleanVar(value=True),
             "lossy_fit": tk.BooleanVar(value=False),
+            "allow_overflow": tk.BooleanVar(value=False),
         }
         self._build_ui()
         self.after(100, self._drain_log_queue)
@@ -99,7 +101,9 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
         ]:
             ttk.Label(opts, text=label).pack(side="left")
             ttk.Entry(opts, textvariable=self.vars[key], width=width).pack(side="left", padx=(4, 10))
+        ttk.Checkbutton(opts, text="separate palette files", variable=self.vars["split_indexes"]).pack(side="left", padx=(0, 10))
         ttk.Checkbutton(opts, text="pack with lossy-fit", variable=self.vars["lossy_fit"]).pack(side="left", padx=(0, 10))
+        ttk.Checkbutton(opts, text="allow tile overflow", variable=self.vars["allow_overflow"]).pack(side="left", padx=(0, 10))
         ttk.Button(opts, text="1. Extract DAT + Export Palette Layers", command=self.export_layers).pack(side="left", padx=(0, 6))
         ttk.Button(opts, text="2. Apply Edited Palette Layers", command=self.apply_layers).pack(side="left", padx=(0, 6))
 
@@ -110,7 +114,8 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
 
         help_text = (
             "Workflow: first run Export, edit <id>-idx...-edit.png files, then Apply.\n"
-            "The edit PNG uses black as 'leave unchanged'. Paint with legend colors for the selected palette indexes."
+            "With separate palette files enabled, indexes 2-3 exports idx2 and idx3 separately. Black means 'leave unchanged'.\n"
+            "Use allow tile overflow only when pack-raw reports a small capacity overflow and the result must be tested in-game."
         )
         ttk.Label(body, text=help_text).grid(row=0, column=0, sticky="w", pady=(0, 6))
 
@@ -153,6 +158,9 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
 
         def dump_raw():
             ids = [str(i) for i in expand_ids(self.vars["ids"].get())]
+            if not ids:
+                self._append_log("[warn] no resource IDs selected.\n")
+                return
             self.run_command(
                 "Dump raw palette indices",
                 [
@@ -184,17 +192,23 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
 
     def _export_palette_images(self, ids):
         state = {"i": 0}
-        label = layer_label(self.vars["indexes"].get())
+        groups = self._index_groups()
+        if not groups:
+            self._append_log("[warn] no palette indexes selected.\n")
+            return
 
         def next_one():
-            if state["i"] >= len(ids):
+            if state["i"] >= len(ids) * len(groups):
                 self._append_log(f"[info] palette layer images are in {rel(self.vars['work_dir'].get())}\n")
                 return
-            resource_id = ids[state["i"]]
+            resource_id = ids[state["i"] // len(groups)]
+            group_indexes = groups[state["i"] % len(groups)]
             state["i"] += 1
+            indexes_text = self._indexes_text(group_indexes)
+            label = layer_label(indexes_text)
             work_dir = Path(self.vars["work_dir"].get())
             self.run_command(
-                f"Export palette layer {resource_id}",
+                f"Export palette layer {resource_id} {label}",
                 [
                     "python",
                     str(ROOT / "scripts/be-hdr-red-layer-tool.py"),
@@ -204,7 +218,7 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
                     "--prefix",
                     f"be-hdr-ui-{resource_id}",
                     "--indexes",
-                    self.vars["indexes"].get(),
+                    indexes_text,
                     "--label",
                     label,
                 ],
@@ -222,8 +236,14 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
             return
         shutil.copyfile(source_dat, working_dat)
         ids = [str(i) for i in expand_ids(self.vars["ids"].get())]
+        groups = self._index_groups()
+        if not ids:
+            self._append_log("[warn] no resource IDs selected.\n")
+            return
+        if not groups:
+            self._append_log("[warn] no palette indexes selected.\n")
+            return
         state = {"i": 0, "current_dat": str(working_dat)}
-        label = layer_label(self.vars["indexes"].get())
 
         def next_one():
             if state["i"] >= len(ids):
@@ -232,16 +252,6 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
             resource_id = ids[state["i"]]
             state["i"] += 1
             raw_pgm = work_dir / f"be-hdr-ui-{resource_id}-raw.pgm"
-            edited_png = work_dir / f"be-hdr-ui-{resource_id}-{label}-edit.png"
-            if not edited_png.exists():
-                legacy_png = work_dir / f"be-hdr-ui-{resource_id}-red-edit.png"
-                if legacy_png.exists():
-                    edited_png = legacy_png
-            out_pgm = work_dir / f"be-hdr-ui-{resource_id}-{label}-applied.pgm"
-            if not edited_png.exists():
-                self._append_log(f"[skip] missing edited palette layer: {rel(edited_png)}\n")
-                next_one()
-                return
 
             def pack():
                 cmd = [
@@ -252,30 +262,76 @@ class BeHdrRedLayerWorkflowGui(tk.Tk):
                     self.vars["exe"].get(),
                     state["current_dat"],
                     resource_id,
-                    str(out_pgm),
+                    str(chain_state["current_pgm"]),
                 ]
                 if self.vars["lossy_fit"].get():
                     cmd.append("--lossy-fit")
+                if self.vars["allow_overflow"].get():
+                    cmd.append("--allow-overflow")
                 self.run_command(f"Pack palette layer {resource_id}", cmd, next_one)
 
-            self.run_command(
-                f"Apply palette layer PNG {resource_id}",
-                [
-                    "python",
-                    str(ROOT / "scripts/be-hdr-red-layer-tool.py"),
-                    "apply",
-                    str(raw_pgm),
-                    str(edited_png),
-                    str(out_pgm),
-                    "--indexes",
-                    self.vars["indexes"].get(),
-                    "--threshold",
-                    self.vars["threshold"].get(),
-                ],
-                pack,
-            )
+            chain_state = {"group": 0, "current_pgm": raw_pgm, "applied_any": False}
+
+            def apply_next_group():
+                if chain_state["group"] >= len(groups):
+                    if chain_state["applied_any"]:
+                        pack()
+                    else:
+                        self._append_log(f"[skip] no edited palette layer for resource {resource_id}\n")
+                        next_one()
+                    return
+
+                group_indexes = groups[chain_state["group"]]
+                chain_state["group"] += 1
+                indexes_text = self._indexes_text(group_indexes)
+                label = layer_label(indexes_text)
+                edited_png = work_dir / f"be-hdr-ui-{resource_id}-{label}-edit.png"
+                if not edited_png.exists():
+                    legacy_png = work_dir / f"be-hdr-ui-{resource_id}-red-edit.png"
+                    if label == "idx224-231" and legacy_png.exists():
+                        edited_png = legacy_png
+                if not edited_png.exists():
+                    self._append_log(f"[skip] missing edited palette layer: {rel(edited_png)}\n")
+                    apply_next_group()
+                    return
+
+                out_pgm = work_dir / f"be-hdr-ui-{resource_id}-{label}-applied.pgm"
+                self.run_command(
+                    f"Apply palette layer PNG {resource_id} {label}",
+                    [
+                        "python",
+                        str(ROOT / "scripts/be-hdr-red-layer-tool.py"),
+                        "apply",
+                        str(chain_state["current_pgm"]),
+                        str(edited_png),
+                        str(out_pgm),
+                        "--indexes",
+                        indexes_text,
+                        "--threshold",
+                        self.vars["threshold"].get(),
+                    ],
+                    lambda: self._mark_applied_and_continue(chain_state, out_pgm, apply_next_group),
+                )
+
+            apply_next_group()
 
         next_one()
+
+    def _index_groups(self):
+        indexes = expand_ids(self.vars["indexes"].get())
+        if not indexes:
+            return []
+        if self.vars["split_indexes"].get():
+            return [[index] for index in indexes]
+        return [indexes]
+
+    def _indexes_text(self, indexes):
+        return ",".join(str(index) for index in indexes)
+
+    def _mark_applied_and_continue(self, chain_state, out_pgm, callback):
+        chain_state["current_pgm"] = out_pgm
+        chain_state["applied_any"] = True
+        callback()
 
     def _inject_bin(self, dat_path):
         self.run_command(
