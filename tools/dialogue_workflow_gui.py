@@ -4,6 +4,7 @@
 import os
 import json
 import queue
+import shutil
 import subprocess
 import threading
 import tkinter as tk
@@ -13,6 +14,8 @@ from tkinter import filedialog, messagebox, ttk
 
 ROOT = Path(__file__).resolve().parents[1]
 SETTINGS_PATH = ROOT / "trDatas/dialogue-workflow/dialogue-gui-settings.json"
+FINALE_TOOL = ROOT / "scripts/finale-text-pgm-tool.js"
+RENDER_SCRIPT = ROOT / "scripts/render-text-to-message-pgm.ps1"
 
 
 def rel(path):
@@ -62,10 +65,15 @@ class DialogueWorkflowGui(tk.Tk):
         self.current_process = None
         self.required_tsv_headers = [
             "enabled",
+            "kind",
             "message_id",
+            "address",
+            "ink",
             "source",
             "refs",
             "mask_pgm",
+            "source_png",
+            "replacement_png",
             "source_note",
             "ko_text",
             "font_size",
@@ -75,6 +83,7 @@ class DialogueWorkflowGui(tk.Tk):
             "threshold",
             "bright_threshold",
             "bold",
+            "note",
         ]
 
         self.vars = {
@@ -96,6 +105,10 @@ class DialogueWorkflowGui(tk.Tk):
             "mode": tk.StringVar(value="AntiAlias"),
             "trim": tk.BooleanVar(value=True),
             "instant_display": tk.BooleanVar(value=False),
+            "finale_scan_start": tk.StringVar(value="0xBFF0000"),
+            "finale_scan_end": tk.StringVar(value="0xC200000"),
+            "finale_ink_min": tk.StringVar(value="100"),
+            "finale_ink_max": tk.StringVar(value="1300"),
         }
 
         self._load_settings()
@@ -155,10 +168,22 @@ class DialogueWorkflowGui(tk.Tk):
             side="left", padx=(12, 0)
         )
 
+        finale_opts = ttk.LabelFrame(top, text="Finale/Extra Dialogue Scan", padding=6)
+        finale_opts.grid(row=6, column=0, columnspan=6, sticky="ew", pady=(8, 0))
+        ttk.Label(finale_opts, text="Start").pack(side="left")
+        ttk.Entry(finale_opts, textvariable=self.vars["finale_scan_start"], width=12).pack(side="left", padx=(4, 12))
+        ttk.Label(finale_opts, text="End").pack(side="left")
+        ttk.Entry(finale_opts, textvariable=self.vars["finale_scan_end"], width=12).pack(side="left", padx=(4, 12))
+        ttk.Label(finale_opts, text="Ink Min").pack(side="left")
+        ttk.Entry(finale_opts, textvariable=self.vars["finale_ink_min"], width=7).pack(side="left", padx=(4, 12))
+        ttk.Label(finale_opts, text="Ink Max").pack(side="left")
+        ttk.Entry(finale_opts, textvariable=self.vars["finale_ink_max"], width=7).pack(side="left", padx=(4, 12))
+
         buttons = ttk.Frame(top)
-        buttons.grid(row=6, column=0, columnspan=6, sticky="ew", pady=(8, 0))
+        buttons.grid(row=7, column=0, columnspan=6, sticky="ew", pady=(8, 0))
         ttk.Button(buttons, text="0. Extract DAT from BIN", command=self.extract_dat_from_bin).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="1. Scan Candidates", command=self.scan_candidates).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="1b. Scan Finale", command=self.scan_finale_candidates).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="2. Export TSV/Masks", command=self.export_translation_table).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Load TSV", command=self.load_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Save TSV", command=self.save_tsv).pack(side="left", padx=(0, 6))
@@ -360,6 +385,27 @@ class DialogueWorkflowGui(tk.Tk):
         self.log.insert("end", text)
         self.log.see("end")
 
+    def _queue_log(self, text):
+        self.log_queue.put(str(text))
+
+    def _run_sync_logged(self, title, cmd):
+        self._queue_log(f"\n## {title}\n{self._format_cmd(cmd)}\n")
+        proc = subprocess.run(
+            cmd,
+            cwd=str(ROOT),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if proc.stdout:
+            self._queue_log(proc.stdout)
+        self._queue_log(f"[exit {proc.returncode}]\n")
+        if proc.returncode != 0:
+            raise RuntimeError(f"{title} failed with exit {proc.returncode}")
+        return proc.stdout
+
     def _drain_log_queue(self):
         while True:
             try:
@@ -396,6 +442,50 @@ class DialogueWorkflowGui(tk.Tk):
             "--sectors",
             self.vars["fs2_sectors"].get(),
         ]
+
+    def _is_enabled(self, row):
+        return row.get("enabled", "1") not in ("0", "false", "False", "")
+
+    def _is_finale_row(self, row):
+        return row.get("kind") == "finale" or bool(row.get("address", "").strip())
+
+    def _normalize_finale_addr(self, value):
+        text = (value or "").strip()
+        if not text:
+            raise ValueError("empty finale address")
+        number = int(text, 16) if text.lower().startswith("0x") else int(text)
+        return f"0x{number:x}"
+
+    def _message_rows_for_apply(self):
+        rows = []
+        for row in self.rows:
+            if not self._is_enabled(row) or not row.get("ko_text", "").strip() or self._is_finale_row(row):
+                continue
+            try:
+                int(str(row.get("message_id", "")).strip(), 10)
+            except ValueError:
+                continue
+            rows.append(row)
+        return rows
+
+    def _finale_rows_for_apply(self):
+        rows = []
+        for row in self.rows:
+            if not self._is_enabled(row) or not row.get("ko_text", "").strip() or not self._is_finale_row(row):
+                continue
+            rows.append(row)
+        return rows
+
+    def _write_rows_tsv(self, path, rows):
+        headers = self.tsv_headers or list(self.required_tsv_headers)
+        for header in self.required_tsv_headers:
+            if header not in headers:
+                headers.append(header)
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        lines = ["\t".join(headers)]
+        for row in rows:
+            lines.append("\t".join(escape_tsv(row.get(key, "")) for key in headers))
+        Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     def _run_after_dat_ready(self, next_step):
         if not self._dat_field_is_bin():
@@ -437,12 +527,142 @@ class DialogueWorkflowGui(tk.Tk):
 
         self._run_after_dat_ready(run_scan)
 
+    def scan_finale_candidates(self):
+        def run_scan():
+            if self.current_process is not None:
+                messagebox.showwarning("Busy", "A command is already running.")
+                return
+
+            self._save_settings()
+            self._append_log("\n## Scan finale/extra dialogue candidates\n")
+            self.current_process = "finale-scan"
+
+            def worker():
+                try:
+                    dat_path = self._effective_dat_path()
+                    mask_dir = Path(self.vars["mask_dir"].get())
+                    index_json = Path(self.vars["work_dir"].get()) / "finale-scan-index.json"
+                    existing_addrs = set()
+                    for row in self.rows:
+                        if self._is_finale_row(row):
+                            try:
+                                existing_addrs.add(self._normalize_finale_addr(row.get("address", "")))
+                            except ValueError:
+                                pass
+
+                    scan_cmd = [
+                        "node",
+                        str(FINALE_TOOL),
+                        "scan",
+                        dat_path,
+                        str(index_json),
+                        self.vars["finale_scan_start"].get(),
+                        self.vars["finale_scan_end"].get(),
+                        "--ink-min",
+                        self.vars["finale_ink_min"].get(),
+                        "--ink-max",
+                        self.vars["finale_ink_max"].get(),
+                    ]
+                    self._run_sync_logged("Scan finale candidates", scan_cmd)
+
+                    candidates = json.loads(index_json.read_text(encoding="utf-8"))
+                    new_addrs = []
+                    ink_by_addr = {}
+                    for candidate in candidates:
+                        addr = f"0x{int(candidate['addr']):x}"
+                        ink_by_addr[addr] = str(candidate.get("ink", ""))
+                        if addr not in existing_addrs:
+                            new_addrs.append(addr)
+
+                    if new_addrs:
+                        export_cmd = ["node", str(FINALE_TOOL), "export", dat_path, str(mask_dir)] + new_addrs
+                        self._run_sync_logged("Export finale masks", export_cmd)
+
+                    new_rows = []
+                    for addr in new_addrs:
+                        new_rows.append(
+                            {
+                                "enabled": "0",
+                                "kind": "finale",
+                                "message_id": f"finale:{addr}",
+                                "address": addr,
+                                "ink": ink_by_addr.get(addr, ""),
+                                "source": "finale",
+                                "refs": "",
+                                "mask_pgm": str(mask_dir / f"finale-text-{addr}.pgm"),
+                                "source_png": "",
+                                "replacement_png": "",
+                                "source_note": f"finale/extra dialogue at DAT {addr}, ink={ink_by_addr.get(addr, '')}",
+                                "ko_text": "",
+                                "font_size": "12",
+                                "line_height": "15",
+                                "pad": "2",
+                                "ink_max": "2",
+                                "threshold": "32",
+                                "bright_threshold": "96",
+                                "bold": "0",
+                                "note": "",
+                            }
+                        )
+
+                    def finish():
+                        self.rows.extend(new_rows)
+                        for header in self.required_tsv_headers:
+                            if header not in self.tsv_headers:
+                                self.tsv_headers.append(header)
+                        self._refresh_tree()
+                        self.save_tsv(silent=True)
+                        self._append_log(
+                            f"finale scan complete: {len(candidates)} candidates total, {len(new_rows)} new rows added\n"
+                        )
+
+                    self.log_queue.put(("CALLBACK", finish))
+                except Exception as exc:
+                    self._queue_log(f"[error] finale scan failed: {exc}\n")
+                finally:
+                    self.current_process = None
+
+            threading.Thread(target=worker, daemon=True).start()
+
+        self._run_after_dat_ready(run_scan)
+
     def extract_dat_from_bin(self):
         cmd = self._extract_dat_command(self._effective_source_bin_path(), self._effective_dat_path())
         self._run_command("Extract FS2_FILE.DAT from BIN", cmd)
 
     def export_translation_table(self):
         def run_export():
+            preserved_finale_rows = [dict(row) for row in self.rows if self._is_finale_row(row)]
+
+            def finish_load():
+                self.load_tsv()
+                if not preserved_finale_rows:
+                    return
+                existing = set()
+                for row in self.rows:
+                    if self._is_finale_row(row):
+                        try:
+                            existing.add(self._normalize_finale_addr(row.get("address", "")))
+                        except ValueError:
+                            pass
+                restored = 0
+                for row in preserved_finale_rows:
+                    try:
+                        addr = self._normalize_finale_addr(row.get("address", ""))
+                    except ValueError:
+                        continue
+                    if addr in existing:
+                        continue
+                    row["address"] = addr
+                    row["kind"] = "finale"
+                    row["message_id"] = row.get("message_id") or f"finale:{addr}"
+                    self.rows.append(row)
+                    restored += 1
+                if restored:
+                    self._refresh_tree()
+                    self.save_tsv(silent=True)
+                    self._append_log(f"restored {restored} finale rows after normal export\n")
+
             cmd = [
                 "node",
                 str(ROOT / "scripts/export-dialogue-translation-table.js"),
@@ -452,7 +672,7 @@ class DialogueWorkflowGui(tk.Tk):
                 self.vars["translation"].get(),
                 self.vars["mask_dir"].get(),
             ]
-            self._run_command("Export translation TSV and masks", cmd, on_success=self.load_tsv)
+            self._run_command("Export translation TSV and masks", cmd, on_success=finish_load)
 
         self._run_after_dat_ready(run_export)
 
@@ -460,40 +680,152 @@ class DialogueWorkflowGui(tk.Tk):
         self.save_tsv(silent=True)
 
         def run_apply():
-            cmd = [
-                "powershell",
-                "-ExecutionPolicy",
-                "Bypass",
-                "-File",
-                str(ROOT / "scripts/apply-dialogue-translation.ps1"),
-                "-DatPath",
-                self._effective_dat_path(),
-                "-ExePath",
-                self.vars["exe"].get(),
-                "-TranslationTsv",
-                self.vars["translation"].get(),
-                "-OutDat",
-                self.vars["out_dat"].get(),
-                "-SourceBin",
-                self._effective_source_bin_path(),
-                "-OutBin",
-                self.vars["out_bin"].get(),
-                "-Fs2Lba",
-                self.vars["fs2_lba"].get(),
-                "-FontPath",
-                self.vars["font"].get(),
-                "-WorkDir",
-                self.vars["work_dir"].get(),
-                "-Mode",
-                self.vars["mode"].get(),
-            ]
-            if self.vars["trim"].get():
-                cmd.append("-TrimToOrigin")
-            if self.vars["instant_display"].get():
-                cmd.append("-InstantDisplay")
-            self._run_command("Apply translation TSV", cmd)
+            self._run_apply_split()
 
         self._run_after_dat_ready(run_apply)
+
+    def _run_apply_split(self):
+        if self.current_process is not None:
+            messagebox.showwarning("Busy", "A command is already running.")
+            return
+
+        message_rows = self._message_rows_for_apply()
+        finale_rows = self._finale_rows_for_apply()
+        if not message_rows and not finale_rows:
+            self._append_log("[warn] no enabled rows with ko_text to apply\n")
+            return
+
+        self.current_process = "dialogue-apply"
+
+        def worker():
+            try:
+                work_dir = Path(self.vars["work_dir"].get())
+                work_dir.mkdir(parents=True, exist_ok=True)
+                out_dat = Path(self.vars["out_dat"].get())
+                out_dat.parent.mkdir(parents=True, exist_ok=True)
+                current_dat = self._effective_dat_path()
+
+                if message_rows:
+                    message_tsv = work_dir / "message-only-translation.tsv"
+                    message_stage_dat = work_dir / "message-stage-FS2_FILE.DAT"
+                    self._write_rows_tsv(message_tsv, message_rows)
+                    cmd = [
+                        "powershell",
+                        "-ExecutionPolicy",
+                        "Bypass",
+                        "-File",
+                        str(ROOT / "scripts/apply-dialogue-translation.ps1"),
+                        "-DatPath",
+                        current_dat,
+                        "-ExePath",
+                        self.vars["exe"].get(),
+                        "-TranslationTsv",
+                        str(message_tsv),
+                        "-OutDat",
+                        str(message_stage_dat),
+                        "-FontPath",
+                        self.vars["font"].get(),
+                        "-WorkDir",
+                        str(work_dir),
+                        "-Mode",
+                        self.vars["mode"].get(),
+                    ]
+                    if self.vars["trim"].get():
+                        cmd.append("-TrimToOrigin")
+                    self._run_sync_logged("Apply message-id dialogue rows", cmd)
+                    current_dat = str(message_stage_dat)
+
+                finale_applied = 0
+                for idx, row in enumerate(finale_rows, start=1):
+                    addr = self._normalize_finale_addr(row.get("address", ""))
+                    safe_addr = addr.replace("0x", "")
+                    pgm_path = work_dir / f"finale-text-{safe_addr}-ko.pgm"
+                    stage_dat = work_dir / f"finale-stage-{idx:04d}-{safe_addr}.DAT"
+                    render_cmd = [
+                        "powershell",
+                        "-ExecutionPolicy",
+                        "Bypass",
+                        "-File",
+                        str(RENDER_SCRIPT),
+                        "-FontPath",
+                        self.vars["font"].get(),
+                        "-Text",
+                        row.get("ko_text", ""),
+                        "-OutPath",
+                        str(pgm_path),
+                        "-FontSize",
+                        row.get("font_size", "12") or "12",
+                        "-X",
+                        "0",
+                        "-Y",
+                        "0",
+                        "-LineHeight",
+                        row.get("line_height", "15") or "15",
+                        "-Pad",
+                        row.get("pad", "2") or "2",
+                        "-InkMax",
+                        row.get("ink_max", "2") or "2",
+                        "-Threshold",
+                        row.get("threshold", "32") or "32",
+                        "-BrightThreshold",
+                        row.get("bright_threshold", "96") or "96",
+                        "-Bold",
+                        row.get("bold", "0") or "0",
+                        "-Mode",
+                        self.vars["mode"].get(),
+                    ]
+                    if self.vars["trim"].get():
+                        render_cmd.append("-TrimToOrigin")
+                    self._run_sync_logged(f"Render finale row {addr}", render_cmd)
+
+                    patch_cmd = [
+                        "node",
+                        str(FINALE_TOOL),
+                        "patch",
+                        current_dat,
+                        str(stage_dat),
+                        addr,
+                        str(pgm_path),
+                    ]
+                    self._run_sync_logged(f"Patch finale row {addr}", patch_cmd)
+                    current_dat = str(stage_dat)
+                    finale_applied += 1
+
+                if Path(current_dat).resolve() != out_dat.resolve():
+                    shutil.copyfile(current_dat, out_dat)
+                self._queue_log(
+                    f"applied {len(message_rows)} message rows and {finale_applied} finale rows -> {rel(out_dat)}\n"
+                )
+
+                if self.vars["source_bin"].get().strip() and self.vars["out_bin"].get().strip():
+                    inject_cmd = [
+                        "node",
+                        str(ROOT / "scripts/inject-dat-into-raw-bin.js"),
+                        self._effective_source_bin_path(),
+                        str(out_dat),
+                        self.vars["out_bin"].get(),
+                        "--lba",
+                        self.vars["fs2_lba"].get(),
+                    ]
+                    self._run_sync_logged("Inject patched DAT into BIN", inject_cmd)
+
+                    if self.vars["instant_display"].get():
+                        instant_out = work_dir / "instant-display-out.bin"
+                        instant_cmd = [
+                            "node",
+                            str(ROOT / "scripts/patch-dialogue-instant-display.js"),
+                            self.vars["out_bin"].get(),
+                            str(instant_out),
+                        ]
+                        self._run_sync_logged("Apply instant dialogue display patch", instant_cmd)
+                        os.replace(str(instant_out), self.vars["out_bin"].get())
+                        self._queue_log(f"applied instant dialogue display patch -> {self.vars['out_bin'].get()}\n")
+            except Exception as exc:
+                self._queue_log(f"[error] apply failed: {exc}\n")
+            finally:
+                self.current_process = None
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def change_tsv_path(self):
         current = self.vars["translation"].get()
@@ -539,9 +871,29 @@ class DialogueWorkflowGui(tk.Tk):
             for idx, header in enumerate(self.tsv_headers):
                 row[header] = unescape_tsv(values[idx] if idx < len(values) else "")
             row.setdefault("enabled", "1")
+            row.setdefault("kind", "message")
+            row.setdefault("address", "")
+            row.setdefault("ink", "")
+            row.setdefault("source_png", "")
+            row.setdefault("replacement_png", "")
             row.setdefault("threshold", "32")
             row.setdefault("bright_threshold", "96")
             row.setdefault("bold", "0")
+            row.setdefault("note", "")
+            if self._is_finale_row(row):
+                row["kind"] = "finale"
+                try:
+                    row["address"] = self._normalize_finale_addr(row.get("address", ""))
+                except ValueError:
+                    pass
+                if not row.get("message_id", "") and row.get("address", ""):
+                    row["message_id"] = f"finale:{row['address']}"
+                if not row.get("source", ""):
+                    row["source"] = "finale"
+                if not row.get("mask_pgm", "") and row.get("source_png", ""):
+                    row["mask_pgm"] = str(Path(row["source_png"]).with_suffix(".pgm"))
+                if not row.get("source_note", ""):
+                    row["source_note"] = row.get("note", "") or f"finale/extra dialogue at DAT {row.get('address', '')}"
             self.rows.append(row)
         self._refresh_tree()
         self._append_log(f"loaded {len(self.rows)} TSV rows: {rel(path)}\n")
@@ -653,7 +1005,10 @@ class DialogueWorkflowGui(tk.Tk):
         row = self.rows[self.selected_index]
         self.message_id_var.set(row.get("message_id", ""))
         self.source_note.delete("1.0", "end")
-        self.source_note.insert("1.0", row.get("source_note", ""))
+        note = row.get("source_note", "")
+        if self._is_finale_row(row) and not note:
+            note = row.get("note", "") or f"finale/extra dialogue at DAT {row.get('address', '')}"
+        self.source_note.insert("1.0", note)
         self.ko_text.delete("1.0", "end")
         self.ko_text.insert("1.0", row.get("ko_text", ""))
         self.font_size_var.set(row.get("font_size", "16") or "16")
@@ -669,6 +1024,8 @@ class DialogueWorkflowGui(tk.Tk):
             return
         row = self.rows[self.selected_index]
         row["source_note"] = self.source_note.get("1.0", "end-1c")
+        if self._is_finale_row(row):
+            row["note"] = row["source_note"]
         row["ko_text"] = self.ko_text.get("1.0", "end-1c")
         self._apply_render_options_to_row(row)
         self._refresh_tree()
