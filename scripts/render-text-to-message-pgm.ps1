@@ -11,6 +11,10 @@ param(
   [ValidateRange(0, 255)][int]$Threshold = 32,
   [ValidateRange(1, 255)][int]$BrightThreshold = 96,
   [ValidateRange(0, 3)][int]$Bold = 0,
+  [ValidateRange(0, 1)][int]$Shadow = 0,
+  [int]$ShadowX = 1,
+  [int]$ShadowY = 1,
+  [ValidateRange(1, 3)][int]$ShadowInk = 1,
   [ValidateSet("Single", "AntiAlias")][string]$Mode = "AntiAlias",
   [switch]$TrimToOrigin
 )
@@ -24,22 +28,28 @@ if ($outDir) {
 }
 
 $bitmap = New-Object System.Drawing.Bitmap 200, 48, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+$shadowBitmap = New-Object System.Drawing.Bitmap 200, 48, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
 $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+$shadowGraphics = [System.Drawing.Graphics]::FromImage($shadowBitmap)
 $fontCollection = New-Object System.Drawing.Text.PrivateFontCollection
 
 try {
   $graphics.Clear([System.Drawing.Color]::Black)
+  $shadowGraphics.Clear([System.Drawing.Color]::Black)
   $graphics.PageUnit = [System.Drawing.GraphicsUnit]::Pixel
+  $shadowGraphics.PageUnit = [System.Drawing.GraphicsUnit]::Pixel
   $graphics.TextRenderingHint = if ($Mode -eq "Single") {
     [System.Drawing.Text.TextRenderingHint]::SingleBitPerPixelGridFit
   } else {
     [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
   }
+  $shadowGraphics.TextRenderingHint = $graphics.TextRenderingHint
 
   $fontCollection.AddFontFile($resolvedFont.Path)
   $fontFamily = $fontCollection.Families[0]
   $font = New-Object System.Drawing.Font $fontFamily, $FontSize, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
   $brush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
+  $shadowBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
   if ($LineHeight -le 0) {
     $LineHeight = [Math]::Ceiling($FontSize * 1.2)
   }
@@ -48,9 +58,19 @@ try {
     $textLines = ($Text -replace "\\n", "`n") -split "`n"
     for ($lineIndex = 0; $lineIndex -lt $textLines.Length; $lineIndex++) {
       $lineY = $Y + ($lineIndex * $LineHeight)
+      if ($Shadow -ne 0) {
+        $shadowGraphics.DrawString(
+          $textLines[$lineIndex],
+          $font,
+          $shadowBrush,
+          ([single]($X + $ShadowX)),
+          ([single]($lineY + $ShadowY))
+        )
+      }
       $graphics.DrawString($textLines[$lineIndex], $font, $brush, ([single]$X), ([single]$lineY))
     }
   } finally {
+    $shadowBrush.Dispose()
     $brush.Dispose()
     $font.Dispose()
   }
@@ -68,7 +88,7 @@ try {
   if ($TrimToOrigin) {
     for ($py = 0; $py -lt 48; $py++) {
       for ($px = 0; $px -lt 200; $px++) {
-        if ($bitmap.GetPixel($px, $py).R -gt 0) {
+        if ($bitmap.GetPixel($px, $py).R -gt 0 -or $shadowBitmap.GetPixel($px, $py).R -gt 0) {
           if ($px -lt $minX) { $minX = $px }
           if ($py -lt $minY) { $minY = $py }
           if ($px -gt $maxX) { $maxX = $px }
@@ -138,6 +158,12 @@ try {
       $sourceY = $py + $minY - $Pad
       $value = Get-SampleValue $bitmap $sourceX $sourceY $Bold
       $index = Convert-ToPaletteIndex $value $InkMax $Threshold $BrightThreshold
+      if ($Shadow -ne 0 -and $index -eq 0) {
+        $shadowValue = Get-SampleValue $shadowBitmap $sourceX $sourceY $Bold
+        if ($shadowValue -ge $Threshold) {
+          $index = $ShadowInk
+        }
+      }
       $row[$px] = [string]$index
     }
     $lines.Add(($row -join " "))
@@ -147,6 +173,8 @@ try {
   Write-Output "wrote $OutPath"
 } finally {
   $fontCollection.Dispose()
+  $shadowGraphics.Dispose()
   $graphics.Dispose()
+  $shadowBitmap.Dispose()
   $bitmap.Dispose()
 }

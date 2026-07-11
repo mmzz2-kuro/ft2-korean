@@ -83,6 +83,10 @@ class DialogueWorkflowGui(tk.Tk):
             "threshold",
             "bright_threshold",
             "bold",
+            "shadow",
+            "shadow_x",
+            "shadow_y",
+            "shadow_ink",
             "note",
         ]
 
@@ -217,6 +221,7 @@ class DialogueWorkflowGui(tk.Tk):
             "ink_max",
             "bright_threshold",
             "bold",
+            "shadow",
         )
         self.tree = ttk.Treeview(left, columns=columns, show="headings", selectmode="extended")
         for col in columns:
@@ -263,6 +268,10 @@ class DialogueWorkflowGui(tk.Tk):
         self.ink_max_var = tk.StringVar(value="2")
         self.bright_threshold_var = tk.StringVar(value="96")
         self.bold_var = tk.StringVar(value="0")
+        self.shadow_var = tk.StringVar(value="0")
+        self.shadow_x_var = tk.StringVar(value="1")
+        self.shadow_y_var = tk.StringVar(value="1")
+        self.shadow_ink_var = tk.StringVar(value="1")
         for label, var in [
             ("font", self.font_size_var),
             ("line", self.line_height_var),
@@ -270,6 +279,10 @@ class DialogueWorkflowGui(tk.Tk):
             ("ink", self.ink_max_var),
             ("bright", self.bright_threshold_var),
             ("bold", self.bold_var),
+            ("shadow", self.shadow_var),
+            ("sx", self.shadow_x_var),
+            ("sy", self.shadow_y_var),
+            ("sInk", self.shadow_ink_var),
         ]:
             ttk.Label(render_opts, text=label).pack(side="left")
             ttk.Entry(render_opts, textvariable=var, width=5).pack(side="left", padx=(4, 10))
@@ -602,6 +615,10 @@ class DialogueWorkflowGui(tk.Tk):
                                 "threshold": "32",
                                 "bright_threshold": "96",
                                 "bold": "0",
+                                "shadow": "0",
+                                "shadow_x": "1",
+                                "shadow_y": "1",
+                                "shadow_ink": "1",
                                 "note": "",
                             }
                         )
@@ -772,6 +789,14 @@ class DialogueWorkflowGui(tk.Tk):
                         row.get("bright_threshold", "96") or "96",
                         "-Bold",
                         row.get("bold", "0") or "0",
+                        "-Shadow",
+                        row.get("shadow", "0") or "0",
+                        "-ShadowX",
+                        row.get("shadow_x", "1") or "1",
+                        "-ShadowY",
+                        row.get("shadow_y", "1") or "1",
+                        "-ShadowInk",
+                        row.get("shadow_ink", "1") or "1",
                         "-Mode",
                         self.vars["mode"].get(),
                     ]
@@ -948,6 +973,10 @@ class DialogueWorkflowGui(tk.Tk):
             "threshold": src.get("threshold", "32") or "32",
             "bright_threshold": src.get("bright_threshold", "96") or "96",
             "bold": src.get("bold", "0") or "0",
+            "shadow": src.get("shadow", "0") or "0",
+            "shadow_x": src.get("shadow_x", "1") or "1",
+            "shadow_y": src.get("shadow_y", "1") or "1",
+            "shadow_ink": src.get("shadow_ink", "1") or "1",
             "note": note,
         }
 
@@ -981,6 +1010,10 @@ class DialogueWorkflowGui(tk.Tk):
             row.setdefault("threshold", "32")
             row.setdefault("bright_threshold", "96")
             row.setdefault("bold", "0")
+            row.setdefault("shadow", "0")
+            row.setdefault("shadow_x", "1")
+            row.setdefault("shadow_y", "1")
+            row.setdefault("shadow_ink", "1")
             row.setdefault("note", "")
             if self._is_finale_row(row):
                 row["kind"] = "finale"
@@ -1035,6 +1068,7 @@ class DialogueWorkflowGui(tk.Tk):
                     row.get("ink_max", "2"),
                     row.get("bright_threshold", "96"),
                     row.get("bold", "0"),
+                    row.get("shadow", "0"),
                 ),
             )
 
@@ -1119,6 +1153,10 @@ class DialogueWorkflowGui(tk.Tk):
         self.ink_max_var.set(row.get("ink_max", "2") or "2")
         self.bright_threshold_var.set(row.get("bright_threshold", "96") or "96")
         self.bold_var.set(row.get("bold", "0") or "0")
+        self.shadow_var.set(row.get("shadow", "0") or "0")
+        self.shadow_x_var.set(row.get("shadow_x", "1") or "1")
+        self.shadow_y_var.set(row.get("shadow_y", "1") or "1")
+        self.shadow_ink_var.set(row.get("shadow_ink", "1") or "1")
         self._draw_mask_preview(row.get("mask_pgm", ""))
 
     def update_selected_row(self, silent=False):
@@ -1143,6 +1181,10 @@ class DialogueWorkflowGui(tk.Tk):
         row["threshold"] = row.get("threshold", "32") or "32"
         row["bright_threshold"] = self.bright_threshold_var.get()
         row["bold"] = self.bold_var.get()
+        row["shadow"] = self.shadow_var.get()
+        row["shadow_x"] = self.shadow_x_var.get()
+        row["shadow_y"] = self.shadow_y_var.get()
+        row["shadow_ink"] = self.shadow_ink_var.get()
 
     def apply_render_options_bulk(self, only_filled):
         if self.selected_index is not None:

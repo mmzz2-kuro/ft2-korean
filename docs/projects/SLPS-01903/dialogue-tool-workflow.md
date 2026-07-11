@@ -41,7 +41,7 @@ The GUI provides:
 - `2. Export TSV/Masks`: runs `export-dialogue-translation-table.js`, then
   loads the generated TSV.
 - A TSV row editor for `source_note`, `ko_text`, `font_size`, `line_height`,
-  `pad`, `ink_max`, `bright_threshold`, and `bold`.
+  `pad`, `ink_max`, `bright_threshold`, `bold`, and per-row text shadow options.
 - The table's first column is a check toggle. `Apply to BIN` only renders and
   patches checked rows that also have `ko_text`.
 - Top path and option fields are saved to
@@ -49,8 +49,8 @@ The GUI provides:
   the next GUI launch.
 - Bulk render-option buttons:
   - `Options to Filled`: applies the current `font_size`, `line_height`, `pad`,
-    `ink_max`, `bright_threshold`, and `bold` values to rows that already have
-    `ko_text`.
+    `ink_max`, `bright_threshold`, `bold`, and shadow values to rows that already
+    have `ko_text`.
   - `Options to All`: applies those render values to every TSV row.
 - A built-in `200x48` source mask preview.
 - `3. Apply to BIN`: runs `apply-dialogue-translation.ps1`, then injects the
@@ -135,14 +135,19 @@ TSV columns:
 | `threshold` | minimum source brightness to treat as visible ink; default `32` |
 | `bright_threshold` | brightness needed to become the brighter text ink; default `96` |
 | `bold` | optional pixel dilation radius; use `1` if thin Korean strokes look too dark |
+| `shadow` | `1` to render a per-glyph shadow layer, `0` to disable it |
+| `shadow_x` | shadow X offset in pixels; default `1` |
+| `shadow_y` | shadow Y offset in pixels; default `1` |
+| `shadow_ink` | palette index used only for shadow pixels; default `1` |
 
 Use `\n` inside `ko_text` for explicit line breaks.
 
 If `dialogue-translation.tsv` already exists, export preserves manual work by
 copying the existing row's `source_note`, `ko_text`, `font_size`,
-`line_height`, `pad`, `ink_max`, `threshold`, `bright_threshold`, `bold`, and
-`enabled` for the same `message_id`. Newly discovered message IDs still receive
-the default render settings.
+`line_height`, `pad`, `ink_max`, `threshold`, `bright_threshold`, `bold`,
+`shadow`, `shadow_x`, `shadow_y`, `shadow_ink`, and `enabled` for the same
+`message_id`. Newly discovered message IDs still receive the default render
+settings.
 
 Example:
 

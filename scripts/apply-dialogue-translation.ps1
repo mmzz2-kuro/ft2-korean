@@ -92,6 +92,10 @@ foreach ($row in $rows) {
   $threshold = Get-RowInt $row "threshold" 32
   $brightThreshold = Get-RowInt $row "bright_threshold" 96
   $bold = Get-RowInt $row "bold" 0
+  $shadow = Get-RowInt $row "shadow" 0
+  $shadowX = Get-RowInt $row "shadow_x" 1
+  $shadowY = Get-RowInt $row "shadow_y" 1
+  $shadowInk = Get-RowInt $row "shadow_ink" 1
 
   $pgmPath = Join-Path $WorkDir ("message-mask-{0}-ko.pgm" -f $messageId)
 
@@ -110,6 +114,10 @@ foreach ($row in $rows) {
     "-Threshold", $threshold,
     "-BrightThreshold", $brightThreshold,
     "-Bold", $bold,
+    "-Shadow", $shadow,
+    "-ShadowX", $shadowX,
+    "-ShadowY", $shadowY,
+    "-ShadowInk", $shadowInk,
     "-Mode", $Mode
   )
   if ($TrimToOrigin) {

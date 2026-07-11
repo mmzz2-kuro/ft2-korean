@@ -180,6 +180,10 @@ const preservedColumns = [
   'threshold',
   'bright_threshold',
   'bold',
+  'shadow',
+  'shadow_x',
+  'shadow_y',
+  'shadow_ink',
 ];
 
 for (const candidate of candidates) {
@@ -213,6 +217,10 @@ for (const candidate of candidates) {
     preserved.threshold || 32,
     preserved.bright_threshold || 96,
     preserved.bold || 0,
+    preserved.shadow || 0,
+    preserved.shadow_x || 1,
+    preserved.shadow_y || 1,
+    preserved.shadow_ink || 1,
   ]);
 
   maskManifest.push({ ...mapped, source: candidate.source, refs: candidate.refs || [], maskPath });
@@ -233,6 +241,10 @@ const header = [
   'threshold',
   'bright_threshold',
   'bold',
+  'shadow',
+  'shadow_x',
+  'shadow_y',
+  'shadow_ink',
 ];
 
 const tsv = [
