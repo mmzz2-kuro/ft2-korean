@@ -30,6 +30,10 @@ function crc32(buf) {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
+function md5(buf) {
+  return crypto.createHash("md5").update(buf).digest("hex");
+}
+
 function sha1(buf) {
   return crypto.createHash("sha1").update(buf).digest("hex");
 }
@@ -47,11 +51,13 @@ for (const filePath of paths) {
   }
 
   const crc = crc32(buf).toString(16).padStart(8, "0").toUpperCase();
+  const md = md5(buf);
   const sha = sha1(buf);
 
   console.log(filePath);
   console.log(`  size:  ${buf.length} bytes`);
   console.log(`  CRC32: ${crc}`);
+  console.log(`  MD5:   ${md}`);
   console.log(`  SHA-1: ${sha}`);
 }
 

@@ -61,3 +61,5 @@ ram-dump/exp-change/Screenshot-20260704-210254-0.png
 ram-dump/exp-change/Screenshot-20260704-210324-0.png
 output/
 patch/
+*.pyc
+__pycache__/
