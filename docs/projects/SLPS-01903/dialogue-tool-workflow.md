@@ -53,8 +53,13 @@ The GUI provides:
     have `ko_text`.
   - `Options to All`: applies those render values to every TSV row.
 - A built-in `200x48` source mask preview.
-- `3. Apply to BIN`: runs `apply-dialogue-translation.ps1`, then injects the
-  patched `FS2_FILE.DAT` user data into the raw BIN at `FS2 LBA = 223`.
+- `3. Apply to BIN`: patches all selected rows into one working DAT
+  (`dialogue-working-FS2_FILE.DAT`), copies that final DAT to `Patched DAT tmp`,
+  then injects the patched `FS2_FILE.DAT` user data into the raw BIN at
+  `FS2 LBA = 223`.
+- The apply progress bar advances by enabled rows with non-empty `ko_text`;
+  final DAT copy, BIN injection, and optional instant-text patch are shown in
+  the progress status text.
 - During apply, `message-mask-pgm-tool.js` rebuilds each patched message's
   reveal header at block offset `0x930` (`commonBuffer + 0x1930` after load).
   The rebuilt segment count is based on the last visible pixel in the Korean

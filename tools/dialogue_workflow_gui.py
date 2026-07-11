@@ -63,6 +63,8 @@ class DialogueWorkflowGui(tk.Tk):
         self.tsv_headers = []
         self.selected_index = None
         self.current_process = None
+        self.progress_var = tk.DoubleVar(value=0.0)
+        self.progress_text_var = tk.StringVar(value="Idle")
         self.required_tsv_headers = [
             "enabled",
             "kind",
@@ -200,6 +202,13 @@ class DialogueWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Uncheck Selected", command=lambda: self.set_checked_selected(False)).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="3. Apply to BIN", command=self.apply_translation).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Open Mask", command=self.open_selected_mask).pack(side="left", padx=(0, 6))
+
+        progress = ttk.Frame(top)
+        progress.grid(row=8, column=0, columnspan=6, sticky="ew", pady=(8, 0))
+        progress.columnconfigure(1, weight=1)
+        ttk.Label(progress, text="Apply Progress").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        ttk.Progressbar(progress, variable=self.progress_var, maximum=100).grid(row=0, column=1, sticky="ew")
+        ttk.Label(progress, textvariable=self.progress_text_var, width=34).grid(row=0, column=2, sticky="e", padx=(8, 0))
 
         main = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
         main.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
@@ -402,6 +411,20 @@ class DialogueWorkflowGui(tk.Tk):
     def _queue_log(self, text):
         self.log_queue.put(str(text))
 
+    def _queue_progress(self, done, total, text):
+        self.log_queue.put(("PROGRESS", done, total, text))
+
+    def _set_progress(self, done, total, text):
+        if total <= 0:
+            percent = 0.0
+        else:
+            percent = max(0.0, min(100.0, (done / total) * 100.0))
+        self.progress_var.set(percent)
+        if total > 0:
+            self.progress_text_var.set(f"{done}/{total} {text}")
+        else:
+            self.progress_text_var.set(text)
+
     def _run_sync_logged(self, title, cmd):
         self._queue_log(f"\n## {title}\n{self._format_cmd(cmd)}\n")
         proc = subprocess.run(
@@ -428,6 +451,8 @@ class DialogueWorkflowGui(tk.Tk):
                 break
             if isinstance(item, tuple) and item[0] == "CALLBACK":
                 item[1]()
+            elif isinstance(item, tuple) and item[0] == "PROGRESS":
+                self._set_progress(item[1], item[2], item[3])
             else:
                 self._append_log(str(item))
         self.after(100, self._drain_log_queue)
@@ -714,19 +739,26 @@ class DialogueWorkflowGui(tk.Tk):
             return
 
         self.current_process = "dialogue-apply"
+        total_rows = len(message_rows) + len(finale_rows)
+        self._set_progress(0, total_rows, "starting")
 
         def worker():
             try:
+                applied_rows = 0
                 work_dir = Path(self.vars["work_dir"].get())
                 work_dir.mkdir(parents=True, exist_ok=True)
                 out_dat = Path(self.vars["out_dat"].get())
                 out_dat.parent.mkdir(parents=True, exist_ok=True)
-                current_dat = self._effective_dat_path()
+                source_dat = Path(self._effective_dat_path())
+                working_dat = work_dir / "dialogue-working-FS2_FILE.DAT"
+                if source_dat.resolve() != working_dat.resolve():
+                    shutil.copyfile(source_dat, working_dat)
+                current_dat = str(working_dat)
 
-                if message_rows:
-                    message_tsv = work_dir / "message-only-translation.tsv"
-                    message_stage_dat = work_dir / "message-stage-FS2_FILE.DAT"
-                    self._write_rows_tsv(message_tsv, message_rows)
+                for row in message_rows:
+                    message_id = row.get("message_id", "")
+                    message_tsv = work_dir / "message-one-translation.tsv"
+                    self._write_rows_tsv(message_tsv, [row])
                     cmd = [
                         "powershell",
                         "-ExecutionPolicy",
@@ -740,7 +772,7 @@ class DialogueWorkflowGui(tk.Tk):
                         "-TranslationTsv",
                         str(message_tsv),
                         "-OutDat",
-                        str(message_stage_dat),
+                        str(working_dat),
                         "-FontPath",
                         self.vars["font"].get(),
                         "-WorkDir",
@@ -750,15 +782,16 @@ class DialogueWorkflowGui(tk.Tk):
                     ]
                     if self.vars["trim"].get():
                         cmd.append("-TrimToOrigin")
-                    self._run_sync_logged("Apply message-id dialogue rows", cmd)
-                    current_dat = str(message_stage_dat)
+                    self._run_sync_logged(f"Apply message row {message_id}", cmd)
+                    current_dat = str(working_dat)
+                    applied_rows += 1
+                    self._queue_progress(applied_rows, total_rows, f"message {message_id}")
 
                 finale_applied = 0
                 for idx, row in enumerate(finale_rows, start=1):
                     addr = self._normalize_finale_addr(row.get("address", ""))
                     safe_addr = addr.replace("0x", "")
                     pgm_path = work_dir / f"finale-text-{safe_addr}-ko.pgm"
-                    stage_dat = work_dir / f"finale-stage-{idx:04d}-{safe_addr}.DAT"
                     render_cmd = [
                         "powershell",
                         "-ExecutionPolicy",
@@ -809,21 +842,25 @@ class DialogueWorkflowGui(tk.Tk):
                         str(FINALE_TOOL),
                         "patch",
                         current_dat,
-                        str(stage_dat),
+                        str(working_dat),
                         addr,
                         str(pgm_path),
                     ]
                     self._run_sync_logged(f"Patch finale row {addr}", patch_cmd)
-                    current_dat = str(stage_dat)
+                    current_dat = str(working_dat)
                     finale_applied += 1
+                    applied_rows += 1
+                    self._queue_progress(applied_rows, total_rows, f"finale {addr}")
 
                 if Path(current_dat).resolve() != out_dat.resolve():
+                    self._queue_progress(applied_rows, total_rows, "writing final DAT")
                     shutil.copyfile(current_dat, out_dat)
                 self._queue_log(
                     f"applied {len(message_rows)} message rows and {finale_applied} finale rows -> {rel(out_dat)}\n"
                 )
 
                 if self.vars["source_bin"].get().strip() and self.vars["out_bin"].get().strip():
+                    self._queue_progress(applied_rows, total_rows, "injecting BIN")
                     inject_cmd = [
                         "node",
                         str(ROOT / "scripts/inject-dat-into-raw-bin.js"),
@@ -836,6 +873,7 @@ class DialogueWorkflowGui(tk.Tk):
                     self._run_sync_logged("Inject patched DAT into BIN", inject_cmd)
 
                     if self.vars["instant_display"].get():
+                        self._queue_progress(applied_rows, total_rows, "patching instant text")
                         instant_out = work_dir / "instant-display-out.bin"
                         instant_cmd = [
                             "node",
@@ -846,8 +884,10 @@ class DialogueWorkflowGui(tk.Tk):
                         self._run_sync_logged("Apply instant dialogue display patch", instant_cmd)
                         os.replace(str(instant_out), self.vars["out_bin"].get())
                         self._queue_log(f"applied instant dialogue display patch -> {self.vars['out_bin'].get()}\n")
+                self._queue_progress(total_rows, total_rows, "done")
             except Exception as exc:
                 self._queue_log(f"[error] apply failed: {exc}\n")
+                self._queue_progress(0, total_rows, "failed")
             finally:
                 self.current_process = None
 

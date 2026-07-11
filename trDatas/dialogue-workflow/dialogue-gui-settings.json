@@ -8,7 +8,7 @@
     "translation": "F:/workspace-server/create-retro-game-kr-patch-main/trDatas/dialogue-workflow/dialogue-translation.tsv",
     "mask_dir": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\masks",
     "out_dat": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\patched-FS2_FILE.DAT",
-    "out_bin": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga2.bin",
+    "out_bin": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga.bin",
     "work_dir": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\dialogue-workflow\\apply",
     "fs2_lba": "223",
     "fs2_sectors": "119472",
