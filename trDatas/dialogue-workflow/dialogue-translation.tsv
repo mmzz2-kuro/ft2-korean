@@ -16,12 +16,12 @@ enabled	message_id	source	refs	mask_pgm	source_note	ko_text	font_size	line_heigh
 0	1015	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1015.pgm		그래? 모험가군.	12	15	2	2	32	96	0	1	1	1	1						
 0	1016	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1016.pgm		우선은, 모험가 길드로\n가서 등록해야 해.	12	15	2	2	32	96	0	1	1	1	1						
 0	1017	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1017.pgm		가고 싶은곳을 선택하면,\n마을 안을 이동할수 있어.	12	15	2	2	32	96	0	1	1	1	1						
-0	1018	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1018.pgm		바향키의 좌우 또는 L1,\nR1 버튼으로 선택해서\nO버튼으로 결정하면돼.	12	15	2	2	32	96	0	1	1	1	1						
+1	1018	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1018.pgm		방향키의 좌우 또는 L1,\nR1 버튼으로 선택해서\nO버튼으로 결정하면돼.	12	15	2	2	32	96	0	1	1	1	1						
 0	1019	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1019.pgm		응? 벌써 일이 정해진 거야?	12	15	2	2	32	96	0	1	1	1	1						
 0	1020	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1020.pgm		너 같은 꼬마 숙녀가?\n돌아가렴.	12	15	2	2	32	96	0	1	1	1	1						
 0	1021	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1021.pgm		왜, 나 같은 사람은 오면\n안되나요?	12	15	2	2	32	96	0	1	1	1	1						
 0	1022	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1022.pgm		당연하지. 어린 소녀 혼자서\n뭘 할 수 있다고 하는 거야? 응?	12	15	2	2	32	96	0	1	1	1	1						
-0	1023	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1023.pgm		무례하군요! 이래뵈도\n8년의 경력이 있어요?	12	15	2	2	32	96	0	1	1	1	1						
+1	1023	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1023.pgm		무례하군요! 이래 봬도\n8년의 경력이 있어요?	12	15	2	2	32	96	0	1	1	1	1						
 0	1024	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1024.pgm		못 알아 듣겠어? 네가 아무리 굉장한 \n솜씨라고 해도, 마법사 한명으로는	12	15	2	2	32	96	0	1	1	1	1						
 0	1025	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1025.pgm		실전에 도움이 안될꺼라고.	12	15	2	2	32	96	0	1	1	1	1						
 0	1026	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-1026.pgm		으... 그건...	12	15	2	2	32	96	0	1	1	1	1						

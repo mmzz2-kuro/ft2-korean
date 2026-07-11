@@ -1,0 +1,15 @@
+01.be_hdr_ui_workflow_gui.py : 시스템 UI를 적용하기 위한 툴
+02.be_hdr_logo_workflow_gui.py : 로고를 추출해서 적용하기 위한 툴
+03. be_hdr_palette_extract_gui.py : 리소스id에 맞춰 해당되는 리소스의 팔레트(index) 를 추출하기 위한 툴
+04.be_hdr_red_layer_workflow_gui.py : 리소스id에 맞춰 해당되는 리소스의 팔레트(index)를 개별적으로 적용하기 위한 툴
+05.behdr_palette_inspector_gui.py : 팔레트 index를 확인하기 위한 툴(리소스id에 해당되는 리소스)
+06.bin_patch_port_gui.py : a타입, b타입 적용을 위한 툴(작업을 a타입에 해서 b타입으로 만들 때 사용) -> a타입은 : 2001년 수정 버전, b타입은 : 1999년 수정 버전
+07.bin_resource_restore_gui.py : 잘못 적용된 리소스를 원본 리소스로 복원하기 위한 툴(원본, 수정본 둘다 필요)
+08.checksum_gui.py : crc32, md5 등 체크썸을 확인하기 위한 툴
+09.dialogue_workflow_gui.py : 대화를 한글로 적용하기 위한 툴
+10. exe_text_workflow_gui.py : 사용안함
+11. finale_text_workflow_gui.py : 대화를 한글로 적용하기 위한 툴(17일날 부분) -> 해당 기능이 09번에 해당되는 툴로 이관됨
+12. image_text_overlay_gui.py : 이미지에 지정된 좌표에 텍스트를 쉽게 넣기 위한 툴
+13. name_table_workflow_gui.py : 고유명사를 번역하기 위한 툴
+14.ui_mask_workflow_gui.py : 게임내 정보(마법, 도구, 장비 등 설명문구 및 1일~17일째 타이틀 등) 수정을 위한 툴
+15. color_separator_gui.py : 색상별로 이미지 추출(검은색 안됨)

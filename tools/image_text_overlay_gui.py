@@ -86,6 +86,34 @@ class ImageTextOverlayGui(tk.Tk):
         ttk.Spinbox(bold_row, from_=1, to=20, width=4, textvariable=self.bold_width_var,
                     command=self._on_editor_change).pack(side="left", padx=(4, 0))
         self.bold_width_var.trace_add("write", lambda *_: self._on_editor_change())
+
+        self.antialias_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(bold_row, text="Anti-alias", variable=self.antialias_var,
+                        command=self._on_editor_change).pack(side="left", padx=(12, 0))
+
+        threshold_row = ttk.Frame(side)
+        threshold_row.pack(fill="x", pady=(0, 4))
+        self.threshold_mode_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(threshold_row, text="Pixel-perfect (threshold)", variable=self.threshold_mode_var,
+                        command=self._on_editor_change).pack(side="left")
+
+        threshold_opts = ttk.Frame(side)
+        threshold_opts.pack(fill="x", pady=(0, 4))
+        ttk.Label(threshold_opts, text="supersample").pack(side="left")
+        self.supersample_var = tk.StringVar(value="4")
+        ttk.Spinbox(threshold_opts, from_=1, to=8, width=4, textvariable=self.supersample_var,
+                    command=self._on_editor_change).pack(side="left", padx=(4, 12))
+        ttk.Label(threshold_opts, text="threshold").pack(side="left")
+        self.threshold_var = tk.StringVar(value="64")
+        ttk.Spinbox(threshold_opts, from_=1, to=254, width=5, textvariable=self.threshold_var,
+                    command=self._on_editor_change).pack(side="left", padx=(4, 0))
+        self.supersample_var.trace_add("write", lambda *_: self._on_editor_change())
+        self.threshold_var.trace_add("write", lambda *_: self._on_editor_change())
+        ttk.Label(side, text="(renders smooth at Nx size, box-filters down, then snaps to 1-bit --"
+                              " avoids the mushy look plain AA-off has on dense Hangul glyphs."
+                              " Lower threshold keeps more thin-stroke ink; raise it if text looks too fat)",
+                  foreground="#666666", wraplength=280).pack(anchor="w", pady=(0, 4))
+
         ttk.Label(side, text="(faux bold via stroke; use a real bold font file for best results)",
                   foreground="#666666", wraplength=280).pack(anchor="w", pady=(0, 4))
 
@@ -120,11 +148,13 @@ class ImageTextOverlayGui(tk.Tk):
         ttk.Button(list_buttons, text="Remove Selected", command=self._remove_selected).pack(fill="x", pady=(4, 0))
 
         ttk.Label(side, text="Placed Text").pack(anchor="w", pady=(10, 0))
-        self.tree = ttk.Treeview(side, columns=("text", "size", "bold", "color", "x", "y"), show="headings", height=8)
+        self.tree = ttk.Treeview(side, columns=("text", "size", "bold", "aa", "pp", "color", "x", "y"), show="headings", height=8)
         for col, text, width in [
             ("text", "Text", 90),
             ("size", "Sz", 30),
             ("bold", "B", 20),
+            ("aa", "AA", 24),
+            ("pp", "PP", 24),
             ("color", "Color", 60),
             ("x", "X", 40),
             ("y", "Y", 40),
@@ -214,6 +244,8 @@ class ImageTextOverlayGui(tk.Tk):
             x = int(float(self.x_var.get()))
             y = int(float(self.y_var.get()))
             bold_width = int(self.bold_width_var.get() or 1)
+            supersample = int(self.supersample_var.get() or 4)
+            threshold = int(self.threshold_var.get() or 64)
         except ValueError:
             return None
         text = self.text_widget.get("1.0", "end-1c")
@@ -224,6 +256,10 @@ class ImageTextOverlayGui(tk.Tk):
             "size": size,
             "bold": bool(self.bold_var.get()),
             "bold_width": bold_width,
+            "antialias": bool(self.antialias_var.get()),
+            "threshold_mode": bool(self.threshold_mode_var.get()),
+            "supersample": supersample,
+            "threshold": threshold,
             "color": self.color_var.get().strip(),
             "x": x,
             "y": y,
@@ -237,6 +273,10 @@ class ImageTextOverlayGui(tk.Tk):
         self.size_var.set(str(item["size"]))
         self.bold_var.set(item.get("bold", False))
         self.bold_width_var.set(str(item.get("bold_width", 1)))
+        self.antialias_var.set(item.get("antialias", True))
+        self.threshold_mode_var.set(item.get("threshold_mode", False))
+        self.supersample_var.set(str(item.get("supersample", 4)))
+        self.threshold_var.set(str(item.get("threshold", 64)))
         self.color_var.set(item["color"])
         self.x_var.set(str(item["x"]))
         self.y_var.set(str(item["y"]))
@@ -275,7 +315,16 @@ class ImageTextOverlayGui(tk.Tk):
         preview = item["text"].replace("\n", "\\n")
         if len(preview) > 14:
             preview = preview[:14] + "..."
-        return (preview, item["size"], "Y" if item.get("bold") else "", item["color"], item["x"], item["y"])
+        return (
+            preview,
+            item["size"],
+            "Y" if item.get("bold") else "",
+            "Y" if item.get("antialias", True) else "",
+            "Y" if item.get("threshold_mode") else "",
+            item["color"],
+            item["x"],
+            item["y"],
+        )
 
     def _on_editor_change(self):
         if self.selected_index is not None:
@@ -325,9 +374,15 @@ class ImageTextOverlayGui(tk.Tk):
             self._set_status(f"[error] color: {exc}")
             return None
 
-    def _draw_item(self, draw, item):
+    def _draw_item(self, overlay, draw, item):
         if not item["text"]:
             return
+        if item.get("threshold_mode"):
+            self._draw_item_threshold(overlay, item)
+        else:
+            self._draw_item_plain(draw, item)
+
+    def _draw_item_plain(self, draw, item):
         font = self._get_font(item["font_path"], item["size"], item["font_index"])
         if font is None:
             return
@@ -335,6 +390,7 @@ class ImageTextOverlayGui(tk.Tk):
         if color is None:
             return
         stroke_width = item.get("bold_width", 1) if item.get("bold") else 0
+        draw.fontmode = "L" if item.get("antialias", True) else "1"
         draw.text(
             (item["x"], item["y"]),
             item["text"],
@@ -344,6 +400,57 @@ class ImageTextOverlayGui(tk.Tk):
             stroke_fill=color if stroke_width else None,
         )
 
+    def _draw_item_threshold(self, overlay, item):
+        # Point-sampling an antialiased render (or forcing 1-bit rendering
+        # directly) produces jagged, mushy strokes on dense Hangul glyphs.
+        # Render at Nx size with normal AA, box-filter back down, then snap
+        # to 1-bit -- same technique as scripts/render-text-to-1bpp-pbm.ps1.
+        font = self._get_font(item["font_path"], item["size"], item["font_index"])
+        if font is None:
+            return
+        color = self._parse_color(item["color"])
+        if color is None:
+            return
+        supersample = max(1, item.get("supersample", 4))
+        threshold = min(254, max(1, item.get("threshold", 128)))
+        stroke_width = item.get("bold_width", 1) if item.get("bold") else 0
+
+        spacing = 4
+        measurer = ImageDraw.Draw(Image.new("L", (1, 1)))
+        left, top, right, bottom = measurer.textbbox(
+            (0, 0), item["text"], font=font, stroke_width=stroke_width, spacing=spacing
+        )
+        pad = stroke_width + 2
+        patch_w = (right - left) + pad * 2
+        patch_h = (bottom - top) + pad * 2
+        if patch_w <= 0 or patch_h <= 0:
+            return
+
+        font_super = self._get_font(item["font_path"], item["size"] * supersample, item["font_index"])
+        if font_super is None:
+            return
+
+        patch_super = Image.new("L", (patch_w * supersample, patch_h * supersample), 0)
+        draw_super = ImageDraw.Draw(patch_super)
+        draw_super.fontmode = "L"
+        draw_super.text(
+            (pad * supersample - left * supersample, pad * supersample - top * supersample),
+            item["text"],
+            font=font_super,
+            fill=255,
+            stroke_width=stroke_width * supersample,
+            stroke_fill=255 if stroke_width else None,
+            spacing=spacing * supersample,
+        )
+
+        coverage = patch_super.resize((patch_w, patch_h), Image.BOX)
+        coverage = coverage.point(lambda a: 255 if a >= threshold else 0)
+
+        colored = Image.new("RGBA", (patch_w, patch_h), color[:3] + (0,))
+        colored.putalpha(coverage.point(lambda a: (a * color[3]) // 255))
+
+        overlay.paste(colored, (item["x"] + left - pad, item["y"] + top - pad), colored)
+
     def _compose(self):
         if self.base_image is None:
             return None
@@ -351,11 +458,11 @@ class ImageTextOverlayGui(tk.Tk):
         overlay = Image.new("RGBA", base_rgba.size, (0, 0, 0, 0))
         draw = ImageDraw.Draw(overlay)
         for item in self.items:
-            self._draw_item(draw, item)
+            self._draw_item(overlay, draw, item)
         if self.selected_index is None:
             pending = self._editor_item()
             if pending:
-                self._draw_item(draw, pending)
+                self._draw_item(overlay, draw, pending)
         return Image.alpha_composite(base_rgba, overlay)
 
     def _refresh_preview(self):
