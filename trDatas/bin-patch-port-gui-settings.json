@@ -1,0 +1,10 @@
+{
+  "base_original": "F:/workspace-server/create-retro-game-kr-patch-main/output/original/Farland Saga - Toki no Michishirube.bin",
+  "target_original": "F:/workspace-server/create-retro-game-kr-patch-main/output/original2/Farland Saga - Toki no Michishirube (Japan).bin",
+  "base_patched": "F:/workspace-server/create-retro-game-kr-patch-main/output/patched-farland-saga.bin",
+  "out_bin": "F:\\workspace-server\\create-retro-game-kr-patch-main\\output\\patched-farland-saga-original2.bin",
+  "out_cue": "F:\\workspace-server\\create-retro-game-kr-patch-main\\output\\patched-farland-saga-original2.cue",
+  "report": "F:\\workspace-server\\create-retro-game-kr-patch-main\\tmp\\SLPS-01903\\bin-patch-port-report.json",
+  "write_cue": false,
+  "allow_conflicts": false
+}
