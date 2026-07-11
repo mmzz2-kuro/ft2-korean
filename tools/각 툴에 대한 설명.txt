@@ -14,6 +14,7 @@
 13. name_table_workflow_gui.py : 고유명사를 번역하기 위한 툴
 14.ui_mask_workflow_gui.py : 게임내 정보(마법, 도구, 장비 등 설명문구 및 1일~17일째 타이틀 등) 수정을 위한 툴
 15. color_separator_gui.py : 색상별로 이미지 추출(검은색 안됨)
+16. color_replace_gui.py : 이미지 선택 후 소스 컬러값(rgb) -> 목표 컬러값(rgb)로 변경할 때 사용하는 툴(정확한 단일 컬러값만 적용)
 
 
 *백업은 늘 필수 입니다.
