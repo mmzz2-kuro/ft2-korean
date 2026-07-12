@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 from pathlib import Path
 from tkinter import colorchooser, filedialog, ttk
 import tkinter as tk
@@ -10,6 +11,7 @@ from PIL import Image, ImageColor, ImageTk
 
 ROOT = Path(__file__).resolve().parents[1]
 ZOOM_LEVELS = {"50%": 0.5, "100%": 1.0, "200%": 2.0, "400%": 4.0}
+STATE_PATH = ROOT / "tmp/.gui-state/color_replace_gui.json"
 
 
 def rel(path):
@@ -17,6 +19,18 @@ def rel(path):
         return str(Path(path).resolve().relative_to(ROOT)).replace("\\", "/")
     except ValueError:
         return str(path)
+
+
+def load_last_dir():
+    try:
+        return json.loads(STATE_PATH.read_text(encoding="utf-8")).get("last_dir", str(ROOT))
+    except (OSError, ValueError):
+        return str(ROOT)
+
+
+def save_last_dir(directory):
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(json.dumps({"last_dir": str(directory)}), encoding="utf-8")
 
 
 class ColorReplaceGui(tk.Tk):
@@ -31,6 +45,7 @@ class ColorReplaceGui(tk.Tk):
         self.array = None  # H x W x 3 uint8, working copy edits apply to
         self._photo = None
         self.pick_target = None  # "a" or "b" while armed, else None
+        self.last_dir = load_last_dir()
 
         self.color_a_var = tk.StringVar(value="#ff0000")
         self.color_b_var = tk.StringVar(value="#00ff00")
@@ -66,7 +81,8 @@ class ColorReplaceGui(tk.Tk):
         buttons.pack(side="left", padx=(20, 0))
         ttk.Button(buttons, text="Apply (A -> B)", command=self.apply_replace).pack(fill="x")
         ttk.Button(buttons, text="Reset to Original", command=self.reset_image).pack(fill="x", pady=(4, 0))
-        ttk.Button(buttons, text="Save Image As...", command=self.save_image).pack(fill="x", pady=(4, 0))
+        ttk.Button(buttons, text="Save Image", command=self.save_image).pack(fill="x", pady=(4, 0))
+        ttk.Button(buttons, text="Save Image As...", command=self.save_image_as).pack(fill="x", pady=(4, 0))
 
         # canvas ------------------------------------------------------------
         canvas_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
@@ -125,7 +141,7 @@ class ColorReplaceGui(tk.Tk):
 
     def _load_image(self):
         path = filedialog.askopenfilename(
-            initialdir=str(ROOT),
+            initialdir=self.last_dir,
             filetypes=[("Images", "*.png *.bmp *.jpg *.jpeg *.gif *.tga"), ("All files", "*.*")],
         )
         if not path:
@@ -135,6 +151,9 @@ class ColorReplaceGui(tk.Tk):
         except Exception as exc:
             self._set_status(f"[error] could not open image: {exc}")
             return
+
+        self.last_dir = str(Path(path).parent)
+        save_last_dir(self.last_dir)
 
         self.source_path = path
         self.original_array = np.array(img)
@@ -173,6 +192,13 @@ class ColorReplaceGui(tk.Tk):
         if self.array is None:
             self._set_status("[warn] no image loaded")
             return
+        Image.fromarray(self.array, "RGB").save(self.source_path)
+        self._set_status(f"saved (overwrote) {rel(self.source_path)}")
+
+    def save_image_as(self):
+        if self.array is None:
+            self._set_status("[warn] no image loaded")
+            return
         source = Path(self.source_path)
         save_path = filedialog.asksaveasfilename(
             initialdir=str(source.parent),
@@ -183,6 +209,8 @@ class ColorReplaceGui(tk.Tk):
         if not save_path:
             return
         Image.fromarray(self.array, "RGB").save(save_path)
+        self.last_dir = str(Path(save_path).parent)
+        save_last_dir(self.last_dir)
         self._set_status(f"saved {rel(save_path)}")
 
     def _on_canvas_click(self, event):

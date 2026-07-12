@@ -12,9 +12,10 @@
 11. finale_text_workflow_gui.py : 대화를 한글로 적용하기 위한 툴(17일날 부분) -> 해당 기능이 09번에 해당되는 툴로 이관됨
 12. image_text_overlay_gui.py : 이미지에 지정된 좌표에 텍스트를 쉽게 넣기 위한 툴
 13. name_table_workflow_gui.py : 고유명사를 번역하기 위한 툴
-14.ui_mask_workflow_gui.py : 게임내 정보(마법, 도구, 장비 등 설명문구 및 1일~17일째 타이틀 등) 수정을 위한 툴
-15. color_separator_gui.py : 색상별로 이미지 추출(검은색 안됨)
-16. color_replace_gui.py : 이미지 선택 후 소스 컬러값(rgb) -> 목표 컬러값(rgb)로 변경할 때 사용하는 툴(정확한 단일 컬러값만 적용)
+14. speaker_name_resource_gui.py : 대화창의 초록색 화자 이름 8bpp 리소스(ID 4277~4449) 탐색/추출/교체 툴
+15. ui_mask_workflow_gui.py : 게임내 정보(마법, 도구, 장비 등 설명문구 및 1일~17일째 타이틀 등) 수정을 위한 툴
+16. color_separator_gui.py : 색상별로 이미지 추출(검은색 안됨)
+17. color_replace_gui.py : 이미지 선택 후 소스 컬러값(rgb) -> 목표 컬러값(rgb)로 변경할 때 사용하는 툴(정확한 단일 컬러값만 적용)
 
 
 *백업은 늘 필수 입니다.
