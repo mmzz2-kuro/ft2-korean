@@ -63,3 +63,5 @@ output/
 patch/
 *.pyc
 __pycache__/
+ram-dump/
+trDatas/image-subtract/
