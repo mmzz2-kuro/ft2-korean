@@ -84,7 +84,8 @@ class BeHdrLogoWorkflowGui(tk.Tk):
             ttk.Entry(opts, textvariable=self.vars[key], width=width).pack(side="left", padx=(4, 10))
         ttk.Checkbutton(opts, text="allow overflow", variable=self.vars["allow_overflow"]).pack(side="left", padx=(0, 10))
         ttk.Button(opts, text="1. Extract Logo Images", command=self.extract_images).pack(side="left", padx=(6, 0))
-        ttk.Button(opts, text="2. Apply Edited Images", command=self.apply_images).pack(side="left", padx=(6, 0))
+        ttk.Button(opts, text="2. Prepare TITLE PNGs", command=self.prepare_title_images).pack(side="left", padx=(6, 0))
+        ttk.Button(opts, text="3. Apply Edited Images", command=self.apply_images).pack(side="left", padx=(6, 0))
 
         body = ttk.Frame(self, padding=8)
         body.grid(row=2, column=0, sticky="nsew")
@@ -92,7 +93,8 @@ class BeHdrLogoWorkflowGui(tk.Tk):
         body.rowconfigure(1, weight=1)
 
         help_text = (
-            "Extract creates raw PGM, contrast PNG, and indexed PNG files.\n"
+            "Extract creates raw PGM, contrast PNG, indexed PNG, and real-colour CLUT PNG files for IDs 251/288.\n"
+            "Prepare TITLE PNGs converts winLogo/TITLE-251-resize.png and TITLE-288-resize.png to exact indexed edits.\n"
             "Edit files as: <workDir>/edit/be-hdr-ui-<id>-indexed-edit.png, keeping indexed palette values when possible.\n"
             "Apply packs only IDs that have an *-indexed-edit.png file."
         )
@@ -224,10 +226,29 @@ class BeHdrLogoWorkflowGui(tk.Tk):
             raw_pgm = raw_dir / f"be-hdr-ui-{rid}-raw.pgm"
             contrast_png = raw_dir / f"be-hdr-ui-{rid}-contrast.png"
             indexed_png = edit_dir / f"be-hdr-ui-{rid}-indexed.png"
+            clut_png = raw_dir / f"be-hdr-ui-{rid}-clut.png"
             if not raw_pgm.exists():
                 self._append_log(f"[skip] resource {rid}: raw PGM missing\n")
                 next_one()
                 return
+
+            def make_clut():
+                if int(rid) not in (251, 288):
+                    next_one()
+                    return
+                self.run_command(
+                    f"Render real-colour CLUT PNG for resource {rid}",
+                    [
+                        "python",
+                        str(ROOT / "scripts/render-behdr-clut-png.py"),
+                        str(raw_pgm),
+                        str(self._effective_dat()),
+                        self.vars["exe"].get(),
+                        rid,
+                        str(clut_png),
+                    ],
+                    next_one,
+                )
 
             def make_indexed():
                 self.run_command(
@@ -239,7 +260,7 @@ class BeHdrLogoWorkflowGui(tk.Tk):
                         str(raw_pgm),
                         str(indexed_png),
                     ],
-                    next_one,
+                    make_clut,
                 )
 
             self.run_command(
@@ -318,6 +339,24 @@ class BeHdrLogoWorkflowGui(tk.Tk):
                     if not self._source_is_bin():
                         self._append_log("[error] output is BIN but source is not BIN; choose a BIN source or output DAT\n")
                         return
+                    unfixed_bin = direct_dir / "logo-patched-unfixed.bin"
+
+                    def fix_sector_checksums():
+                        self.run_command(
+                            "Fix changed-sector EDC/ECC",
+                            [
+                                "node",
+                                str(ROOT / "scripts/fix-bin-edc-ecc.js"),
+                                source_bin,
+                                str(unfixed_bin),
+                                str(out_path),
+                                "--exe",
+                                self.vars["exe"].get(),
+                                "--fs2-lba",
+                                self.vars["fs2_lba"].get(),
+                            ],
+                        )
+
                     self.run_command(
                         "Inject logo-patched DAT into BIN",
                         [
@@ -325,10 +364,11 @@ class BeHdrLogoWorkflowGui(tk.Tk):
                             str(ROOT / "scripts/inject-dat-into-raw-bin.js"),
                             source_bin,
                             str(working_dat),
-                            str(out_path),
+                            str(unfixed_bin),
                             "--lba",
                             self.vars["fs2_lba"].get(),
                         ],
+                        fix_sector_checksums,
                     )
                 else:
                     shutil.copyfile(working_dat, out_path)
@@ -337,6 +377,29 @@ class BeHdrLogoWorkflowGui(tk.Tk):
             process_next()
 
         self._prepare_dat(run_apply)
+
+    def prepare_title_images(self):
+        work_dir = Path(self.vars["work_dir"].get())
+        required = [work_dir / "raw" / f"be-hdr-ui-{resource_id}-raw.pgm" for resource_id in (251, 288)]
+        missing = [path for path in required if not path.exists()]
+        if missing:
+            self._append_log("[error] extract IDs 251 and 288 first; raw PGM files are missing\n")
+            return
+        self.run_command(
+            "Prepare colour-mapped title replacements",
+            [
+                "python",
+                str(ROOT / "scripts/prepare-title-logo-replacement.py"),
+                "--work-dir",
+                str(work_dir),
+                "--input-dir",
+                str(ROOT / "winLogo"),
+                "--dat",
+                str(self._effective_dat()),
+                "--exe",
+                self.vars["exe"].get(),
+            ],
+        )
 
     def _append_log(self, text):
         self.log.insert("end", text)
