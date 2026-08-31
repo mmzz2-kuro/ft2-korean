@@ -49,6 +49,21 @@ def pgm_to_png(in_path, out_path):
     print(out)
 
 
+def pgm_to_visual_png(in_path, out_path, scale):
+    width, height, pixels = read_pgm(in_path)
+    # Dialogue masks use indexes 0..3. Render them with full grayscale contrast
+    # for inspection while leaving the indexed conversion path unchanged.
+    maximum = max(pixels) if pixels else 0
+    divisor = maximum or 1
+    image = Image.frombytes("L", (width, height), bytes(round(value * 255 / divisor) for value in pixels))
+    if scale > 1:
+        image = image.resize((width * scale, height * scale), Image.Resampling.NEAREST)
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    image.save(out)
+    print(out)
+
+
 def png_to_pgm(in_path, out_path):
     img = Image.open(in_path)
     if img.mode != "P":
@@ -64,6 +79,10 @@ def main():
     to_png = sub.add_parser("to-png")
     to_png.add_argument("in_pgm")
     to_png.add_argument("out_png")
+    visual = sub.add_parser("to-visual-png")
+    visual.add_argument("in_pgm")
+    visual.add_argument("out_png")
+    visual.add_argument("--scale", type=int, default=1)
     to_pgm = sub.add_parser("to-pgm")
     to_pgm.add_argument("in_png")
     to_pgm.add_argument("out_pgm")
@@ -71,6 +90,8 @@ def main():
 
     if args.mode == "to-png":
         pgm_to_png(args.in_pgm, args.out_png)
+    elif args.mode == "to-visual-png":
+        pgm_to_visual_png(args.in_pgm, args.out_png, max(1, args.scale))
     else:
         png_to_pgm(args.in_png, args.out_pgm)
 

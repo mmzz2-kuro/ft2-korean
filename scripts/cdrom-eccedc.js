@@ -1,4 +1,4 @@
-// CD-ROM XA Mode 2 Form 1 EDC/ECC recompute -- same algorithm structure as
+// CD-ROM Mode 1 and XA Mode 2 Form 1 EDC/ECC recompute -- same algorithm structure as
 // the well-known public-domain reference implementations (Neill Corlett's
 // ECM tool, cdrdao's eccedc.c). See references/platforms/ps1.md and
 // references/strategy/build-and-verify.md's "CD 매체의 EDC/ECC" section:
@@ -80,6 +80,25 @@ function isMode2Form1(sector) {
   return (sector[18] & 0x20) === 0; // submode form2 bit
 }
 
+function isMode1(sector) {
+  return sector.length >= 2352 && sector[15] === 1;
+}
+
+// Recomputes a raw CD-ROM Mode 1 sector in place. Layout:
+// sync+header 0..15, user data 16..2063, EDC 2064..2067,
+// reserved zeroes 2068..2075, ECC P/Q 2076..2351.
+function recomputeMode1Sector(sector) {
+  const edc = computeEdc(sector, 0, 2064);
+  sector.writeUInt32LE(edc, 2064);
+  sector.fill(0, 2068, 2076);
+
+  const address = Buffer.from(sector.subarray(12, 16));
+  const data = Buffer.from(sector.subarray(16, 2076));
+  const ecc = computeEccPQ(address, data);
+  ecc.copy(sector, 2076);
+  return sector;
+}
+
 // Recomputes EDC (offset 2072..2075) and ECC (offset 2076..2351) in place
 // for a Mode 2 Form 1 sector buffer (2352 bytes: sync+header 0..15,
 // subheader 16..23, user data 24..2071).
@@ -94,4 +113,8 @@ function recomputeMode2Form1Sector(sector) {
   return sector;
 }
 
-module.exports = { computeEdc, computeEccPQ, recomputeMode2Form1Sector, isMode2Form1, ZERO_ADDRESS };
+module.exports = {
+  computeEdc, computeEccPQ,
+  recomputeMode1Sector, recomputeMode2Form1Sector,
+  isMode1, isMode2Form1, ZERO_ADDRESS
+};

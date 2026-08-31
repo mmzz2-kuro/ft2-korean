@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "input": {
+    "track1": "../ss/others/Farland Saga - Toki no Michishirube (Japan) (Track 1).bin",
+    "track2": "../ss/others/Farland Saga - Toki no Michishirube (Japan) (Track 2).bin",
+    "track1Sha256": "267CB97B787E4F3C804CBCB0495977C7F3B309513CA15F918A9C3C6D18996D02",
+    "track2Sha256": "1E3504C775B34E839B52C9DEA95C40D51E3F4DCDAE82CC88A11413D6ED301741"
+  },
+  "output": {
+    "track1": "../output/ss-fs2-build-1004-ko.bin",
+    "cue": "../output/ss-fs2-build-1004-ko.cue",
+    "report": "../output/ss-fs2-build-1004-ko.report.json"
+  },
+  "patches": [
+    {
+      "messageId": 1004,
+      "pgm": "../tmp/SLPS-01903/dialogue-workflow/apply/message-mask-1004-ko.pgm"
+    }
+  ]
+}

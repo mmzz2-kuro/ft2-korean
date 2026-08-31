@@ -64,6 +64,7 @@ SLPS-01903 리소스 829 및 기타 리소스의 고유명사(캐릭터/몬스�
 usage:
   export FS2_FILE.DAT SLPS_019.03 out.tsv maskDir
   render FontPath out.tsv [--font-size N]
+  render-missing FontPath out.tsv [--font-size N]
   patch FS2_FILE.DAT SLPS_019.03 out.tsv outDat
 """
 
@@ -484,7 +485,7 @@ def render_name_png(text, font_path, out_path, width, height, font_size=None, sc
     return out_path
 
 
-def render_replacement_pngs(font_path, tsv_path, font_size=None):
+def render_replacement_pngs(font_path, tsv_path, font_size=None, missing_only=False):
     headers, rows = read_tsv_rows(tsv_path)
 
     rendered = 0
@@ -500,6 +501,8 @@ def render_replacement_pngs(font_path, tsv_path, font_size=None):
             source_png = Path(row["source_png"])
             out_path = str(source_png.with_name(f"name-{table_key}-{entry_id:02d}-ko.png"))
             row["replacement_png"] = out_path
+        if missing_only and Path(out_path).exists():
+            continue
 
         row_font_size = row.get("font_size", "").strip() or font_size
         render_name_png(text, font_path, out_path, cfg["width"], cfg["height"], row_font_size)
@@ -547,14 +550,14 @@ def main(argv):
             print(__doc__, file=sys.stderr)
             raise SystemExit(2)
         export_tsv(argv[2], argv[3], argv[4], argv[5])
-    elif mode == "render":
+    elif mode in ("render", "render-missing"):
         if len(argv) < 4:
             print(__doc__, file=sys.stderr)
             raise SystemExit(2)
         font_size = None
         if "--font-size" in argv:
             font_size = int(argv[argv.index("--font-size") + 1])
-        render_replacement_pngs(argv[2], argv[3], font_size)
+        render_replacement_pngs(argv[2], argv[3], font_size, missing_only=(mode == "render-missing"))
     elif mode == "patch":
         if len(argv) < 6:
             print(__doc__, file=sys.stderr)

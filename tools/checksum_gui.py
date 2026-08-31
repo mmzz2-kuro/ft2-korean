@@ -9,8 +9,15 @@ from pathlib import Path
 from tkinter import filedialog, ttk
 import tkinter as tk
 
+try:
+    from tkinterdnd2 import DND_FILES, TkinterDnD
+    DND_AVAILABLE = True
+except ImportError:
+    DND_AVAILABLE = False
+
 ROOT = Path(__file__).resolve().parents[1]
 CHUNK_SIZE = 1024 * 1024
+_BaseTk = TkinterDnD.Tk if DND_AVAILABLE else tk.Tk
 
 
 def rel(path):
@@ -25,6 +32,7 @@ def compute_hashes(path, progress_cb):
     crc = 0
     md5 = hashlib.md5()
     sha1 = hashlib.sha1()
+    sha256 = hashlib.sha256()
     done = 0
     with open(path, "rb") as fh:
         while True:
@@ -34,15 +42,16 @@ def compute_hashes(path, progress_cb):
             crc = zlib.crc32(chunk, crc)
             md5.update(chunk)
             sha1.update(chunk)
+            sha256.update(chunk)
             done += len(chunk)
             progress_cb(done, size)
-    return size, f"{crc & 0xffffffff:08X}", md5.hexdigest(), sha1.hexdigest()
+    return size, f"{crc & 0xffffffff:08X}", md5.hexdigest(), sha1.hexdigest(), sha256.hexdigest()
 
 
-class ChecksumGui(tk.Tk):
+class ChecksumGui(_BaseTk):
     def __init__(self):
         super().__init__()
-        self.title("Checksum Tool (CRC32 / MD5 / SHA-1)")
+        self.title("Checksum Tool (CRC32 / MD5 / SHA-1 / SHA-256)")
         self.geometry("1180x560")
         self.minsize(900, 420)
 
@@ -58,19 +67,36 @@ class ChecksumGui(tk.Tk):
 
         top = ttk.Frame(self, padding=8)
         top.grid(row=0, column=0, sticky="ew")
-        ttk.Label(top, text="Expected CRC32").pack(side="left")
+
+        row1 = ttk.Frame(top)
+        row1.pack(side="top", fill="x")
+        ttk.Label(row1, text="Expected CRC32").pack(side="left")
         self.expected_crc32 = tk.StringVar()
-        ttk.Entry(top, textvariable=self.expected_crc32, width=12).pack(side="left", padx=(4, 12))
-        ttk.Label(top, text="Expected MD5").pack(side="left")
+        ttk.Entry(row1, textvariable=self.expected_crc32, width=12).pack(side="left", padx=(4, 12))
+        ttk.Label(row1, text="Expected MD5").pack(side="left")
         self.expected_md5 = tk.StringVar()
-        ttk.Entry(top, textvariable=self.expected_md5, width=34).pack(side="left", padx=(4, 12))
-        ttk.Label(top, text="Expected SHA-1").pack(side="left")
+        ttk.Entry(row1, textvariable=self.expected_md5, width=34).pack(side="left", padx=(4, 12))
+        ttk.Label(row1, text="Expected SHA-1").pack(side="left")
         self.expected_sha1 = tk.StringVar()
-        ttk.Entry(top, textvariable=self.expected_sha1, width=44).pack(side="left", padx=(4, 12))
+        ttk.Entry(row1, textvariable=self.expected_sha1, width=44).pack(side="left", padx=(4, 12))
+
+        row2 = ttk.Frame(top)
+        row2.pack(side="top", fill="x", pady=(6, 0))
+        ttk.Label(row2, text="Expected SHA-256").pack(side="left")
+        self.expected_sha256 = tk.StringVar()
+        ttk.Entry(row2, textvariable=self.expected_sha256, width=68).pack(side="left", padx=(4, 12))
 
         hint = ttk.Frame(self, padding=(8, 0, 8, 4))
         hint.grid(row=1, column=0, sticky="ew")
         ttk.Label(hint, text="(expected values are optional -- only applied when adding a single file)").pack(side="left")
+        if DND_AVAILABLE:
+            ttk.Label(hint, text="  |  drag & drop files onto the table below").pack(side="left")
+        else:
+            ttk.Label(
+                hint,
+                text="  |  drag & drop disabled (run: pip install tkinterdnd2)",
+                foreground="#b30000",
+            ).pack(side="left")
 
         buttons = ttk.Frame(self, padding=(8, 0, 8, 8))
         buttons.grid(row=2, column=0, sticky="ew")
@@ -83,7 +109,7 @@ class ChecksumGui(tk.Tk):
         body.columnconfigure(0, weight=1)
         body.rowconfigure(0, weight=1)
 
-        columns = ("file", "size", "crc32", "md5", "sha1", "match")
+        columns = ("file", "size", "crc32", "md5", "sha1", "sha256", "match")
         self.tree = ttk.Treeview(body, columns=columns, show="headings", selectmode="extended")
         for col, text, width, anchor in [
             ("file", "File", 260, "w"),
@@ -91,10 +117,11 @@ class ChecksumGui(tk.Tk):
             ("crc32", "CRC32", 90, "center"),
             ("md5", "MD5", 260, "center"),
             ("sha1", "SHA-1", 300, "center"),
+            ("sha256", "SHA-256", 340, "center"),
             ("match", "Match", 80, "center"),
         ]:
             self.tree.heading(col, text=text)
-            self.tree.column(col, width=width, anchor=anchor, stretch=(col in ("file", "md5", "sha1")))
+            self.tree.column(col, width=width, anchor=anchor, stretch=(col in ("file", "md5", "sha1", "sha256")))
         self.tree.grid(row=0, column=0, sticky="nsew")
 
         scrollbar = ttk.Scrollbar(body, orient="vertical", command=self.tree.yview)
@@ -106,6 +133,10 @@ class ChecksumGui(tk.Tk):
 
         self._build_context_menu()
         self.tree.bind("<Button-3>", self._show_context_menu)
+
+        if DND_AVAILABLE:
+            self.tree.drop_target_register(DND_FILES)
+            self.tree.dnd_bind("<<Drop>>", self._on_drop)
 
         status = ttk.Frame(self, padding=(8, 0, 8, 8))
         status.grid(row=4, column=0, sticky="ew")
@@ -120,6 +151,7 @@ class ChecksumGui(tk.Tk):
         self.menu.add_command(label="Copy CRC32", command=lambda: self._copy_field("crc32"))
         self.menu.add_command(label="Copy MD5", command=lambda: self._copy_field("md5"))
         self.menu.add_command(label="Copy SHA-1", command=lambda: self._copy_field("sha1"))
+        self.menu.add_command(label="Copy SHA-256", command=lambda: self._copy_field("sha256"))
         self.menu.add_command(label="Copy Path", command=lambda: self._copy_field("path"))
         self.menu.add_command(label="Copy Row (tab-separated)", command=self._copy_row)
 
@@ -153,32 +185,48 @@ class ChecksumGui(tk.Tk):
         paths = filedialog.askopenfilenames(initialdir=str(ROOT))
         if not paths:
             return
+        self._add_paths(paths)
 
+    def _on_drop(self, event):
+        dropped = self.tk.splitlist(event.data)
+        paths = [p for p in dropped if Path(p).is_file()]
+        skipped = len(dropped) - len(paths)
+        if paths:
+            self._add_paths(paths)
+        if skipped:
+            self.status_var.set(f"skipped {skipped} non-file item(s) from drop")
+
+    def _add_paths(self, paths):
         expected_crc32 = self.expected_crc32.get().strip().upper() or None
         expected_md5 = self.expected_md5.get().strip().lower() or None
         expected_sha1 = self.expected_sha1.get().strip().lower() or None
+        expected_sha256 = self.expected_sha256.get().strip().lower() or None
         if len(paths) != 1:
             expected_crc32 = None
             expected_md5 = None
             expected_sha1 = None
+            expected_sha256 = None
 
         for path in paths:
-            iid = self.tree.insert("", "end", values=(rel(path), "...", "...", "...", "...", "-"))
-            self.rows[iid] = {"path": path, "crc32": "", "md5": "", "sha1": ""}
+            iid = self.tree.insert("", "end", values=(rel(path), "...", "...", "...", "...", "...", "-"))
+            self.rows[iid] = {"path": path, "crc32": "", "md5": "", "sha1": "", "sha256": ""}
             threading.Thread(
                 target=self._worker,
-                args=(iid, path, expected_crc32, expected_md5, expected_sha1),
+                args=(iid, path, expected_crc32, expected_md5, expected_sha1, expected_sha256),
                 daemon=True,
             ).start()
 
-    def _worker(self, iid, path, expected_crc32, expected_md5, expected_sha1):
+    def _worker(self, iid, path, expected_crc32, expected_md5, expected_sha1, expected_sha256):
         def progress_cb(done, size):
             percent = (done / size * 100) if size else 100
             self.result_queue.put(("progress", iid, rel(path), percent))
 
         try:
-            size, crc32, md5, sha1 = compute_hashes(path, progress_cb)
-            self.result_queue.put(("done", iid, size, crc32, md5, sha1, expected_crc32, expected_md5, expected_sha1))
+            size, crc32, md5, sha1, sha256 = compute_hashes(path, progress_cb)
+            self.result_queue.put((
+                "done", iid, size, crc32, md5, sha1, sha256,
+                expected_crc32, expected_md5, expected_sha1, expected_sha256,
+            ))
         except OSError as exc:
             self.result_queue.put(("error", iid, str(exc)))
 
@@ -192,18 +240,23 @@ class ChecksumGui(tk.Tk):
                     self.progress["value"] = percent
                     self.status_var.set(f"hashing {name}: {percent:.0f}%")
                 elif kind == "done":
-                    _, iid, size, crc32, md5, sha1, expected_crc32, expected_md5, expected_sha1 = message
+                    (
+                        _, iid, size, crc32, md5, sha1, sha256,
+                        expected_crc32, expected_md5, expected_sha1, expected_sha256,
+                    ) = message
                     self.rows[iid]["crc32"] = crc32
                     self.rows[iid]["md5"] = md5
                     self.rows[iid]["sha1"] = sha1
+                    self.rows[iid]["sha256"] = sha256
 
                     match = "-"
                     tag = ()
-                    if expected_crc32 or expected_md5 or expected_sha1:
+                    if expected_crc32 or expected_md5 or expected_sha1 or expected_sha256:
                         crc_ok = expected_crc32 is None or expected_crc32 == crc32
                         md5_ok = expected_md5 is None or expected_md5 == md5.lower()
-                        sha_ok = expected_sha1 is None or expected_sha1 == sha1.lower()
-                        if crc_ok and md5_ok and sha_ok:
+                        sha1_ok = expected_sha1 is None or expected_sha1 == sha1.lower()
+                        sha256_ok = expected_sha256 is None or expected_sha256 == sha256.lower()
+                        if crc_ok and md5_ok and sha1_ok and sha256_ok:
                             match, tag = "OK", ("ok",)
                         else:
                             match, tag = "MISMATCH", ("mismatch",)
@@ -213,15 +266,16 @@ class ChecksumGui(tk.Tk):
                     values[2] = crc32
                     values[3] = md5
                     values[4] = sha1
-                    values[5] = match
+                    values[5] = sha256
+                    values[6] = match
                     self.tree.item(iid, values=values, tags=tag)
                     self.progress["value"] = 100
                     self.status_var.set("idle")
                 elif kind == "error":
                     _, iid, err = message
                     values = list(self.tree.item(iid, "values"))
-                    values[2] = values[3] = values[4] = "error"
-                    values[5] = err
+                    values[2] = values[3] = values[4] = values[5] = "error"
+                    values[6] = err
                     self.tree.item(iid, values=values, tags=("mismatch",))
                     self.status_var.set(f"error: {err}")
         except queue.Empty:

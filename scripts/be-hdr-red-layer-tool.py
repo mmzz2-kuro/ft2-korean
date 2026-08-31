@@ -8,6 +8,9 @@ from PIL import Image, ImageDraw
 
 
 INDEX_COLORS = {
+    # Index 0 is exported as a binary mask: white means palette index 0 and
+    # black remains the universal "leave unchanged" sentinel.
+    0: (255, 255, 255),
     1: (255, 96, 180),
     2: (255, 255, 255),
     3: (90, 170, 255),
@@ -109,6 +112,8 @@ def nearest_target_index(rgb, indexes):
 def export_layers(args):
     width, height, pixels = read_pgm(args.raw_pgm)
     indexes = parse_indexes(args.indexes)
+    if 0 in indexes and len(indexes) != 1:
+        raise ValueError("palette index 0 must be exported alone (white=index 0, black=unchanged)")
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     prefix = args.prefix or Path(args.raw_pgm).stem.replace("-raw", "")
@@ -163,6 +168,8 @@ def export_layers(args):
 def apply_layer(args):
     width, height, pixels = read_pgm(args.raw_pgm)
     indexes = parse_indexes(args.indexes)
+    if 0 in indexes and len(indexes) != 1:
+        raise ValueError("palette index 0 must be applied alone (white=index 0, black=unchanged)")
     edited = Image.open(args.edited_png).convert("RGB")
     if edited.size != (width, height):
         raise ValueError(f"{args.edited_png} is {edited.size}, expected {(width, height)}")
