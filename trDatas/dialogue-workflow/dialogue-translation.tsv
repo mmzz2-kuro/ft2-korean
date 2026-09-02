@@ -724,7 +724,7 @@ enabled	message_id	source	refs	mask_pgm	source_note	ko_text	font_size	line_heigh
 0	4056	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4056.pgm		알겠습니다. \n잠시 기다려주십시오.	12	15	2	2	32	96	0	1	1	1	1						
 0	4057	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4057.pgm		낌새를 챘어?	12	15	2	2	32	96	0	1	1	1	1						
 0	4058	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4058.pgm		...응... \n그럭저럭...	12	15	2	2	32	96	0	1	1	1	1						
-0	4059	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4059.pgm		어떻게 할까요?	12	15	2	2	32	96	0	1	1	1	1						
+1	4059	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4059.pgm		어떻게 할까?	12	15	2	2	32	96	0	1	1	1	1						
 0	4060	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4060.pgm		뭐가요? 무슨 일이?	12	15	2	2	32	96	0	1	1	1	1						
 0	4061	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4061.pgm		수상한 사람이 우리의 뒤를 \n밟고있어요.	12	15	2	2	32	96	0	1	1	1	1						
 0	4062	manual-validated		F:/workspace-server/create-retro-game-kr-patch-main/tmp/SLPS-01903/dialogue-workflow/masks/message-mask-4062.pgm		뭐라고!?	12	15	2	2	32	96	0	1	1	1	1						
