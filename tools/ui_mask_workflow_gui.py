@@ -110,6 +110,7 @@ class UiMaskWorkflowGui(tk.Tk):
             "enabled",
             "resource_id",
             "mask_pbm",
+            "replacement_png",
             "source_note",
             "ko_text",
             "width",
@@ -217,6 +218,7 @@ class UiMaskWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="1. Export TSV/Masks", command=self.export_translation_table).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Load TSV", command=self.load_tsv).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Save TSV", command=self.save_tsv).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="1b. Export Filled Edit PNGs", command=self.export_edit_pngs).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check Filled", command=lambda: self.set_checked_bulk("filled")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Check All", command=lambda: self.set_checked_bulk("all")).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Uncheck All", command=lambda: self.set_checked_bulk("none")).pack(side="left", padx=(0, 6))
@@ -224,6 +226,7 @@ class UiMaskWorkflowGui(tk.Tk):
         ttk.Button(buttons, text="Uncheck Selected", command=lambda: self.set_checked_selected(False)).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="2. Apply to BIN", command=self.apply_translation).pack(side="left", padx=(0, 6))
         ttk.Button(buttons, text="Open Mask", command=self.open_selected_mask).pack(side="left", padx=(0, 6))
+        ttk.Button(buttons, text="Open Edit PNG", command=self.open_selected_edit_png).pack(side="left", padx=(0, 6))
 
         main = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
         main.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
@@ -562,6 +565,35 @@ class UiMaskWorkflowGui(tk.Tk):
 
         self._run_after_dat_ready(run_apply)
 
+    def export_edit_pngs(self):
+        if not self.rows:
+            self._append_log("[warn] load the translation TSV first\n")
+            return
+        if self.selected_index is not None:
+            self.update_selected_row(silent=True)
+        edit_dir = Path(self.vars["mask_dir"].get()) / "edit"
+        filled = 0
+        for row in self.rows:
+            if not row.get("ko_text", "").strip():
+                continue
+            row["replacement_png"] = str(edit_dir / f"ui-mask-{row.get('resource_id', '')}-ko-edit.png")
+            filled += 1
+        if not filled:
+            self._append_log("[warn] no rows contain Korean text\n")
+            return
+        self.save_tsv(silent=True)
+        cmd = [
+            "powershell", "-ExecutionPolicy", "Bypass", "-File",
+            str(ROOT / "scripts/export-ui-1bpp-edit-pngs.ps1"),
+            "-TranslationTsv", self.vars["translation"].get(),
+            "-FontPath", self.vars["font"].get(),
+            "-WorkDir", str(edit_dir),
+            "-Mode", self.vars["mode"].get(),
+        ]
+        if self.vars["trim"].get():
+            cmd.append("-TrimToOrigin")
+        self._run_command(f"Render {filled} editable UI PNG files", cmd)
+
     def load_tsv(self):
         path = Path(self.vars["translation"].get())
         if not path.exists():
@@ -584,6 +616,13 @@ class UiMaskWorkflowGui(tk.Tk):
             for idx, header in enumerate(self.tsv_headers):
                 row[header] = unescape_tsv(values[idx] if idx < len(values) else "")
             row.setdefault("enabled", "1")
+            row.setdefault("replacement_png", "")
+            if not row["replacement_png"]:
+                mask_path = Path(row.get("mask_pbm", ""))
+                if mask_path.name:
+                    automatic_png = mask_path.parent / "edit" / f"ui-mask-{row.get('resource_id', '')}-ko-edit.png"
+                    if automatic_png.exists():
+                        row["replacement_png"] = str(automatic_png)
             row.setdefault("data_offset", "0")
             row.setdefault("threshold", "64")
             row.setdefault("bold", "0")
@@ -780,6 +819,21 @@ class UiMaskWorkflowGui(tk.Tk):
             path = ROOT / path
         if path.exists():
             os.startfile(path)
+
+    def open_selected_edit_png(self):
+        if self.selected_index is None:
+            return
+        png_path = self.rows[self.selected_index].get("replacement_png", "")
+        if not png_path:
+            self._append_log("[warn] selected row has no edit PNG; run '1b. Export Filled Edit PNGs' first\n")
+            return
+        path = Path(png_path)
+        if not path.is_absolute():
+            path = ROOT / path
+        if path.exists():
+            os.startfile(path)
+        else:
+            self._append_log(f"[warn] edit PNG does not exist: {path}\n")
 
 
 if __name__ == "__main__":

@@ -62,6 +62,8 @@ class DialogueWorkflowGui(tk.Tk):
         self.rows = []
         self.tsv_headers = []
         self.selected_index = None
+        self.search_results = []
+        self.search_position = -1
         self.current_process = None
         self.progress_var = tk.DoubleVar(value=0.0)
         self.progress_text_var = tk.StringVar(value="Idle")
@@ -214,9 +216,39 @@ class DialogueWorkflowGui(tk.Tk):
         main.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
 
         left = ttk.Frame(main)
-        left.rowconfigure(0, weight=1)
+        left.rowconfigure(1, weight=1)
         left.columnconfigure(0, weight=1)
         main.add(left, weight=3)
+
+        search = ttk.Frame(left, padding=(0, 0, 0, 6))
+        search.grid(row=0, column=0, columnspan=2, sticky="ew")
+        search.columnconfigure(1, weight=1)
+        ttk.Label(search, text="대사 검색").grid(row=0, column=0, sticky="w", padx=(0, 6))
+        self.search_var = tk.StringVar()
+        self.search_entry = ttk.Entry(search, textvariable=self.search_var)
+        self.search_entry.grid(row=0, column=1, sticky="ew")
+        self.search_scope_var = tk.StringVar(value="한국어 번역")
+        ttk.Combobox(
+            search,
+            textvariable=self.search_scope_var,
+            values=("한국어 번역", "메시지 ID", "원문/메모", "전체"),
+            width=12,
+            state="readonly",
+        ).grid(row=0, column=2, padx=(6, 4))
+        self.search_translated_only_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(search, text="번역된 행만", variable=self.search_translated_only_var).grid(row=0, column=3, padx=4)
+        ttk.Button(search, text="이전", command=lambda: self.find_dialogue(-1)).grid(row=0, column=4, padx=(8, 2))
+        ttk.Button(search, text="다음", command=lambda: self.find_dialogue(1)).grid(row=0, column=5, padx=2)
+        self.search_status_var = tk.StringVar(value="검색어를 입력하세요")
+        ttk.Label(search, textvariable=self.search_status_var, width=18, anchor="w").grid(row=0, column=6, padx=(8, 0))
+        self.search_entry.bind("<Return>", lambda _e: self.find_dialogue(1))
+        self.search_entry.bind("<Shift-Return>", lambda _e: self.find_dialogue(-1))
+        self.bind("<Control-f>", self._focus_dialogue_search)
+        self.bind("<F3>", lambda _e: self.find_dialogue(1))
+        self.bind("<Shift-F3>", lambda _e: self.find_dialogue(-1))
+        self.search_var.trace_add("write", lambda *_args: self._reset_dialogue_search())
+        self.search_scope_var.trace_add("write", lambda *_args: self._reset_dialogue_search())
+        self.search_translated_only_var.trace_add("write", lambda *_args: self._reset_dialogue_search())
 
         columns = (
             "enabled",
@@ -244,12 +276,12 @@ class DialogueWorkflowGui(tk.Tk):
                 width = 220
             anchor = "center" if col == "enabled" else "w"
             self.tree.column(col, width=width, anchor=anchor)
-        self.tree.grid(row=0, column=0, sticky="nsew")
+        self.tree.grid(row=1, column=0, sticky="nsew")
         self.tree.bind("<<TreeviewSelect>>", self._on_select_row)
         self.tree.bind("<Button-1>", self._on_tree_click)
 
         tree_scroll = ttk.Scrollbar(left, orient="vertical", command=self.tree.yview)
-        tree_scroll.grid(row=0, column=1, sticky="ns")
+        tree_scroll.grid(row=1, column=1, sticky="ns")
         self.tree.configure(yscrollcommand=tree_scroll.set)
 
         right = ttk.Frame(main, padding=(8, 0, 0, 0))
@@ -1111,6 +1143,78 @@ class DialogueWorkflowGui(tk.Tk):
                     row.get("shadow", "0"),
                 ),
             )
+
+        self._reset_dialogue_search(update_status=bool(self.search_var.get().strip()))
+
+    def _focus_dialogue_search(self, _event=None):
+        self.search_entry.focus_set()
+        self.search_entry.selection_range(0, "end")
+        return "break"
+
+    def _reset_dialogue_search(self, update_status=True):
+        self.search_results = []
+        self.search_position = -1
+        if update_status:
+            query = self.search_var.get().strip()
+            self.search_status_var.set("검색어를 입력하세요" if not query else "Enter/F3으로 검색")
+
+    def _dialogue_search_fields(self, row):
+        scope = self.search_scope_var.get()
+        if scope == "한국어 번역":
+            return (row.get("ko_text", ""),)
+        if scope == "메시지 ID":
+            return (row.get("message_id", ""), row.get("address", ""))
+        if scope == "원문/메모":
+            return (row.get("source_note", ""), row.get("note", ""), row.get("source", ""))
+        return (
+            row.get("message_id", ""), row.get("address", ""), row.get("ko_text", ""),
+            row.get("source_note", ""), row.get("note", ""), row.get("source", ""), row.get("refs", ""),
+        )
+
+    def _build_dialogue_search_results(self):
+        query = self.search_var.get().strip().casefold()
+        if not query:
+            self.search_results = []
+            self.search_position = -1
+            self.search_status_var.set("검색어를 입력하세요")
+            return False
+        if self.selected_index is not None:
+            self.update_selected_row(silent=True)
+        translated_only = self.search_translated_only_var.get()
+        self.search_results = [
+            idx for idx, row in enumerate(self.rows)
+            if (not translated_only or bool(row.get("ko_text", "").strip()))
+            and any(query in str(value).casefold() for value in self._dialogue_search_fields(row))
+        ]
+        self.search_position = -1
+        if not self.search_results:
+            self.search_status_var.set("결과 없음")
+            return False
+        self.search_status_var.set(f"0/{len(self.search_results)}")
+        return True
+
+    def find_dialogue(self, direction=1):
+        query = self.search_var.get().strip()
+        if not query:
+            self._focus_dialogue_search()
+            self.search_status_var.set("검색어를 입력하세요")
+            return
+        if not self.search_results and not self._build_dialogue_search_results():
+            return
+        if direction < 0:
+            self.search_position = (self.search_position - 1) % len(self.search_results)
+        else:
+            self.search_position = (self.search_position + 1) % len(self.search_results)
+        index = self.search_results[self.search_position]
+        iid = str(index)
+        if not self.tree.exists(iid):
+            self._build_dialogue_search_results()
+            return
+        self.tree.selection_set(iid)
+        self.tree.focus(iid)
+        self.tree.see(iid)
+        self._on_select_row()
+        self.search_status_var.set(f"{self.search_position + 1}/{len(self.search_results)} · ID {self.rows[index].get('message_id', '')}")
 
     def _on_tree_click(self, event):
         if self.tree.identify_region(event.x, event.y) != "cell":

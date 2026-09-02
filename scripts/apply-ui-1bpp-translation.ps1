@@ -53,6 +53,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $renderScript = Join-Path $scriptDir "render-text-to-1bpp-pbm.ps1"
 $patchScript = Join-Path $scriptDir "ui-1bpp-mask-tool.js"
 $injectScript = Join-Path $scriptDir "inject-dat-into-raw-bin.js"
+$pngTool = Join-Path $scriptDir "ui-1bpp-png-tool.py"
 
 New-Item -ItemType Directory -Force -Path $WorkDir | Out-Null
 $rows = Read-Tsv $TranslationTsv
@@ -78,8 +79,22 @@ foreach ($row in $rows) {
   $bold = Get-IntField $row "bold" 0
 
   $pbmPath = Join-Path $WorkDir ("ui-mask-{0}-ko.pbm" -f $resourceId)
-
-  $renderArgs = @(
+  $replacementPng = [string]$row.replacement_png
+  if ([string]::IsNullOrWhiteSpace($replacementPng) -or -not (Test-Path -LiteralPath $replacementPng)) {
+    $sourceMask = [string]$row.mask_pbm
+    if (-not [string]::IsNullOrWhiteSpace($sourceMask)) {
+      $automaticPng = Join-Path (Join-Path (Split-Path -Parent $sourceMask) "edit") ("ui-mask-{0}-ko-edit.png" -f $resourceId)
+      if (Test-Path -LiteralPath $automaticPng) {
+        $replacementPng = $automaticPng
+      }
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace($replacementPng) -and (Test-Path -LiteralPath $replacementPng)) {
+    & python $pngTool png-to-pbm $replacementPng $pbmPath --width $width --height $height --threshold 128
+    if ($LASTEXITCODE -ne 0) { throw "edited PNG conversion failed for resource $resourceId" }
+    Write-Output "resource ${resourceId}: using edited PNG $replacementPng"
+  } else {
+    $renderArgs = @(
     "-ExecutionPolicy", "Bypass",
     "-File", $renderScript,
     "-FontPath", $FontPath,
@@ -95,10 +110,11 @@ foreach ($row in $rows) {
     "-Threshold", $threshold,
     "-Bold", $bold,
     "-Mode", $Mode
-  )
-  if ($TrimToOrigin) { $renderArgs += "-TrimToOrigin" }
-  & powershell @renderArgs
-  if ($LASTEXITCODE -ne 0) { throw "render failed for resource $resourceId" }
+    )
+    if ($TrimToOrigin) { $renderArgs += "-TrimToOrigin" }
+    & powershell @renderArgs
+    if ($LASTEXITCODE -ne 0) { throw "render failed for resource $resourceId" }
+  }
 
   & node $patchScript patch $currentDat $ExePath $OutDat $resourceId $pbmPath --bytes-per-row $bytesPerRow --rows $rowsCount --data-offset $dataOffset
   if ($LASTEXITCODE -ne 0) { throw "patch failed for resource $resourceId" }

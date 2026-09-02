@@ -318,6 +318,8 @@ docs/projects/ss/fs2/
   48-palette-layer-postprocess-gui.md # 최종 SS BIN 대상 팔레트 레이어 추출·편집·재삽입 후처리 GUI
   49-ss-behdr-palette-inspector.md # 최종 SS BIN의 be-hdr 팔레트 인덱스와 선택 영역 분포를 확인하는 GUI
   50-yabasanshiro-experience-cheats.md # Yaba Sanshiro RAM 스냅샷 비교와 캐릭터 경험치 치트 주소
+  51-dialogue-gui-search.md # 대사 GUI의 한국어 번역·메시지 ID·원문/메모 검색과 결과 이동
+  52-ui-mask-editable-png-workflow.md # 1bpp UI의 폰트 렌더링 PNG 추출·수동 편집·PBM 재삽입 흐름
 ```
 
 문서는 조사 결과에 따라 분리한다. 아직 근거가 없는 항목을 빈 문서로 미리 만들지는 않는다.
