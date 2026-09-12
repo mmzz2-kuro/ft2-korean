@@ -202,13 +202,20 @@ function decodeHeader(id) {
   const heightTiles = dat.readUInt32BE(off + 4);
   const payloadSize = dat.readUInt32BE(off + 8);
   const tileDataOffset = dat.readUInt32BE(off + 12);
-  const tileMapOffset = tileDataOffset - widthTiles * heightTiles * 2;
+  const tileMapBytes = widthTiles * heightTiles * 2;
+  const align4 = (value) => (value + 3) & ~3;
+  // Small maps can have two bytes of alignment padding between the PNT and
+  // tile data. Resource 0 is one such case: its map starts at 0x210, while
+  // subtracting the map bytes from tileDataOffset incorrectly yields 0x212.
+  let tileMapOffset = tileDataOffset - tileMapBytes;
+  if (align4(0x210 + tileMapBytes) === tileDataOffset) tileMapOffset = 0x210;
+  else if (align4(0x10 + tileMapBytes) === tileDataOffset) tileMapOffset = 0x10;
   if (
     widthTiles <= 0 ||
     heightTiles <= 0 ||
     widthTiles > 512 ||
     heightTiles > 512 ||
-    payloadSize <= tileDataOffset ||
+    payloadSize <= 0 ||
     payloadSize > range.byteEnd - range.byteStart ||
     tileMapOffset < 0x10
   ) {
@@ -816,6 +823,18 @@ function packIndexedPixelsIntoTiles(id, info, indexedPixels, outDat) {
 
   const mapBase = info.byteStart + info.tileMapOffset;
   for (let i = 0; i < newMap.length; i += 1) patched.writeUInt16BE(newMap[i], mapBase + i * 2);
+
+  // header[8] is not the whole resource byte length. For this format it is
+  // 0x10 plus the tile payload size used by the runtime loader. If new tiles
+  // are allocated above the original highest index (resource 12 is a common
+  // case), leaving this value unchanged makes the game ignore those tiles
+  // even though they are present in the sector allocation.
+  const highestReferencedIndex = newMap.reduce((max, raw) => Math.max(max, raw >> 1), -1);
+  const requiredPayloadSize = 0x10 + (highestReferencedIndex + 1) * 64;
+  if (requiredPayloadSize > info.payloadSize) {
+    patched.writeUInt32BE(requiredPayloadSize, info.byteStart + 8);
+    console.log(`${id}: expanded runtime tile payload ${hex(info.payloadSize)} -> ${hex(requiredPayloadSize)}`);
+  }
 
   const tileBase = info.byteStart + info.tileDataOffset;
   for (const [tileIndex, key] of overwrittenIndexes.entries()) {

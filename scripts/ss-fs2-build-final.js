@@ -18,11 +18,14 @@ const relFrom=(base,target)=>path.relative(base,target).replace(/\\/g,'/');
 console.log('[inputs]');console.log(`SS Track 1 SHA-256 ${sha256(in1)}`);console.log(`SS Track 2 SHA-256 ${sha256(in2)}`);console.log(`PS1 latest SHA-256 ${sha256(psBin)}`);
 run('extract latest PS1 DAT','node',['scripts/extract-dat-from-raw-bin.js',psBin,latestDat,'--lba','223','--bytes','244678656']);
 
-const safeConfigPath=path.join(ROOT,'configs/ss-fs2-korean-safe.json'),safe=JSON.parse(fs.readFileSync(safeConfigPath,'utf8'));
-const configDir=path.dirname(safeConfigPath),manifest={version:1,input:{track1:in1,track2:in2,track1Sha256:sha256(in1),track2Sha256:sha256(in2)},output:{track1:stageA,cue:path.join(work,'safe.cue'),report:path.join(work,'safe.report.json')},patches:safe.patches.map(x=>({messageId:x.messageId,pgm:abs(path.resolve(configDir,x.pgm))}))};
-const manifestPath=path.join(work,'safe-manifest.json');fs.writeFileSync(manifestPath,JSON.stringify(manifest,null,2));
+const manifestPath=path.join(work,'safe-manifest.json'),preflightPath=path.join(work,'translation-preflight.json');
+run('refresh dialogue classification','node',['scripts/ss-fs2-prepare-translation-build.js',in1,in2,'ps1/SLPS-01903/FS2_FILE.DAT','ps1/SLPS-01903/SLPS_019.03','trDatas/dialogue-workflow/dialogue-translation.tsv','tmp/SLPS-01903/dialogue-workflow/apply',manifestPath,preflightPath]);
+const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+manifest.input={track1:in1,track2:in2,track1Sha256:sha256(in1),track2Sha256:sha256(in2)};
+manifest.output={track1:stageA,cue:path.join(work,'safe.cue'),report:path.join(work,'safe.report.json')};
+fs.writeFileSync(manifestPath,`${JSON.stringify(manifest,null,2)}\n`,'utf8');
 run('safe dialogue','node',['scripts/ss-fs2-build-message-patch.js',manifestPath,'--force','--summary']);
-run('reveal overflow','node',['scripts/ss-fs2-reveal-extension-poc.js',stageA,stageB,'--overflow-preflight','output/ss-fs2-translation-preflight.json','tmp/SLPS-01903/dialogue-workflow/apply']);
+run('reveal overflow','node',['scripts/ss-fs2-reveal-extension-poc.js',stageA,stageB,'--overflow-preflight',preflightPath,'tmp/SLPS-01903/dialogue-workflow/apply']);
 run('finale','node',['scripts/ss-fs2-reveal-extension-poc.js',stageB,stageA,'--finale-map','output/ss-fs2-finale-map.json','tmp/SLPS-01903/dialogue-workflow/apply']);
 
 const uiMap=path.join(work,'ui-map.json');run('map 1bpp UI','node',['scripts/ss-fs2-map-ui-masks.js',in1,'ps1/SLPS-01903/FS2_FILE.DAT','ps1/SLPS-01903/SLPS_019.03',uiMap,'trDatas/ui-mask-workflow/item_830_1008.tsv','trDatas/ui-mask-workflow/menu_1009_1080.tsv','trDatas/ui-mask-workflow/unit_help_1081_1147.tsv','trDatas/ui-mask-workflow/day_1151_1168.tsv']);
@@ -42,4 +45,6 @@ run('platform-difference dialogue','node',['scripts/ss-fs2-reveal-extension-poc.
 run('final Mode 1 verification','node',['scripts/ss-fs2-verify-patched-bin.js',in1,outBin]);
 
 const cueDir=path.dirname(outCue),cue=`FILE "${relFrom(cueDir,outBin)}" BINARY\n  TRACK 01 MODE1/2352\n    INDEX 01 00:00:00\nFILE "${relFrom(cueDir,in2)}" BINARY\n  TRACK 02 AUDIO\n    INDEX 00 00:00:00\n    INDEX 01 00:02:00\n`;fs.mkdirSync(cueDir,{recursive:true});fs.writeFileSync(outCue,cue,'ascii');
-const report={version:1,createdAt:new Date().toISOString(),inputs:{track1:in1,track1Sha256:sha256(in1),track2:in2,track2Sha256:sha256(in2),psLatestBin:psBin,psLatestBinSha256:sha256(psBin)},output:{bin:outBin,cue:outCue,sha256:sha256(outBin),bytes:fs.statSync(outBin).size},applied:{safeDialogue:1899,revealOverflow:534,finale:220,ui1bppSafe:334,ui1bppPlatformDifference:2,nameEntries:420,ui8bppSafe:54,titleLogos:2,speakerNames:25,platformDialogue:4},deferred:{paletteLayerUi:[714,1073,1074,1087,1088]}};fs.writeFileSync(outReport,JSON.stringify(report,null,2));console.log(`\n[complete] ${outBin}`);console.log(`SHA-256 ${report.output.sha256}`);console.log(`CUE ${outCue}`);console.log(`report ${outReport}`);
+const preflight=JSON.parse(fs.readFileSync(preflightPath,'utf8'));
+const revealOverflow=preflight.rejectedEntries.filter(x=>x.category==='reveal-overflow').length;
+const report={version:1,createdAt:new Date().toISOString(),inputs:{track1:in1,track1Sha256:sha256(in1),track2:in2,track2Sha256:sha256(in2),psLatestBin:psBin,psLatestBinSha256:sha256(psBin)},output:{bin:outBin,cue:outCue,sha256:sha256(outBin),bytes:fs.statSync(outBin).size},applied:{safeDialogue:preflight.ready,revealOverflow,finale:220,ui1bppSafe:334,ui1bppPlatformDifference:2,nameEntries:420,ui8bppSafe:54,titleLogos:2,speakerNames:25,platformDialogue:4},deferred:{paletteLayerUi:[714,1073,1074,1087,1088]}};fs.writeFileSync(outReport,JSON.stringify(report,null,2));console.log(`\n[complete] ${outBin}`);console.log(`SHA-256 ${report.output.sha256}`);console.log(`CUE ${outCue}`);console.log(`report ${outReport}`);
