@@ -4,7 +4,7 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const {recomputeMode1Sector,isMode1}=require('./cdrom-eccedc.js');
 const RAW=2352,USER=2048,UOFF=16,EXE_LBA=21,EXE_BYTES=319524,DATA_LBA=178,TABLE=0x1ae9c,MAX_ID=4336;
-const ALLOWED=new Set([0,1,2,11,12,14,15,16,18,19,20,21,714,1073,1074,1087,1088]);
+const ALLOWED=new Set([0,1,2,11,12,14,15,16,18,19,20,21,226,228,234,236,239,240,257,714,1073,1074,1087,1088]);
 const sha256=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex').toUpperCase();
 function usage(){console.error('usage:\n  node scripts/ss-fs2-palette-layer-resource.js export <input.bin> <work-dir> <id...>\n  node scripts/ss-fs2-palette-layer-resource.js apply <input.bin> <output.bin> <manifest.json> <report.json>');process.exit(1)}
 function readUser(fd,lba,bytes){const out=Buffer.alloc(bytes);for(let p=0;p<bytes;){const s=Math.floor(p/USER),w=p%USER,n=Math.min(USER-w,bytes-p);if(fs.readSync(fd,out,p,n,(lba+s)*RAW+UOFF+w)!==n)throw new Error(`short read LBA ${lba+s}`);p+=n}return out}
