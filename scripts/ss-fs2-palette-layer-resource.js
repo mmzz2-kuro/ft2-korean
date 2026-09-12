@@ -28,7 +28,7 @@ function pack(d,info,pix){
   const cellTiles=[];for(let ty=0;ty<info.ht;ty++)for(let tx=0;tx<info.wt;tx++)cellTiles.push(tileAt(pix,info.width,tx,ty));
   const exact=dedupeTiles(cellTiles),packed={...exact,merged:0,totalDistance:0,maxDistance:0};
   if(packed.tiles.length>info.cap)throw new Error(`needs ${packed.tiles.length} unique tiles, capacity is ${info.cap}`);
-  const out=Buffer.from(d);for(let i=0;i<packed.cells.length;i++)out.writeUInt16BE((packed.cells[i]<<1)|(info.map[i]&1),info.mo+i*2);out.fill(0,info.td);for(let i=0;i<packed.tiles.length;i++)packed.tiles[i].copy(out,info.td+i*64);
+  const out=Buffer.from(d);out.writeUInt32BE(0x10+packed.tiles.length*64,8);for(let i=0;i<packed.cells.length;i++)out.writeUInt16BE((packed.cells[i]<<1)|(info.map[i]&1),info.mo+i*2);out.fill(0,info.td);for(let i=0;i<packed.tiles.length;i++)packed.tiles[i].copy(out,info.td+i*64);
   return{data:out,unique:packed.tiles.length,unchanged:false,lossyMerged:packed.merged,changedPixels:packed.totalDistance,maxTileDistance:packed.maxDistance,originalUnique:exact.tiles.length};
 }
 function writeResource(fd,lba,d,touched){for(let p=0;p<d.length;p+=USER){const sec=Buffer.alloc(RAW),target=lba+p/USER,off=target*RAW;if(fs.readSync(fd,sec,0,RAW,off)!==RAW||!isMode1(sec))throw new Error(`invalid Mode 1 LBA ${target}`);d.copy(sec,UOFF,p,p+USER);recomputeMode1Sector(sec);fs.writeSync(fd,sec,0,RAW,off);touched.add(target)}}

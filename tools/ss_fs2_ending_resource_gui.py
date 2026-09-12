@@ -15,6 +15,7 @@ from tkinter import filedialog, messagebox, ttk
 
 ROOT = Path(__file__).resolve().parents[1]
 RESOURCE_IDS = (0, 1, 2, 11, 12, 14, 15, 16, 18, 19, 20, 21)
+CREDIT_IDS = (14, 15, 16, 18, 19, 20, 21)
 DEFAULT_INPUT = ROOT / "output/ss-fs2-korean-final-track1.bin"
 DEFAULT_TRACK2 = ROOT / "output/ss-fs2-korean-final-track2.bin"
 DEFAULT_OUTPUT = ROOT / "output/ss-fs2-korean-ending-final.bin"
@@ -151,11 +152,54 @@ class App(tk.Tk):
             else:
                 self.events.put(("log", f"[건너뜀] 편집 파일 없음: {edit.name}\n"))
         if not items: raise FileNotFoundError("적용할 -ko-edit.png 파일이 없습니다.")
-        manifest = work / "ending-apply-manifest.json"
-        manifest.write_text(json.dumps({"version": 1, "items": items}, ensure_ascii=False, indent=2), encoding="utf-8")
         output = Path(self.values["output"].get()); output.parent.mkdir(parents=True, exist_ok=True)
         report = output.with_suffix(".report.json")
-        self.run(["node", ROOT / "scripts/ss-fs2-palette-layer-resource.js", "apply", source, output, manifest, report])
+        item_by_id = {int(item["id"]): item for item in items}
+        needs_expansion = any(rid in item_by_id for rid in (14, 18, 20, 21))
+        if needs_expansion:
+            missing = [rid for rid in CREDIT_IDS if rid not in item_by_id]
+            if missing:
+                raise FileNotFoundError(
+                    "엔딩 크레딧 확장은 14, 15, 16, 18, 19, 20, 21 편집본이 모두 필요합니다. "
+                    f"누락: {missing}"
+                )
+            ordinary = [item for item in items if int(item["id"]) not in CREDIT_IDS]
+            expanded_source = source
+            if ordinary:
+                ordinary_manifest = work / "ending-ordinary-apply-manifest.json"
+                ordinary_manifest.write_text(
+                    json.dumps({"version": 1, "items": ordinary}, ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+                expanded_source = work / "ending-before-credit-expansion.bin"
+                ordinary_report = work / "ending-before-credit-expansion.report.json"
+                self.run([
+                    "node", ROOT / "scripts/ss-fs2-palette-layer-resource.js", "apply",
+                    source, expanded_source, ordinary_manifest, ordinary_report,
+                ])
+            credit_manifest = work / "ending-credit-expansion-manifest.json"
+            credit_manifest.write_text(
+                json.dumps(
+                    {"version": 1, "items": [item_by_id[rid] for rid in CREDIT_IDS]},
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            self.run([
+                "node", ROOT / "scripts/ss-fs2-expand-ending-credits.js",
+                expanded_source, output, credit_manifest, report,
+            ])
+        else:
+            manifest = work / "ending-apply-manifest.json"
+            manifest.write_text(
+                json.dumps({"version": 1, "items": items}, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            self.run([
+                "node", ROOT / "scripts/ss-fs2-palette-layer-resource.js", "apply",
+                source, output, manifest, report,
+            ])
         self.run(["node", ROOT / "scripts/ss-fs2-verify-patched-bin.js", source, output])
         track2 = Path(self.values["track2"].get())
         cue = output.with_suffix(".cue")
